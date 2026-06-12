@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WRS Canvas Course — Syllabus & Teacher Guide</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; color: #1a1a1a; line-height: 1.7; }
+
+  /* Header */
+  .course-header { border-left: 6px solid #1D9E75; padding: 20px 24px; margin-bottom: 36px; background: #f9fffe; border-radius: 0 10px 10px 0; }
+  .course-header .eyebrow { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: .08em; color: #1D9E75; margin-bottom: 6px; }
+  .course-header h1 { font-size: 26px; font-weight: bold; margin: 0 0 6px; }
+  .course-header .sub { font-size: 14px; color: #555; margin: 0; }
+
+  /* Section headers */
+  h2 { font-size: 18px; font-weight: bold; margin: 40px 0 10px; border-left: 4px solid #1D9E75; padding-left: 12px; }
+  h3 { font-size: 15px; font-weight: bold; margin: 24px 0 8px; color: #1a1a1a; }
+  h4 { font-size: 13px; font-weight: bold; margin: 16px 0 6px; text-transform: uppercase; letter-spacing: .05em; color: #555; }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 14px 22px; }
+  li { margin-bottom: 6px; }
+
+  /* Callouts */
+  .callout { background: #fff8e1; border-left: 4px solid #EF9F27; padding: 14px 16px; border-radius: 0 8px 8px 0; margin: 20px 0; font-size: 14px; }
+  .callout strong { color: #633806; }
+  .info-box { background: #E1F5EE; border-left: 4px solid #1D9E75; padding: 14px 16px; border-radius: 0 8px 8px 0; margin: 20px 0; font-size: 14px; }
+  .info-box strong { color: #085041; }
+
+  /* Module tier cards */
+  .tier-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 16px 0 24px; }
+  .tier-card { border-radius: 10px; padding: 16px 18px; }
+  .tier-card.short { background: #E1F5EE; border: 1.5px solid #1D9E75; }
+  .tier-card.extended { background: #EEEDFE; border: 1.5px solid #534AB7; }
+  .tier-card.sub { background: #fff8e1; border: 1.5px solid #EF9F27; }
+  .tier-card .tier-label { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+  .tier-card.short .tier-label { color: #085041; }
+  .tier-card.extended .tier-label { color: #3C3489; }
+  .tier-card.sub .tier-label { color: #633806; }
+  .tier-card .tier-title { font-size: 15px; font-weight: bold; margin-bottom: 6px; }
+  .tier-card .tier-time { font-size: 12px; font-weight: bold; margin-bottom: 8px; color: #666; }
+  .tier-card p { font-size: 13px; margin: 0; color: #333; }
+
+  /* Grading options */
+  .grade-option { background: #fff; border: 1.5px solid #ddd; border-radius: 10px; padding: 18px 20px; margin-bottom: 14px; }
+  .grade-option .opt-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .grade-option .opt-badge { background: #1D9E75; color: #fff; font-size: 12px; font-weight: bold; padding: 4px 12px; border-radius: 20px; white-space: nowrap; }
+  .grade-option .opt-title { font-size: 15px; font-weight: bold; }
+  .grade-option .opt-body { font-size: 13px; color: #333; }
+  .grade-option .opt-steps { font-size: 13px; margin: 10px 0 0 18px; color: #333; }
+  .grade-option .opt-steps li { margin-bottom: 4px; }
+
+  /* Standards table */
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+  th { background: #f0f0f0; text-align: left; padding: 9px 12px; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: #555; }
+  td { padding: 9px 12px; border-bottom: 1px solid #eee; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .priority-tag { background: #E1F5EE; color: #085041; font-size: 11px; font-weight: bold; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
+  .domain-header td { background: #f9f9f9; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: #888; padding: 8px 12px; }
+
+  /* Flow diagram */
+  .flow { display: flex; flex-wrap: wrap; gap: 0; margin: 16px 0 24px; align-items: center; }
+  .flow-step { background: #f5f5f5; border: 1.5px solid #ddd; border-radius: 8px; padding: 10px 14px; font-size: 13px; text-align: center; min-width: 120px; }
+  .flow-step strong { display: block; font-size: 12px; color: #1D9E75; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 3px; }
+  .flow-arrow { font-size: 20px; color: #bbb; padding: 0 8px; }
+
+  .footer { font-size: 12px; color: #888; border-top: 1px solid #eee; margin-top: 48px; padding-top: 14px; }
+</style>
+</head>
+<body>
+
+<div class="course-header">
+  <div class="eyebrow">Nevada CTE — Workplace Readiness Skills</div>
+  <h1>WRS: Workplace Readiness Skills</h1>
+  <p class="sub">Unified Canvas Course · All 21 Standards · Foundational &amp; Applied Depth Levels · 5 Modules Per Standard<br>
+  Teacher Syllabus &amp; Course Guide — Internal Use</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>Part 1 — What this course is</h2>
+
+<p>This Canvas course is the instructional backbone for Nevada's Workplace Readiness Skills (WRS) standards — the 21 assessed competencies that CTE students demonstrate at the end of their programs. It is designed to be used across program years, across pathways, and across classroom formats without modification.</p>
+
+<p>The course does not replace your CTE pathway instruction. It supplements it — giving you ready-made, standards-aligned modules you can deploy as openers, closers, full lessons, or sub plans, depending on where your students are and what you need on a given day.</p>
+
+<div class="callout">
+  <strong>Assessment alignment:</strong> Every module in this course is explicitly aligned to the WRS assessment that students take at the end of their CTE program. The knowledge checks, scenario questions, and discussion prompts are designed to build the vocabulary, judgment, and situational awareness students need to perform well on that assessment — not just to check a curriculum box.
+</div>
+
+<!-- ============================================================ -->
+<h2>Part 2 — Course structure</h2>
+
+<h3>One course, not two</h3>
+<p>This course is intentionally unified. There is no separate Year 1 and Year 2 version. The WRS assessment covers the same 21 standards regardless of where a student is in their program — so the instructional resource mirrors that structure. You decide which modules to assign and when, based on where your students are.</p>
+
+<h3>Two depth levels per standard</h3>
+<p>Every standard has content at two depth levels:</p>
+<ul>
+  <li><strong>Foundational</strong> — introduces the standard, defines key terms, uses accessible scenarios, builds basic recognition and comprehension. Appropriate for students early in a program or encountering a standard for the first time.</li>
+  <li><strong>Applied</strong> — assumes familiarity with the standard and pushes into harder situations, judgment calls, and exam-style scenario questions. Appropriate for students preparing for the WRS assessment or needing a deeper challenge.</li>
+</ul>
+<p>These are not year-level designations. A second-year student may need Foundational content on a standard they've never seen. A strong first-year student may be ready for Applied on day one. You make that call.</p>
+
+<h3>Five modules per standard</h3>
+<p>Each of the 21 standards has five total modules — two tiers at Foundational depth, two tiers at Applied depth, and one Sub Lesson that draws from both:</p>
+
+<div class="tier-grid">
+  <div class="tier-card short">
+    <div class="tier-label">Tier 1</div>
+    <div class="tier-title">Short Module</div>
+    <div class="tier-time">8–12 minutes</div>
+    <p>Opener, closer, or bell ringer. Self-contained. One scenario, 2–3 knowledge check questions, one exit ticket prompt. Works as a standalone activity or a warm-up before a longer lesson.</p>
+  </div>
+  <div class="tier-card extended">
+    <div class="tier-label">Tier 2</div>
+    <div class="tier-title">Extended Module</div>
+    <div class="tier-time">45–60 minutes</div>
+    <p>Full block lesson. Structured instruction, interactive activity, 5–6 question quiz with per-answer feedback, discussion exit ticket. Designed to fill a complete class period with minimal teacher prep.</p>
+  </div>
+  <div class="tier-card sub">
+    <div class="tier-label">Tier 3</div>
+    <div class="tier-title">Sub Lesson</div>
+    <div class="tier-time">75–90 minutes</div>
+    <p>Everything in the Extended Module plus an anchoring video, additional scenario content, extended discussion structure, and explicit sub-facing facilitation instructions. No teacher prep required — a sub can run this cold.</p>
+  </div>
+</div>
+
+<p>That structure — 21 standards × 5 modules each — produces <strong>105 total modules</strong> across the course. You will never use all of them in a single year, and you are not expected to. This is a library. Use what fits.</p>
+
+<!-- ============================================================ -->
+<h2>Part 3 — The 21 standards</h2>
+
+<h3>How the standard numbers work</h3>
+<p>Every standard in this course uses Nevada's official three-level numbering system. The numbers aren't arbitrary — they tell you exactly where a standard sits in the framework:</p>
+<ul>
+  <li><strong>First number — Domain:</strong> The broadest category. 1 = Personal Qualities &amp; People Skills, 2 = Professional Knowledge &amp; Skills, 3 = Technology Knowledge &amp; Skills.</li>
+  <li><strong>Second number — Subdomain:</strong> A grouping within the domain. For example, 1.1 = Personal Qualities, 1.2 = People Skills.</li>
+  <li><strong>Third number — Individual standard:</strong> The specific competency. 1.1.1 = Positive Work Ethic, 1.1.2 = Integrity, 1.1.3 = Teamwork, and so on.</li>
+</ul>
+<p>So when you see 1.1.1, it means: Domain 1 → Subdomain 1 → Standard 1. This numbering matches the official Nevada WRS assessment documentation exactly, so teachers can cross-reference module content with state materials without any translation.</p>
+
+<div class="callout">
+  <strong>Industry-priority standards:</strong> Nevada employers identified four standards as their highest priorities for new hire readiness. These are marked below and were built first. They are good starting points for any program.
+</div>
+
+<table>
+  <tr>
+    <th>Standard</th>
+    <th>Name</th>
+    <th>Domain</th>
+    <th>Note</th>
+  </tr>
+
+  <tr class="domain-header"><td colspan="4">Personal Qualities &amp; People Skills</td></tr>
+  <tr><td>1.1.1</td><td>Positive Work Ethic</td><td>Personal Qualities</td><td><span class="priority-tag">Industry Priority</span></td></tr>
+  <tr><td>1.1.2</td><td>Integrity</td><td>Personal Qualities</td><td></td></tr>
+  <tr><td>1.1.3</td><td>Teamwork</td><td>Personal Qualities</td><td><span class="priority-tag">Industry Priority</span></td></tr>
+  <tr><td>1.1.4</td><td>Self-Representation</td><td>Personal Qualities</td><td><span class="priority-tag">Industry Priority</span></td></tr>
+  <tr><td>1.1.5</td><td>Diversity Awareness</td><td>Personal Qualities</td><td></td></tr>
+  <tr><td>1.1.6</td><td>Conflict Resolution</td><td>Personal Qualities</td><td></td></tr>
+  <tr><td>1.2.1</td><td>Speaking &amp; Listening</td><td>People Skills</td><td><span class="priority-tag">Industry Priority</span></td></tr>
+  <tr><td>1.2.2</td><td>Reading &amp; Writing</td><td>People Skills</td><td></td></tr>
+
+  <tr class="domain-header"><td colspan="4">Professional Knowledge &amp; Skills</td></tr>
+  <tr><td>2.1.1</td><td>Job Acquisition</td><td>Professional Knowledge</td><td></td></tr>
+  <tr><td>2.1.2</td><td>Job Retention</td><td>Professional Knowledge</td><td></td></tr>
+  <tr><td>2.1.3</td><td>Entrepreneurship</td><td>Professional Knowledge</td><td></td></tr>
+  <tr><td>2.2.1</td><td>Problem Solving &amp; Critical Thinking</td><td>Professional Skills</td><td></td></tr>
+  <tr><td>2.2.2</td><td>Safety &amp; Health</td><td>Professional Skills</td><td></td></tr>
+  <tr><td>2.2.3</td><td>Respect in the Workplace</td><td>Professional Skills</td><td></td></tr>
+  <tr><td>2.2.4</td><td>Sustainability</td><td>Professional Skills</td><td></td></tr>
+
+  <tr class="domain-header"><td colspan="4">Technology Knowledge &amp; Skills</td></tr>
+  <tr><td>3.1.1</td><td>Digital Literacy</td><td>Technology Knowledge</td><td></td></tr>
+  <tr><td>3.1.2</td><td>Internet &amp; Email</td><td>Technology Knowledge</td><td></td></tr>
+  <tr><td>3.1.3</td><td>Word Processing</td><td>Technology Knowledge</td><td></td></tr>
+  <tr><td>3.1.4</td><td>Spreadsheets</td><td>Technology Knowledge</td><td></td></tr>
+  <tr><td>3.1.5</td><td>Presentation Software</td><td>Technology Knowledge</td><td></td></tr>
+  <tr><td>3.2.1</td><td>AI in the Workplace</td><td>Technology Skills</td><td>Capstone unit</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2>Part 4 — How to use this course</h2>
+
+<h3>Recommended flow for a standard</h3>
+<div class="flow">
+  <div class="flow-step"><strong>Introduce</strong>Short Module<br>Foundational</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><strong>Teach</strong>Extended Module<br>Foundational</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><strong>Deepen</strong>Short Module<br>Applied</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><strong>Apply</strong>Extended Module<br>Applied</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><strong>Cover</strong>Sub Lesson<br>Foundational + Applied</div>
+</div>
+<p style="font-size:13px;color:#555;">Foundational modules come first — Short then Extended — followed by Applied in the same order. The Sub Lesson draws from both depth levels and sits at the end as a standalone coverage tool. You do not have to follow this sequence. Use what fits.</p>
+
+<h3>Suggested pacing</h3>
+<ul>
+  <li><strong>Daily bell ringer:</strong> Rotate through Short Modules across standards throughout the year. At 3–4 per week you'll cover all 21 standards multiple times.</li>
+  <li><strong>Monthly WRS day:</strong> Dedicate one class period per month to an Extended Module. You'll cover all 21 standards across a school year with room to revisit industry-priority standards.</li>
+  <li><strong>Pre-assessment push:</strong> In the 4–6 weeks before the WRS assessment, run Applied Short Modules daily as exam prep warm-ups.</li>
+  <li><strong>Sub coverage:</strong> Drop in a Sub Lesson any time you're out. No prep required — instructions are built into the module.</li>
+</ul>
+
+<h3>Industry-priority standards — start here</h3>
+<p>If you're new to this course or introducing it to students for the first time, start with the four industry-priority standards. Nevada employers identified these as the most common gaps in new hire readiness:</p>
+<ul>
+  <li>1.1.1 Positive Work Ethic</li>
+  <li>1.1.3 Teamwork</li>
+  <li>1.1.4 Self-Representation</li>
+  <li>1.2.1 Speaking &amp; Listening</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2>Part 5 — Grading and credit: your options</h2>
+
+<p>All modules in this course are published with discussions and exit tickets set to <strong>ungraded by default</strong>. This is intentional — every teacher's gradebook is structured differently, and no point value should be baked in that you then have to undo.</p>
+
+<p>You have three options for how to handle credit. Choose one and apply it consistently, or mix approaches across standards.</p>
+
+<div class="grade-option">
+  <div class="opt-header">
+    <div class="opt-badge">Option A</div>
+    <div class="opt-title">Grade individual discussions on a per-module basis</div>
+  </div>
+  <div class="opt-body">
+    Turn any discussion into a graded assignment directly in Canvas. Best for teachers who want granular tracking of student engagement across standards.
+  </div>
+  <ol class="opt-steps">
+    <li>Open the Discussion in Canvas</li>
+    <li>Click <strong>Edit</strong></li>
+    <li>Check the <strong>Graded</strong> box</li>
+    <li>Set your point value (5–10 pts recommended for a discussion exit ticket)</li>
+    <li>Add a due date if needed</li>
+    <li>Click <strong>Save</strong></li>
+  </ol>
+  <div class="opt-body" style="margin-top:10px;">
+    <strong>Best for:</strong> Teachers who assign WRS modules regularly and want them reflected in the gradebook. Works well with a simple completion rubric: full points for a substantive post + one reply, partial for post only, zero for nothing.
+  </div>
+</div>
+
+<div class="grade-option">
+  <div class="opt-header">
+    <div class="opt-badge">Option B</div>
+    <div class="opt-title">Use a single external assignment as a reflection log</div>
+  </div>
+  <div class="opt-body">
+    Create one Canvas Assignment — something like <em>WRS Reflection Log</em> — worth a set number of points. Students submit written responses from multiple module exit tickets into that one assignment over time as a running document. You grade it periodically or at the end of a grading period.
+  </div>
+  <ol class="opt-steps">
+    <li>Go to <strong>Assignments</strong> → <strong>+ Assignment</strong></li>
+    <li>Name it: <em>WRS Reflection Log</em></li>
+    <li>Set points to whatever fits your gradebook (50–100 pts for a semester-long log)</li>
+    <li>Set submission type to <strong>Text Entry</strong> or <strong>File Upload</strong></li>
+    <li>In the instructions, tell students to paste their exit ticket responses here as they complete modules throughout the semester</li>
+  </ol>
+  <div class="opt-body" style="margin-top:10px;">
+    <strong>Best for:</strong> Teachers who use WRS modules as supplemental content and want one clean gradebook entry rather than a discussion grade for every standard. Reduces gradebook clutter significantly.
+  </div>
+</div>
+
+<div class="grade-option">
+  <div class="opt-header">
+    <div class="opt-badge">Option C</div>
+    <div class="opt-title">No Canvas grade — assess through the WRS assessment itself</div>
+  </div>
+  <div class="opt-body">
+    Use the modules purely as instructional and exam prep resources. Don't grade anything in Canvas. The WRS assessment at the end of the program is the summative measure — the modules are the preparation for it.
+  </div>
+  <div class="opt-body" style="margin-top:10px;">
+    <strong>Best for:</strong> Teachers who use WRS modules as bell ringers or quick reviews and don't want to add to their grading load. Also appropriate when WRS instruction is embedded in pathway content rather than treated as a standalone grade.
+  </div>
+</div>
+
+<div class="info-box">
+  <strong>Note on the interactive quizzes:</strong> The knowledge check quizzes built into each module give students instant feedback and a score, but they do not report to the Canvas gradebook. They are formative — designed to help students self-assess and review before the WRS assessment, not to generate a grade. If you want quiz scores in your gradebook, build a parallel Canvas Quiz using the New Quizzes engine with the same questions.
+</div>
+
+<!-- ============================================================ -->
+<h2>Part 6 — Technical notes</h2>
+
+<h3>How the modules work in Canvas</h3>
+<p>Each module is an HTML file hosted on GitHub Pages and embedded in a Canvas Page via iframe. This means:</p>
+<ul>
+  <li>All interactivity — quizzes, drag-and-drop activities, scenario accordions — works natively without any plugins or LTI tools</li>
+  <li>Modules work on desktop and mobile</li>
+  <li>No student login is required to access the interactive content</li>
+  <li>The URLs are stable — they will not change or break unless the GitHub repository is modified</li>
+</ul>
+
+<h3>If a module isn't displaying correctly</h3>
+<ul>
+  <li>Try a different browser — Chrome is most reliable</li>
+  <li>Check that you're viewing the Canvas Page in student view, not edit mode</li>
+  <li>If the iframe shows a blank space, your institution's Canvas security settings may be blocking external iframes — contact your Canvas admin</li>
+</ul>
+
+<h3>Requesting updates or corrections</h3>
+<p>All modules are maintained centrally. If you find an error, a broken link, or content that needs updating, contact your CTE coordinator. Do not edit the Canvas Pages directly — changes need to be made at the source file level to stay consistent across the course.</p>
+
+<!-- ============================================================ -->
+<h2>Part 7 — What's coming</h2>
+
+<table>
+  <tr><th>Item</th><th>Status</th></tr>
+  <tr><td>1.1.1 Positive Work Ethic — all 5 modules</td><td>✅ Complete</td></tr>
+  <tr><td>1.1.3 Teamwork — all 5 modules</td><td>🔄 In progress</td></tr>
+  <tr><td>1.1.4 Self-Representation — all 5 modules</td><td>🔄 In progress</td></tr>
+  <tr><td>1.2.1 Speaking &amp; Listening — all 5 modules</td><td>🔄 In progress</td></tr>
+  <tr><td>Remaining 17 standards — all 5 modules each</td><td>📋 Queued</td></tr>
+  <tr><td>3.2.1 AI in the Workplace — capstone unit</td><td>📋 Queued</td></tr>
+  <tr><td>Course intro page &amp; teacher navigation guide</td><td>📋 Queued</td></tr>
+</table>
+
+<div class="footer">
+  WRS Canvas Course — Syllabus &amp; Teacher Guide | Nevada CTE | Internal use only | Updated June 2026
+</div>
+
+</body>
+</html>
