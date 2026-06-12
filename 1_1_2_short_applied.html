@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.1.2 Integrity — Short Module | Applied</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px 16px 40px; color: #1a1a1a; line-height: 1.6; }
+  h1 { font-size: 22px; font-weight: bold; margin-bottom: 4px; }
+  .meta { font-size: 13px; color: #666; margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .badge { background: #EEEDFE; color: #3C3489; font-size: 12px; padding: 3px 10px; border-radius: 20px; font-weight: bold; }
+  .badge-tier { background: #f0f0f0; color: #444; font-size: 12px; padding: 3px 10px; border-radius: 20px; }
+  h2 { font-size: 17px; font-weight: bold; margin: 28px 0 8px; border-left: 4px solid #534AB7; padding-left: 10px; }
+  p { margin-bottom: 12px; }
+  ul { margin: 0 0 12px 20px; }
+  li { margin-bottom: 6px; }
+  .exam-tip-toggle { width: 100%; background: #fff8e1; border: none; border-left: 4px solid #EF9F27; border-radius: 0 8px 0 0; padding: 13px 16px; text-align: left; cursor: pointer; font-size: 14px; font-weight: bold; color: #1a1a1a; display: flex; justify-content: space-between; align-items: center; margin: 16px 0 0; transition: background .2s; }
+  .exam-tip-toggle:hover { background: #fef3c7; }
+  .exam-tip-toggle .arrow { font-size: 18px; transition: transform .25s; color: #EF9F27; }
+  .exam-tip-toggle.open .arrow { transform: rotate(90deg); }
+  .exam-tip-body { display: none; background: #fff8e1; border-left: 4px solid #EF9F27; border-radius: 0 0 8px 0; padding: 0 16px 14px; margin-bottom: 16px; font-size: 13px; }
+  .exam-tip-body.open { display: block; }
+  .scenario-box { background: #f5f5f5; border-left: 4px solid #534AB7; border-radius: 0 8px 8px 0; margin: 16px 0; overflow: hidden; }
+  .scenario-toggle { width: 100%; background: #f5f5f5; border: none; padding: 13px 16px; text-align: left; cursor: pointer; font-size: 14px; font-weight: bold; color: #1a1a1a; display: flex; justify-content: space-between; align-items: center; }
+  .scenario-toggle:hover { background: #eeeeee; }
+  .scenario-toggle .arrow { font-size: 18px; transition: transform .25s; color: #534AB7; }
+  .scenario-toggle.open .arrow { transform: rotate(90deg); }
+  .scenario-toggle .tag { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: .05em; color: #534AB7; margin-right: 10px; }
+  .scenario-content { padding: 0 16px 10px; font-size: 14px; }
+  .scenario-body-outer { display: none; }
+  .scenario-body-outer.open { display: block; }
+  .reveal-btn { margin: 0 16px 14px; background: #534AB7; color: #fff; border: none; border-radius: 8px; padding: 9px 20px; font-size: 13px; font-weight: bold; cursor: pointer; display: inline-block; }
+  .answer-reveal { display: none; background: #EEEDFE; border-radius: 6px; padding: 10px 14px; margin: 0 16px 14px; font-size: 13px; color: #3C3489; }
+  .answer-reveal.show { display: block; }
+  .quiz-q { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 16px 18px; margin-bottom: 16px; }
+  .q-number { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: .05em; color: #888; margin-bottom: 6px; }
+  .q-text { font-weight: bold; font-size: 14px; margin-bottom: 12px; }
+  .option-btn { display: block; width: 100%; text-align: left; background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; padding: 10px 14px; margin-bottom: 8px; font-size: 14px; cursor: pointer; transition: background .15s, border-color .15s; }
+  .option-btn:last-of-type { margin-bottom: 0; }
+  .option-btn:hover:not(:disabled) { background: #EEEDFE; border-color: #534AB7; }
+  .option-btn.correct { background: #EEEDFE; border-color: #534AB7; color: #3C3489; font-weight: bold; }
+  .option-btn.incorrect { background: #FEE2E2; border-color: #DC2626; color: #7f1d1d; }
+  .option-btn:disabled { cursor: default; }
+  .feedback { font-size: 13px; margin-top: 10px; padding: 8px 12px; border-radius: 6px; display: none; }
+  .feedback.show-correct { background: #EEEDFE; color: #3C3489; display: block; }
+  .feedback.show-incorrect { background: #fee2e2; color: #7f1d1d; display: block; }
+  .check-btn { display: block; margin: 16px auto 0; background: #534AB7; color: #fff; border: none; border-radius: 8px; padding: 12px 32px; font-size: 15px; font-weight: bold; cursor: pointer; }
+  .check-btn:hover { background: #3f38a3; }
+  .reset-btn { display: none; margin: 10px auto 0; background: #fff; color: #534AB7; border: 2px solid #534AB7; border-radius: 8px; padding: 10px 28px; font-size: 14px; font-weight: bold; cursor: pointer; }
+  .score-box { background: #EEEDFE; border-radius: 10px; padding: 18px 20px; margin-top: 14px; text-align: center; display: none; }
+  .score-num { font-size: 36px; font-weight: bold; color: #3C3489; }
+  .score-label { font-size: 14px; color: #3C3489; }
+  .score-msg { font-size: 13px; color: #534AB7; margin-top: 6px; }
+  .extender-box { background: #f9f9ff; border: 1.5px solid #534AB7; border-radius: 10px; padding: 16px 18px; margin-top: 20px; }
+  .extender-label { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: .05em; color: #534AB7; margin-bottom: 8px; }
+  .ext-reveal-btn { margin-top: 10px; background: #534AB7; color: #fff; border: none; border-radius: 8px; padding: 9px 20px; font-size: 13px; font-weight: bold; cursor: pointer; }
+  .ext-answer { display: none; background: #EEEDFE; color: #3C3489; font-size: 13px; padding: 10px 12px; border-radius: 6px; margin-top: 10px; }
+  .reflection { background: #EEEDFE; border-radius: 8px; padding: 16px 18px; margin: 28px 0 16px; }
+  .reflection .label { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: .05em; color: #3C3489; margin-bottom: 6px; }
+  .footer { font-size: 12px; color: #888; border-top: 1px solid #eee; margin-top: 32px; padding-top: 12px; }
+</style>
+</head>
+<body>
+
+<h1>Integrity: when the right call costs you something</h1>
+<div class="meta">
+  <span class="badge">Applied</span>
+  <span class="badge-tier">Short Module · 8–12 min</span>
+  <span class="badge-tier">Standard 1.1.2 — Integrity</span>
+  <span class="badge-tier">Use: Opener / closer / exam prep</span>
+</div>
+
+<p>Applied integrity isn't about knowing that honesty matters — you already know that. It's about navigating the situations where honesty is harder: where loyalty, convenience, self-protection, or authority push against it. This module focuses on those harder cases.</p>
+
+<button class="exam-tip-toggle" id="tipBtn" onclick="toggleTip()" aria-expanded="false">
+  <span>⚠ Exam pattern to know — click to expand</span>
+  <span class="arrow">▶</span>
+</button>
+<div class="exam-tip-body" id="tipBody">
+  <p style="padding-top:10px;">Applied integrity questions often involve a multi-step situation: a mistake is made, and then a choice about whether to disclose it. Or a coworker or supervisor pressures you to do something questionable. The correct answer almost always involves transparency and raising concerns through proper channels — not compliance with an unethical request, and not unilateral action that bypasses the chain of command. Watch for options that frame silence or complicity as loyalty.</p>
+</div>
+
+<h2>The judgment layer</h2>
+<p>Applied integrity scenarios tend to involve one of three tensions:</p>
+<ul>
+  <li><strong>Loyalty vs. honesty</strong> — a colleague asks you to cover for them, stay quiet about something, or vouch for something untrue.</li>
+  <li><strong>Self-protection vs. accountability</strong> — you made a mistake. Disclosing it will be uncomfortable. Staying quiet might let it slide.</li>
+  <li><strong>Authority vs. ethics</strong> — a supervisor instructs you to do something you know is wrong. Following orders feels safer than pushing back.</li>
+</ul>
+<p>In all three cases, the professional standard is the same: be transparent, raise concerns through the appropriate channel, and don't let social pressure override your ethical judgment.</p>
+
+<h2>Exam-style scenario — try it first</h2>
+<div class="scenario-box">
+  <button class="scenario-toggle" id="scBtn" onclick="toggleScenario()" aria-expanded="false">
+    <span><span class="tag">Scenario</span> The timeline problem</span>
+    <span class="arrow">▶</span>
+  </button>
+  <div class="scenario-body-outer" id="scBody">
+    <div class="scenario-content">
+      <p style="padding-top:10px;">Avery is a team lead. She realizes a report she submitted last week contained an error — a significant one that could affect the project's direction. Her supervisor hasn't noticed yet. Avery could quietly correct the error in the next version and say nothing. Or she could tell her supervisor now, explain the mistake, and deal with the fallout.</p>
+      <p><strong>What should Avery do?</strong></p>
+    </div>
+    <button class="reveal-btn" onclick="revealAnswer()">Reveal professional response</button>
+    <div class="answer-reveal" id="answerReveal">
+      <strong>Avery should disclose the error now.</strong> Her supervisor is making decisions based on that report. Staying silent means her supervisor continues operating on bad information — which is an integrity failure that compounds the original mistake. The professional move is to bring it to her supervisor directly: "I found an error in the report I submitted. Here's what it was and here's the corrected version." That's accountability. Hoping no one notices is not.
+    </div>
+  </div>
+</div>
+
+<h2>Knowledge check</h2>
+
+<div id="quiz">
+  <div class="quiz-q">
+    <div class="q-number">Question 1 of 3</div>
+    <div class="q-text">Your supervisor asks you to skip a required safety documentation step "just this once" to save time. You should:</div>
+    <button class="option-btn" data-q="1" data-val="a">A. Comply — it's a supervisor's call and only happens once</button>
+    <button class="option-btn" data-q="1" data-val="b">B. Raise the concern with the supervisor before skipping the step</button>
+    <button class="option-btn" data-q="1" data-val="c">C. Skip the step but document privately that you were told to</button>
+    <button class="option-btn" data-q="1" data-val="d">D. Do the documentation anyway without telling your supervisor</button>
+    <div class="feedback" id="fb1"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-number">Question 2 of 3</div>
+    <div class="q-text">A coworker admits they've been reporting higher sales numbers than their actual results. They ask you not to say anything because they're worried about losing their job. You should:</div>
+    <button class="option-btn" data-q="2" data-val="a">A. Stay silent — it's not your job to monitor your coworker</button>
+    <button class="option-btn" data-q="2" data-val="b">B. Strongly encourage your coworker to self-report, and consider escalating if they don't</button>
+    <button class="option-btn" data-q="2" data-val="c">C. Report it to management immediately, regardless of the impact on your coworker</button>
+    <button class="option-btn" data-q="2" data-val="d">D. Offer to help them cover it up until the situation stabilizes</button>
+    <div class="feedback" id="fb2"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-number">Question 3 of 3</div>
+    <div class="q-text">Which of the following situations most clearly represents an "error of omission" — a form of dishonesty through silence?</div>
+    <button class="option-btn" data-q="3" data-val="a">A. Forgetting to reply to an email from a coworker</button>
+    <button class="option-btn" data-q="3" data-val="b">B. Not mentioning to your supervisor that a project you're working on has a serious problem</button>
+    <button class="option-btn" data-q="3" data-val="c">C. Not volunteering your opinion in a meeting where no one asked for it</button>
+    <button class="option-btn" data-q="3" data-val="d">D. Leaving out non-essential background in a summary report</button>
+    <div class="feedback" id="fb3"></div>
+  </div>
+
+  <button class="check-btn" id="checkBtn" onclick="checkAnswers()">Check my answers</button>
+  <button class="reset-btn" id="resetBtn" onclick="resetQuiz()">Try again</button>
+  <div class="score-box" id="scoreBox">
+    <div class="score-num" id="scoreNum"></div>
+    <div class="score-label" id="scoreLabel"></div>
+    <div class="score-msg" id="scoreMsg"></div>
+  </div>
+
+  <div class="extender-box">
+    <div class="extender-label">⭐ Optional extender — if you finish early</div>
+    <div class="q-text" style="font-size:14px;">At what point does protecting a coworker become being complicit in their dishonesty? Where's the line, and how would you explain it to the coworker when you decline to help?</div>
+    <button class="ext-reveal-btn" onclick="revealExtender()">Reveal answer</button>
+    <div class="ext-answer" id="extAnswer">
+      <strong>The line is active participation.</strong> Staying quiet when you observe something questionable is a gray area. Actively lying, vouching for false information, or helping someone cover up a problem is complicity — you're now part of the deception. To the coworker: "I'm not going to report you, but I also can't back you up if anyone asks. You need to get ahead of this yourself." That's not betrayal — that's the honest version of looking out for someone.
+    </div>
+  </div>
+</div>
+
+<h2>Self-check</h2>
+<div class="reflection">
+  <div class="label">💬 Canvas Discussion — quick write, 2–3 sentences</div>
+  <p>Describe a situation — real or hypothetical — where someone you know chose self-protection over transparency. What did it cost them, or what might it cost them eventually?</p>
+  <p style="font-size:12px;color:#3C3489;margin-bottom:0;"><em>Post your response in the Canvas Discussion board for this module.</em></p>
+</div>
+<div class="footer">Standard 1.1.2 — Integrity | Short Module | Applied | WRS Canvas Course</div>
+
+<script>
+  function toggleTip() {
+    const btn = document.getElementById('tipBtn'), body = document.getElementById('tipBody');
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen); btn.classList.toggle('open', !isOpen); btn.setAttribute('aria-expanded', !isOpen);
+  }
+  function toggleScenario() {
+    const btn = document.getElementById('scBtn'), body = document.getElementById('scBody');
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen); btn.classList.toggle('open', !isOpen); btn.setAttribute('aria-expanded', !isOpen);
+  }
+  function revealAnswer() { document.getElementById('answerReveal').classList.add('show'); }
+  function revealExtender() { document.getElementById('extAnswer').style.display = 'block'; }
+
+  const answers = { 1: 'b', 2: 'b', 3: 'b' };
+  const explanations = {
+    1: { correct: 'Correct! Raising the concern with your supervisor before skipping the step is the professional move. You\'re not refusing — you\'re flagging a problem and giving them the chance to reconsider. If they insist, the accountability shifts more to them.', incorrect: { a: '"Just this once" and "supervisor\'s call" are common rationalizations. Required steps exist for a reason. Your compliance still makes you part of the decision.', c: 'Private documentation is not the same as raising the issue. You\'re still skipping the step.', d: 'Going around your supervisor without a conversation creates its own problems. Raise the concern first.' } },
+    2: { correct: 'Correct! Encouraging self-reporting is the appropriate first step — it gives the coworker a chance to correct the situation. If they don\'t, staying silent makes you complicit in ongoing fraud. Protect the relationship by being honest: "I can\'t cover for this, but you should deal with it now rather than later."', incorrect: { a: 'Staying silent when you know about ongoing falsification is a form of complicity. Your silence enables the behavior to continue.', c: 'Immediate reporting may be warranted eventually, but giving your coworker a chance to self-report is the more measured first step.', d: 'Helping cover up the problem puts your own integrity directly at risk — you\'re now part of the fraud.' } },
+    3: { correct: 'Correct! Not disclosing a known problem to someone who needs that information to make decisions is an error of omission — silence that creates a false impression of the situation.', incorrect: { a: 'Forgetting to reply is an oversight, not an intentional omission. The concept involves choosing not to share something relevant.', c: 'Not volunteering opinions when no one asked is not dishonest. There\'s no obligation to share every thought.', d: 'Summarizing accurately without non-essential detail is normal practice, not omission in the ethical sense.' } }
+  };
+  const selections = {};
+
+  document.querySelectorAll('.option-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const q = this.dataset.q;
+      document.querySelectorAll(`.option-btn[data-q="${q}"]`).forEach(b => { b.style.background = ''; b.style.borderColor = ''; });
+      this.style.background = '#EEEDFE'; this.style.borderColor = '#534AB7';
+      selections[q] = this.dataset.val;
+    });
+  });
+
+  function checkAnswers() {
+    const total = Object.keys(answers).length;
+    for (let q in answers) { if (!selections[q]) { alert('Please answer all questions before checking.'); return; } }
+    let score = 0;
+    for (let q in answers) {
+      const isCorrect = selections[q] === answers[q];
+      if (isCorrect) score++;
+      const fb = document.getElementById('fb' + q);
+      fb.textContent = isCorrect ? explanations[q].correct : (explanations[q].incorrect[selections[q]] || 'Not quite. Review the content above.');
+      fb.className = 'feedback ' + (isCorrect ? 'show-correct' : 'show-incorrect');
+      document.querySelectorAll(`.option-btn[data-q="${q}"]`).forEach(btn => {
+        btn.disabled = true; btn.style.background = ''; btn.style.borderColor = '';
+        if (btn.dataset.val === answers[q]) btn.classList.add('correct');
+        else if (btn.dataset.val === selections[q] && !isCorrect) btn.classList.add('incorrect');
+      });
+    }
+    const msgs = { 3: 'Exam-ready on applied integrity scenarios.', 2: 'Good — review the feedback on the one you missed.', 1: 'Revisit the judgment layer above, then retry.', 0: 'Re-read the content and exam tip before retrying.' };
+    document.getElementById('scoreNum').textContent = `${score}/${total}`;
+    document.getElementById('scoreLabel').textContent = score === total ? 'Exam-ready!' : score >= 2 ? 'Good work!' : 'Keep reviewing.';
+    document.getElementById('scoreMsg').textContent = msgs[score];
+    document.getElementById('scoreBox').style.display = 'block';
+    document.getElementById('checkBtn').style.display = 'none';
+    document.getElementById('resetBtn').style.display = 'block';
+  }
+
+  function resetQuiz() {
+    Object.keys(selections).forEach(k => delete selections[k]);
+    document.querySelectorAll('.option-btn').forEach(btn => { btn.disabled = false; btn.className = 'option-btn'; btn.style.background = ''; btn.style.borderColor = ''; });
+    document.querySelectorAll('.feedback').forEach(fb => { fb.className = 'feedback'; fb.textContent = ''; });
+    document.getElementById('scoreBox').style.display = 'none';
+    document.getElementById('checkBtn').style.display = 'block';
+    document.getElementById('resetBtn').style.display = 'none';
+  }
+</script>
+</body>
+</html>

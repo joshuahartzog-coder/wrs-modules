@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.1.2 Integrity — Sub Lesson</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px 16px 40px; color: #1a1a1a; line-height: 1.6; }
+  h1 { font-size: 22px; font-weight: bold; margin-bottom: 4px; }
+  .meta { font-size: 13px; color: #666; margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .badge { background: #FAEEDA; color: #633806; font-size: 12px; padding: 3px 10px; border-radius: 20px; font-weight: bold; }
+  .badge-tier { background: #f0f0f0; color: #444; font-size: 12px; padding: 3px 10px; border-radius: 20px; }
+  h2 { font-size: 17px; font-weight: bold; margin: 28px 0 8px; border-left: 4px solid #EF9F27; padding-left: 10px; }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 12px 20px; }
+  li { margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  th { background: #f0f0f0; text-align: left; padding: 8px 10px; }
+  td { padding: 8px 10px; border-bottom: 1px solid #eee; vertical-align: top; }
+  .sub-box { background: #fff8e1; border: 2px solid #EF9F27; border-radius: 10px; padding: 18px 20px; margin-bottom: 28px; }
+  .sub-box .sub-label { font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: .06em; color: #633806; margin-bottom: 10px; }
+  .sub-box .time-grid { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: 13px; margin-bottom: 12px; }
+  .sub-box .time-grid .t { font-weight: bold; color: #633806; white-space: nowrap; }
+  .sub-box .time-grid .d { color: #444; }
+  .sub-box .sub-note { font-size: 13px; color: #633806; font-style: italic; margin: 8px 0 0; }
+  .callout { background: #fff8e1; border-left: 4px solid #EF9F27; padding: 12px 14px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; }
+  .talk-box { background: #f9faf5; border: 1.5px solid #EF9F27; border-radius: 8px; padding: 14px 16px; margin: 16px 0; }
+  .talk-box .talk-label { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: .05em; color: #633806; margin-bottom: 8px; }
+  .scenario-toggle { width: 100%; background: #f5f5f5; border: none; border-left: 4px solid #EF9F27; border-radius: 0 8px 0 0; padding: 13px 16px; text-align: left; cursor: pointer; font-size: 14px; font-weight: bold; color: #1a1a1a; display: flex; justify-content: space-between; align-items: center; margin: 10px 0 0; transition: background .2s; }
+  .scenario-toggle:hover { background: #ececec; }
+  .scenario-toggle .arrow { font-size: 18px; transition: transform .25s; color: #EF9F27; }
+  .scenario-toggle.open .arrow { transform: rotate(90deg); }
+  .scenario-toggle .tag { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: .05em; color: #888; margin-right: 10px; }
+  .scenario-body { display: none; background: #f5f5f5; border-left: 4px solid #EF9F27; border-radius: 0 0 8px 0; padding: 0 16px 14px; margin-bottom: 10px; font-size: 14px; }
+  .scenario-body.open { display: block; }
+  .quiz-q { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 16px 18px; margin-bottom: 16px; }
+  .q-number { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: .05em; color: #888; margin-bottom: 6px; }
+  .q-text { font-weight: bold; font-size: 14px; margin-bottom: 12px; }
+  .option-btn { display: block; width: 100%; text-align: left; background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; padding: 10px 14px; margin-bottom: 8px; font-size: 14px; cursor: pointer; transition: background .15s, border-color .15s; }
+  .option-btn:last-of-type { margin-bottom: 0; }
+  .option-btn:hover:not(:disabled) { background: #fff8e1; border-color: #EF9F27; }
+  .option-btn.correct { background: #fff8e1; border-color: #EF9F27; color: #633806; font-weight: bold; }
+  .option-btn.incorrect { background: #FEE2E2; border-color: #DC2626; color: #7f1d1d; }
+  .option-btn:disabled { cursor: default; }
+  .feedback { font-size: 13px; margin-top: 10px; padding: 8px 12px; border-radius: 6px; display: none; }
+  .feedback.show-correct { background: #fff8e1; color: #633806; display: block; }
+  .feedback.show-incorrect { background: #fee2e2; color: #7f1d1d; display: block; }
+  .check-btn { display: block; margin: 4px auto 0; background: #EF9F27; color: #fff; border: none; border-radius: 8px; padding: 12px 32px; font-size: 15px; font-weight: bold; cursor: pointer; }
+  .check-btn:hover { background: #d4891f; }
+  .reset-btn { display: none; margin: 10px auto 0; background: #fff; color: #EF9F27; border: 2px solid #EF9F27; border-radius: 8px; padding: 10px 28px; font-size: 14px; font-weight: bold; cursor: pointer; }
+  .score-box { background: #fff8e1; border-radius: 10px; padding: 18px 20px; margin-top: 14px; text-align: center; display: none; }
+  .score-num { font-size: 36px; font-weight: bold; color: #633806; }
+  .score-label { font-size: 14px; color: #633806; }
+  .score-msg { font-size: 13px; color: #7a4a10; margin-top: 6px; }
+  .reflection { background: #EEEDFE; border-radius: 8px; padding: 16px 18px; margin: 28px 0 16px; }
+  .reflection .label { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: .05em; color: #3C3489; margin-bottom: 6px; }
+  .footer { font-size: 12px; color: #888; border-top: 1px solid #eee; margin-top: 32px; padding-top: 12px; }
+</style>
+</head>
+<body>
+
+<h1>Integrity: doing the right thing when it costs you something</h1>
+<div class="meta">
+  <span class="badge">Sub Lesson</span>
+  <span class="badge-tier">75–90 min</span>
+  <span class="badge-tier">Standard 1.1.2 — Integrity</span>
+  <span class="badge-tier">Foundational + Applied</span>
+</div>
+
+<div class="sub-box">
+  <div class="sub-label">📋 Substitute teacher instructions — please read before class begins</div>
+  <p style="font-size:14px;margin-bottom:12px;">Welcome and thank you for being here. This is a self-contained lesson — students work through the page on their own devices with your facilitation. Everything they need is on this page. Your role is to keep the class on pace, facilitate the discussions, and make sure students submit their exit ticket before the period ends.</p>
+  <div class="time-grid">
+    <span class="t">0–5 min</span><span class="d">Introduce the lesson. Tell students they're working on Workplace Readiness Skills — specifically what professional integrity means and why employers say it's one of the hardest things to find in new hires. Ask students to open this page on their devices.</span>
+    <span class="t">5–15 min</span><span class="d">Play the video as a class (see below). After it ends, ask: "What's one thing from this video you want to push back on, or that surprised you?"</span>
+    <span class="t">15–30 min</span><span class="d">Students read the content sections and work through the scenario accordions independently. Encourage them to think through what they would actually do — not just what sounds right.</span>
+    <span class="t">30–50 min</span><span class="d">Class discussion — use the Talk &amp; Discuss prompts built into the page. Call on students to share. You don't need to have the answers — your job is to keep the conversation going and let students work through the reasoning.</span>
+    <span class="t">50–70 min</span><span class="d">Students complete the knowledge check quiz independently. Tell them to read the feedback on any wrong answers before moving on.</span>
+    <span class="t">70–85 min</span><span class="d">Students write and post their exit ticket to the Canvas Discussion. Remind them to reply to at least one classmate.</span>
+    <span class="t">85–90 min</span><span class="d">Wrap up. Ask 2–3 students to share their exit ticket response with the class.</span>
+  </div>
+  <p class="sub-note">If students finish early: the optional extender scenario at the end of the quiz section will keep early finishers engaged. If the class runs short on time: the quiz can be assigned as homework and the exit ticket moved to the next class period.</p>
+</div>
+
+<h2>▶ Opening video — watch as a class (10 min)</h2>
+<p style="font-size:13px;color:#555;margin-bottom:8px;">Watch the full video, then discuss: What surprised you? What do you want to push back on?</p>
+<a href="https://www.youtube.com/watch?v=9nYqZl8J7KY" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:#FF0000;color:#fff;text-decoration:none;font-weight:bold;font-size:15px;padding:14px 24px;border-radius:8px;margin:16px 0 8px;">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M19.59 7.01a2.49 2.49 0 0 0-1.75-1.76C16.25 5 12 5 12 5s-4.25 0-5.84.25A2.49 2.49 0 0 0 4.41 7.01 26.1 26.1 0 0 0 4 12a26.1 26.1 0 0 0 .41 4.99 2.49 2.49 0 0 0 1.75 1.76C7.75 19 12 19 12 19s4.25 0 5.84-.25a2.49 2.49 0 0 0 1.75-1.76A26.1 26.1 0 0 0 20 12a26.1 26.1 0 0 0-.41-4.99zM10 15V9l5.2 3-5.2 3z"/></svg>
+  Watch on YouTube — Integrity in the Workplace
+</a>
+<p style="font-size:12px;color:#888;margin:4px 0 24px;">Opens in a new tab · approx. 5–8 min · Overview of professional integrity with workplace examples. Play on the classroom projector for the full class.</p>
+
+<h2>What integrity actually means at work</h2>
+<p>Most people think of integrity as simply "being honest." In the workplace, it's broader than that — and harder. Professional integrity means:</p>
+<ul>
+  <li><strong>Honesty</strong> — telling the truth even when it's uncomfortable or makes you look bad</li>
+  <li><strong>Accountability</strong> — owning your mistakes rather than deflecting or minimizing</li>
+  <li><strong>Ethical decision-making</strong> — choosing the right action over the convenient one, especially without supervision</li>
+  <li><strong>Trustworthiness</strong> — doing what you say you'll do; being reliable</li>
+  <li><strong>Confidentiality</strong> — protecting information that isn't yours to share</li>
+</ul>
+
+<div class="callout">
+  <strong>Why it matters:</strong> Employers consistently say they can train new hires on technical skills but can't teach them to be honest. An employee who can be trusted to tell the truth when something goes wrong — and to fix it — is far more valuable than a technically skilled employee who hides problems.
+</div>
+
+<h2>The hard part: when integrity costs you something</h2>
+<p>Integrity is easy when doing the right thing is also the convenient thing. The real test is when it isn't:</p>
+<ul>
+  <li>You made a mistake. Admitting it will be uncomfortable.</li>
+  <li>A coworker asks you to cover for them. Saying no might damage the friendship.</li>
+  <li>A supervisor instructs you to do something you know isn't right. Pushing back might create conflict.</li>
+  <li>You know something that should be reported. Reporting it feels like betrayal.</li>
+</ul>
+<p>In each of these cases, the professional standard is the same: be transparent, raise concerns through appropriate channels, and don't let social pressure override your ethical judgment.</p>
+
+<button class="scenario-toggle" id="btn-1" onclick="toggleScenario('1')" aria-expanded="false">
+  <span><span class="tag">Scenario</span> The team's mistake</span>
+  <span class="arrow">▶</span>
+</button>
+<div class="scenario-body" id="body-1">
+  <p style="padding-top:10px;"><strong>Jaylen</strong> is on a small team that submitted a proposal with an error — an error that Jaylen noticed but didn't flag because he didn't want to slow the process down. The error is now causing problems for the client. His supervisor is trying to figure out what went wrong.</p>
+  <p><strong>What should Jaylen do now?</strong> What are his options, and what are the professional and personal costs of each?</p>
+  <p><strong>Professional answer:</strong> Jaylen needs to come forward. He noticed the error and said nothing — that's an integrity failure, and staying silent now compounds it. The professional move is: "I saw the error before we submitted and didn't flag it. I should have. Here's what I think we can do to address it now." That conversation is hard. But a supervisor who finds out Jaylen knew and stayed quiet will trust him less than if Jaylen had come forward. Integrity means owning the full picture, including your role in what went wrong.</p>
+</div>
+
+<button class="scenario-toggle" id="btn-2" onclick="toggleScenario('2')" aria-expanded="false">
+  <span><span class="tag">Scenario</span> The cover request</span>
+  <span class="arrow">▶</span>
+</button>
+<div class="scenario-body" id="body-2">
+  <p style="padding-top:10px;"><strong>Sofia</strong> has been friends with her coworker Dani for two years. Dani asks Sofia to tell their supervisor that Dani was in the office for a full shift last Thursday — when Dani actually left two hours early without permission. Sofia wasn't there either, so she doesn't know for sure what happened. Dani says it's important and that she'll do the same for Sofia someday.</p>
+  <p><strong>What should Sofia do?</strong></p>
+  <p><strong>Professional answer:</strong> Sofia should decline. Vouching for Dani's whereabouts when she doesn't know what happened is dishonest — and it puts Sofia's own integrity at risk. The right response to Dani is direct: "I can't tell your supervisor I saw you there when I didn't. That's not something I can do." Real friendship doesn't ask someone to compromise their professional reputation. Sofia can be sympathetic without being complicit.</p>
+</div>
+
+<div class="talk-box">
+  <div class="talk-label">💬 Talk &amp; Discuss</div>
+  <p>Is there a difference between loyalty and complicity? At what point does protecting a coworker cross into participating in their dishonesty? How would you explain that line to a friend who was asking you to help them out?</p>
+</div>
+
+<h2>Knowledge check</h2>
+
+<div id="quiz">
+  <div class="quiz-q">
+    <div class="q-number">Question 1 of 5</div>
+    <div class="q-text">An employee makes an error on a project and hopes no one notices. When the supervisor asks what happened, they say it must have been a data issue. This is best described as:</div>
+    <button class="option-btn" data-q="1" data-val="a">A. A reasonable response given the pressure they were under</button>
+    <button class="option-btn" data-q="1" data-val="b">B. A work ethic failure — they should have caught the error earlier</button>
+    <button class="option-btn" data-q="1" data-val="c">C. An integrity failure — deflecting blame instead of owning the mistake</button>
+    <button class="option-btn" data-q="1" data-val="d">D. Acceptable if the data issue was a contributing factor</button>
+    <div class="feedback" id="fb1"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-number">Question 2 of 5</div>
+    <div class="q-text">An employee overhears confidential business information about an upcoming restructuring. A close friend outside the company asks if the rumors are true. The employee should:</div>
+    <button class="option-btn" data-q="2" data-val="a">A. Share what they know — it's just a friend, not a competitor</button>
+    <button class="option-btn" data-q="2" data-val="b">B. Decline to share anything they learned at work that hasn't been made public</button>
+    <button class="option-btn" data-q="2" data-val="c">C. Confirm it's true but ask the friend not to tell anyone</button>
+    <button class="option-btn" data-q="2" data-val="d">D. Say they don't know anything, to avoid the conversation</button>
+    <div class="feedback" id="fb2"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-number">Question 3 of 5</div>
+    <div class="q-text">A supervisor tells an employee to skip a required quality check step to speed up production. The employee's most professional first response is to:</div>
+    <button class="option-btn" data-q="3" data-val="a">A. Comply — the supervisor is responsible for the decision</button>
+    <button class="option-btn" data-q="3" data-val="b">B. Skip the step but keep a private record of being told to do so</button>
+    <button class="option-btn" data-q="3" data-val="c">C. Raise the concern with the supervisor before skipping the step</button>
+    <button class="option-btn" data-q="3" data-val="d">D. Refuse entirely and report the supervisor to HR immediately</button>
+    <div class="feedback" id="fb3"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-number">Question 4 of 5</div>
+    <div class="q-text">Which of the following best describes professional accountability?</div>
+    <button class="option-btn" data-q="4" data-val="a">A. Apologizing sincerely when something goes wrong</button>
+    <button class="option-btn" data-q="4" data-val="b">B. Owning the outcome, explaining what happened, and committing to what you'll do differently</button>
+    <button class="option-btn" data-q="4" data-val="c">C. Making sure everyone knows you felt bad about the mistake</button>
+    <button class="option-btn" data-q="4" data-val="d">D. Identifying all the contributing factors so blame is distributed fairly</button>
+    <div class="feedback" id="fb4"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-number">Question 5 of 5</div>
+    <div class="q-text">An employee notices a coworker taking office supplies home regularly. They have not been asked to monitor their coworker. What is the most professional response?</div>
+    <button class="option-btn" data-q="5" data-val="a">A. Say nothing — it's not their job to police a coworker</button>
+    <button class="option-btn" data-q="5" data-val="b">B. Mention it to the coworker directly, and consider escalating if it continues</button>
+    <button class="option-btn" data-q="5" data-val="c">C. Report it to management immediately</button>
+    <button class="option-btn" data-q="5" data-val="d">D. Take note of it and bring it up only if asked</button>
+    <div class="feedback" id="fb5"></div>
+  </div>
+
+  <button class="check-btn" id="checkBtn" onclick="checkAnswers()">Check my answers</button>
+  <button class="reset-btn" id="resetBtn" onclick="resetQuiz()">Try again</button>
+  <div class="score-box" id="scoreBox">
+    <div class="score-num" id="scoreNum"></div>
+    <div class="score-label" id="scoreLabel"></div>
+    <div class="score-msg" id="scoreMsg"></div>
+  </div>
+</div>
+
+<h2>💬 Exit ticket — submit before you leave</h2>
+<div class="reflection">
+  <div class="label">💬 Canvas Discussion — submit before leaving class</div>
+  <p>Think of a time — real or realistic — when doing the right thing would have required courage or cost you something. What would the professional move look like, and what would it take to make that call? Write 3–5 sentences, then reply to one classmate.</p>
+  <p style="font-size:12px;color:#3C3489;margin-bottom:0;"><em>Post your response in the Canvas Discussion board for this module.</em></p>
+</div>
+<div class="footer">Standard 1.1.2 — Integrity | Sub Lesson | 75–90 min | WRS Canvas Course</div>
+
+<script>
+  function toggleScenario(id) {
+    const btn = document.getElementById('btn-' + id), body = document.getElementById('body-' + id);
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    btn.classList.toggle('open', !isOpen);
+    btn.setAttribute('aria-expanded', !isOpen);
+  }
+
+  const answers = { 1: 'c', 2: 'b', 3: 'c', 4: 'b', 5: 'b' };
+  const explanations = {
+    1: { correct: 'Correct! Deflecting blame for your own mistake — calling it a "data issue" when you know that\'s not the full story — is an integrity failure. The error itself may be forgivable; the deflection is harder to recover from.', incorrect: { a: 'Pressure doesn\'t justify dishonesty. Most integrity failures happen under pressure — that\'s exactly when the standard matters.', b: 'Missing the error earlier is a work ethic or skills issue. The integrity failure is in the deflection afterward.', d: 'Even if data was a contributing factor, claiming it was the cause when the real issue was your own error is misleading.' } },
+    2: { correct: 'Correct! Confidential business information stays confidential regardless of who is asking. "Just a friend" doesn\'t change your professional obligation. The right response is simple: "I can\'t share anything about internal business matters."', incorrect: { a: '"Just a friend" is not a professional exemption from confidentiality. Information shared at work isn\'t yours to distribute.', c: 'Sharing and asking them not to tell anyone doesn\'t undo the disclosure. You\'ve already violated the confidence.', d: 'Saying you don\'t know when you do is a lie. A cleaner response is "I can\'t share anything about internal business matters."' } },
+    3: { correct: 'Correct! Raise the concern directly with the supervisor before skipping the step. This gives them the chance to reconsider and ensures you\'ve flagged the issue. If they insist, accountability shifts more to them — but you\'ve fulfilled your professional obligation.', incorrect: { a: 'Compliance doesn\'t remove your responsibility. Required steps exist for a reason; "the supervisor told me to" is not a full defense.', b: 'A private record doesn\'t address the problem. The supervisor needs to know your concern before the decision is made.', d: 'Immediate escalation to HR may be appropriate in some contexts, but the first step is almost always the direct conversation with the supervisor.' } },
+    4: { correct: 'Correct! Real accountability is: own the outcome, explain clearly what happened, and commit to a specific change. That\'s the full picture — not just feeling bad, not distributing blame, but taking responsibility and moving toward a solution.', incorrect: { a: 'A sincere apology matters, but it\'s only one part of accountability. It doesn\'t describe what you\'re doing about it.', c: 'Communicating that you felt bad is not accountability. Accountability is behavioral, not emotional.', d: 'Distributing blame is the opposite of accountability. Accountability means you start with your own role — not everyone else\'s.' } },
+    5: { correct: 'Correct! A quiet, direct mention to the coworker is the proportionate first step — "I\'ve noticed you taking supplies home; just so you know, that\'s not okay." If it continues, escalation becomes appropriate. The value of the item doesn\'t change the principle.', incorrect: { a: 'Staying silent when you observe ongoing theft is a form of complicity. Your silence enables the behavior to continue.', c: 'Immediate reporting without speaking to the coworker first may be disproportionate for a first observation. A direct conversation gives them the chance to correct it.', d: '"Only if asked" keeps you passive in the face of something you know is wrong. Integrity is proactive, not contingent on being questioned.' } }
+  };
+  const selections = {};
+
+  document.querySelectorAll('.option-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const q = this.dataset.q;
+      document.querySelectorAll(`.option-btn[data-q="${q}"]`).forEach(b => { b.style.background = ''; b.style.borderColor = ''; });
+      this.style.background = '#fff8e1';
+      this.style.borderColor = '#EF9F27';
+      selections[q] = this.dataset.val;
+    });
+  });
+
+  function checkAnswers() {
+    const total = Object.keys(answers).length;
+    for (let q in answers) { if (!selections[q]) { alert('Please answer all questions before checking.'); return; } }
+    let score = 0;
+    for (let q in answers) {
+      const isCorrect = selections[q] === answers[q];
+      if (isCorrect) score++;
+      const fb = document.getElementById('fb' + q);
+      if (isCorrect) {
+        fb.textContent = explanations[q].correct;
+        fb.className = 'feedback show-correct';
+      } else {
+        fb.textContent = typeof explanations[q].incorrect === 'object' ? (explanations[q].incorrect[selections[q]] || 'Not quite. Review the content above.') : explanations[q].incorrect;
+        fb.className = 'feedback show-incorrect';
+      }
+      document.querySelectorAll(`.option-btn[data-q="${q}"]`).forEach(btn => {
+        btn.disabled = true;
+        btn.style.background = ''; btn.style.borderColor = '';
+        if (btn.dataset.val === answers[q]) btn.classList.add('correct');
+        else if (btn.dataset.val === selections[q] && !isCorrect) btn.classList.add('incorrect');
+      });
+    }
+    const msgs = {
+      5: 'Strong work. You understand what integrity looks like in practice — including the hard cases.',
+      4: 'Good — review the feedback on the one you missed.',
+      3: 'Getting there. Read the feedback on the questions you missed before trying again.',
+      2: 'Go back through the content above, then try again.',
+      1: 'Revisit the content above carefully before retrying.',
+      0: 'Start from the top and read carefully.'
+    };
+    document.getElementById('scoreNum').textContent = `${score}/${total}`;
+    document.getElementById('scoreLabel').textContent = score === total ? 'Perfect score!' : score >= 4 ? 'Good work!' : 'Keep reviewing.';
+    document.getElementById('scoreMsg').textContent = msgs[score];
+    document.getElementById('scoreBox').style.display = 'block';
+    document.getElementById('checkBtn').style.display = 'none';
+    document.getElementById('resetBtn').style.display = 'block';
+  }
+
+  function resetQuiz() {
+    Object.keys(selections).forEach(k => delete selections[k]);
+    document.querySelectorAll('.option-btn').forEach(btn => {
+      btn.disabled = false; btn.className = 'option-btn'; btn.style.background = ''; btn.style.borderColor = '';
+    });
+    document.querySelectorAll('.feedback').forEach(fb => { fb.className = 'feedback'; fb.textContent = ''; });
+    document.getElementById('scoreBox').style.display = 'none';
+    document.getElementById('checkBtn').style.display = 'block';
+    document.getElementById('resetBtn').style.display = 'none';
+  }
+</script>
+</body>
+</html>
