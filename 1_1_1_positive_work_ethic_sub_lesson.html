@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.1.1 Positive Work Ethic — Sub Lesson</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px 16px 40px; color: #1a1a1a; line-height: 1.6; }
+  h1 { font-size: 22px; font-weight: bold; margin-bottom: 4px; }
+  .meta { font-size: 13px; color: #666; margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .badge { background: #FAEEDA; color: #633806; font-size: 12px; padding: 3px 10px; border-radius: 20px; font-weight: bold; }
+  .badge-tier { background: #f0f0f0; color: #444; font-size: 12px; padding: 3px 10px; border-radius: 20px; }
+  h2 { font-size: 17px; font-weight: bold; margin: 28px 0 8px; border-left: 4px solid #EF9F27; padding-left: 10px; }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 12px 20px; }
+  li { margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  th { background: #f0f0f0; text-align: left; padding: 8px 10px; }
+  td { padding: 8px 10px; border-bottom: 1px solid #eee; vertical-align: top; }
+
+  /* Sub instructions box */
+  .sub-box { background: #fff8e1; border: 2px solid #EF9F27; border-radius: 10px; padding: 18px 20px; margin-bottom: 28px; }
+  .sub-box .sub-label { font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: .06em; color: #633806; margin-bottom: 10px; }
+  .sub-box h2 { border: none; padding: 0; margin: 0 0 10px; font-size: 16px; color: #633806; }
+  .sub-box .time-grid { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: 13px; margin-bottom: 12px; }
+  .sub-box .time-grid .t { font-weight: bold; color: #633806; white-space: nowrap; }
+  .sub-box .time-grid .d { color: #444; }
+  .sub-box .sub-note { font-size: 13px; color: #633806; font-style: italic; margin: 8px 0 0; }
+
+  /* Content boxes */
+  .callout { background: #fff8e1; border-left: 4px solid #EF9F27; padding: 12px 14px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; }
+  .talk-box { background: #f9faf5; border: 1.5px solid #EF9F27; border-radius: 8px; padding: 14px 16px; margin: 16px 0; }
+  .talk-box .talk-label { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: .05em; color: #633806; margin-bottom: 8px; }
+
+  /* Scenario accordion */
+  .scenario-toggle { width: 100%; background: #f5f5f5; border: none; border-left: 4px solid #EF9F27; border-radius: 0 8px 0 0; padding: 13px 16px; text-align: left; cursor: pointer; font-size: 14px; font-weight: bold; color: #1a1a1a; display: flex; justify-content: space-between; align-items: center; margin: 10px 0 0; transition: background .2s; }
+  .scenario-toggle:hover { background: #ececec; }
+  .scenario-toggle .arrow { font-size: 18px; transition: transform .25s; color: #EF9F27; }
+  .scenario-toggle.open .arrow { transform: rotate(90deg); }
+  .scenario-toggle .tag { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: .05em; color: #888; margin-right: 10px; }
+  .scenario-body { display: none; background: #f5f5f5; border-left: 4px solid #EF9F27; border-radius: 0 0 8px 0; padding: 0 16px 14px; margin-bottom: 10px; font-size: 14px; }
+  .scenario-body.open { display: block; }
+
+  /* Quiz */
+  .quiz-q { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 16px 18px; margin-bottom: 16px; }
+  .q-number { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: .05em; color: #888; margin-bottom: 6px; }
+  .q-text { font-weight: bold; font-size: 14px; margin-bottom: 12px; }
+  .option-btn { display: block; width: 100%; text-align: left; background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; padding: 10px 14px; margin-bottom: 8px; font-size: 14px; cursor: pointer; transition: background .15s, border-color .15s; }
+  .option-btn:last-of-type { margin-bottom: 0; }
+  .option-btn:hover:not(:disabled) { background: #fff8e1; border-color: #EF9F27; }
+  .option-btn.correct { background: #fff8e1; border-color: #EF9F27; color: #633806; font-weight: bold; }
+  .option-btn.incorrect { background: #FEE2E2; border-color: #DC2626; color: #7f1d1d; }
+  .option-btn:disabled { cursor: default; }
+  .feedback { font-size: 13px; margin-top: 10px; padding: 8px 12px; border-radius: 6px; display: none; }
+  .feedback.show-correct { background: #fff8e1; color: #633806; display: block; }
+  .feedback.show-incorrect { background: #fee2e2; color: #7f1d1d; display: block; }
+  .check-btn { display: block; margin: 4px auto 0; background: #EF9F27; color: #fff; border: none; border-radius: 8px; padding: 12px 32px; font-size: 15px; font-weight: bold; cursor: pointer; }
+  .check-btn:hover { background: #d4891f; }
+  .reset-btn { display: none; margin: 10px auto 0; background: #fff; color: #EF9F27; border: 2px solid #EF9F27; border-radius: 8px; padding: 10px 28px; font-size: 14px; font-weight: bold; cursor: pointer; }
+  .score-box { background: #fff8e1; border-radius: 10px; padding: 18px 20px; margin-top: 14px; text-align: center; display: none; }
+  .score-num { font-size: 36px; font-weight: bold; color: #633806; }
+  .score-label { font-size: 14px; color: #633806; }
+  .score-msg { font-size: 13px; color: #7a4a10; margin-top: 6px; }
+
+  /* Reflection */
+  .reflection { background: #EEEDFE; border-radius: 8px; padding: 16px 18px; margin: 28px 0 16px; }
+  .reflection .label { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: .05em; color: #3C3489; margin-bottom: 6px; }
+
+  .footer { font-size: 12px; color: #888; border-top: 1px solid #eee; margin-top: 32px; padding-top: 12px; }
+</style>
+</head>
+<body>
+
+<h1>Work ethic: what employers actually measure</h1>
+<div class="meta">
+  <span class="badge">Sub Lesson</span>
+  <span class="badge-tier">75–90 min</span>
+  <span class="badge-tier">Standard 1.1.1 — Positive Work Ethic</span>
+  <span class="badge-tier">Foundational + Applied</span>
+</div>
+
+<!-- SUB INSTRUCTIONS -->
+<div class="sub-box">
+  <div class="sub-label">📋 Substitute teacher instructions — please read before class begins</div>
+  <p style="font-size:14px;margin-bottom:12px;">Welcome and thank you for being here. This is a self-contained lesson — students work through the page on their own devices with your facilitation. Everything they need is on this page. Your role is to keep the class on pace, facilitate the discussions, and make sure students submit their exit ticket at the end.</p>
+  <div class="time-grid">
+    <span class="t">0–5 min</span><span class="d">Introduce the lesson. Tell students they're working on Workplace Readiness Skills — specifically what employers look for in new hires. Ask students to open this page on their device.</span>
+    <span class="t">5–15 min</span><span class="d">Play the video as a class (see below). After it ends, ask the whole class: "What was one thing in the video that surprised you or that you want to push back on?"</span>
+    <span class="t">15–30 min</span><span class="d">Students read the content sections and complete the scenario accordions independently.</span>
+    <span class="t">30–50 min</span><span class="d">Class discussion — use the Talk & Discuss prompts built into the page. Call on students to share. You don't need to know the answers — just keep the conversation going.</span>
+    <span class="t">50–70 min</span><span class="d">Students complete the knowledge check quiz independently. Tell them to read the feedback on any wrong answers before moving on.</span>
+    <span class="t">70–85 min</span><span class="d">Students write and post their exit ticket response to the Canvas Discussion. Remind them to reply to at least one classmate.</span>
+    <span class="t">85–90 min</span><span class="d">Wrap up. Ask 2–3 students to share their exit ticket response with the class.</span>
+  </div>
+  <p class="sub-note">If students finish early: the optional extender scenario at the bottom of the quiz section will keep early finishers engaged. If the class runs short on time: the quiz can be assigned as homework and the exit ticket moved to the next class period.</p>
+</div>
+
+<!-- VIDEO -->
+<h2>▶ Opening video — watch as a class (10 min)</h2>
+<p style="font-size:13px;color:#555;margin-bottom:8px;">Watch the full video, then discuss: What was one thing that surprised you or that you want to push back on?</p>
+<a href="https://www.youtube.com/watch?v=4XUD8v9xJ8I" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:#FF0000;color:#fff;text-decoration:none;font-weight:bold;font-size:15px;padding:14px 24px;border-radius:8px;margin:16px 0 8px;">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M19.59 7.01a2.49 2.49 0 0 0-1.75-1.76C16.25 5 12 5 12 5s-4.25 0-5.84.25A2.49 2.49 0 0 0 4.41 7.01 26.1 26.1 0 0 0 4 12a26.1 26.1 0 0 0 .41 4.99 2.49 2.49 0 0 0 1.75 1.76C7.75 19 12 19 12 19s4.25 0 5.84-.25a2.49 2.49 0 0 0 1.75-1.76A26.1 26.1 0 0 0 20 12a26.1 26.1 0 0 0-.41-4.99zM10 15V9l5.2 3-5.2 3z"/></svg>
+  Watch on YouTube — Work Ethic: The Importance of Having a Strong Work Ethic
+</a>
+<p style="font-size:12px;color:#888;margin:4px 0 24px;">Opens in a new tab · approx. 5 min · Career educational video covering work ethic definitions and workplace examples. Play on the classroom projector for the full class.</p>
+
+<!-- CONTENT -->
+<h2>What employers are actually looking for</h2>
+<p>Every employer — regardless of industry — is asking three basic questions about every new hire:</p>
+<ul>
+  <li>Will you show up?</li>
+  <li>Will you do what you're asked?</li>
+  <li>Will you stay focused and follow through?</li>
+</ul>
+<p>Nevada's Workplace Readiness Standards define a positive work ethic as: coming to work every day on time, a willingness to take direction, and motivation to accomplish the task at hand (Standard 1.1.1).</p>
+
+<table>
+  <tr><th>Component</th><th>What it looks like</th><th>What the absence looks like</th></tr>
+  <tr><td><strong>Attendance &amp; punctuality</strong></td><td>Arrives on time or early. Gives notice when unable to come in.</td><td>Frequent late arrivals. Unplanned absences. Leaving early without notice.</td></tr>
+  <tr><td><strong>Willingness to take direction</strong></td><td>Listens actively. Attempts tasks as instructed. Asks clarifying questions.</td><td>Argues with supervisors. Ignores feedback. Does tasks their own way without permission.</td></tr>
+  <tr><td><strong>Motivation to accomplish the task</strong></td><td>Stays on task. Works independently. Completes work without constant follow-up.</td><td>Needs repeated reminders. Spends work time on personal activities. Does the minimum.</td></tr>
+</table>
+
+<div class="callout">
+  <strong>Industry voice:</strong> In surveys of Nevada employers, "reliability and attendance" and "following directions" consistently rank among the top three things employers say new hires struggle with most — above technical skills gaps. Skills can be taught. Work ethic is much harder to teach.
+</div>
+
+<h2>Two employees — same job, different outcomes</h2>
+<p>Read both scenarios, then discuss the questions below.</p>
+
+<button class="scenario-toggle" id="btn-a" onclick="toggleScenario('a')" aria-expanded="false">
+  <span><span class="tag">Scenario A</span> Jordan — strong output, spotty reliability</span>
+  <span class="arrow">▶</span>
+</button>
+<div class="scenario-body" id="body-a">
+  <p style="padding-top:10px;"><strong>Jordan</strong> works extremely hard when present and produces excellent results. However, Jordan calls in sick frequently, often arrives late, and responds to supervisor feedback with "I know, but my way works better." Jordan has not been promoted in two years despite strong output.</p>
+</div>
+
+<button class="scenario-toggle" id="btn-b" onclick="toggleScenario('b')" aria-expanded="false">
+  <span><span class="tag">Scenario B</span> Taylor — consistent, coachable, promoted</span>
+  <span class="arrow">▶</span>
+</button>
+<div class="scenario-body" id="body-b">
+  <p style="padding-top:10px;"><strong>Taylor</strong> is not the highest performer but is always on time, never misses a shift without advance notice, accepts feedback openly, and completes every assigned task before leaving. Taylor was promoted to shift lead after one year.</p>
+  <p>Taylor's promotion wasn't about raw talent — it was about being <em>dependable</em>.</p>
+</div>
+
+<div class="talk-box">
+  <div class="talk-label">💬 Class discussion — 15 min (sub: use these prompts to keep the conversation going)</div>
+  <ol style="margin:0 0 0 18px;font-size:14px;">
+    <li>Jordan has better output than Taylor, but Taylor got promoted. Is that fair? Why or why not?</li>
+    <li>What specifically would Jordan need to change to be considered for promotion?</li>
+    <li>Think about a job or team you've been part of — which of the three components mattered most in that environment?</li>
+    <li>Which component do you think is most challenging for someone your age — and why?</li>
+    <li>What's the difference between a work ethic problem and a skills gap? Can you give an example of each?</li>
+  </ol>
+</div>
+
+<h2>Knowledge check</h2>
+<p style="font-size:13px;color:#555;margin-bottom:4px;">Complete independently. Read the feedback on any wrong answers before moving on.</p>
+
+<div id="quiz">
+  <div class="quiz-q">
+    <div class="q-number">Question 1 of 5</div>
+    <div class="q-text">Carla wants to listen to music while working because she believes it makes her more productive, but her employer does not allow it. What should Carla do?</div>
+    <button class="option-btn" data-q="1" data-val="a">A. Try to convince her supervisor to change the policy</button>
+    <button class="option-btn" data-q="1" data-val="b">B. Use headphones discreetly so no one notices</button>
+    <button class="option-btn" data-q="1" data-val="c">C. Follow the company policy</button>
+    <button class="option-btn" data-q="1" data-val="d">D. Listen anyway since it genuinely improves her productivity</button>
+    <div class="feedback" id="fb1"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-number">Question 2 of 5</div>
+    <div class="q-text">Hector does his job better than anyone in his department, but he often refuses to help others and never does anything beyond what is assigned. He has never been promoted. Why?</div>
+    <button class="option-btn" data-q="2" data-val="a">A. His supervisor does not like him</button>
+    <button class="option-btn" data-q="2" data-val="b">B. He does not demonstrate a strong work ethic</button>
+    <button class="option-btn" data-q="2" data-val="c">C. He outperforms others, which creates resentment</button>
+    <button class="option-btn" data-q="2" data-val="d">D. His supervisor expects too much</button>
+    <div class="feedback" id="fb2"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-number">Question 3 of 5</div>
+    <div class="q-text">Which of the following is the best example of a work ethic problem — as opposed to a skills gap?</div>
+    <button class="option-btn" data-q="3" data-val="a">A. An employee makes errors on a new software system they were not trained on</button>
+    <button class="option-btn" data-q="3" data-val="b">B. An employee asks too many questions when learning a new task</button>
+    <button class="option-btn" data-q="3" data-val="c">C. An employee keeps arriving late even after the supervisor has addressed it twice</button>
+    <button class="option-btn" data-q="3" data-val="d">D. An employee produces work that doesn't meet quality standards on a complex new project</button>
+    <div class="feedback" id="fb3"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-number">Question 4 of 5</div>
+    <div class="q-text">An employee discovers a more efficient method for completing a routine task, but the new method deviates from the company's documented procedure. What is the most professionally appropriate action?</div>
+    <button class="option-btn" data-q="4" data-val="a">A. Use the new method quietly to improve output</button>
+    <button class="option-btn" data-q="4" data-val="b">B. Present the idea to management and wait for approval before changing the process</button>
+    <button class="option-btn" data-q="4" data-val="c">C. Continue using the old method since it is the established standard</button>
+    <button class="option-btn" data-q="4" data-val="d">D. Encourage coworkers to try the new method</button>
+    <div class="feedback" id="fb4"></div>
+  </div>
+
+  <div class="quiz-q" style="border-color:#EF9F27;">
+    <div class="q-number" style="color:#EF9F27;">Question 5 of 5 — Scenario</div>
+    <div class="q-text">Marco works at a Nevada resort cleaning and resetting guest rooms. His supervisor assigns him six rooms before his shift ends. Halfway through, Marco realizes he needs to leave early to run a personal errand. He has already cleaned three rooms. What should Marco do?</div>
+    <button class="option-btn" data-q="5" data-val="a">A. Finish the three rooms he's on, then leave — he's done more than half</button>
+    <button class="option-btn" data-q="5" data-val="b">B. Complete all six rooms as assigned, or speak with his supervisor if there is a genuine conflict</button>
+    <button class="option-btn" data-q="5" data-val="c">C. Ask a coworker to finish the last three rooms so he can leave</button>
+    <button class="option-btn" data-q="5" data-val="d">D. Tell his supervisor he can't finish and explain why</button>
+    <div class="feedback" id="fb5"></div>
+  </div>
+
+  <button class="check-btn" id="checkBtn" onclick="checkAnswers()">Check my answers</button>
+  <button class="reset-btn" id="resetBtn" onclick="resetQuiz()">Try again</button>
+  <div class="score-box" id="scoreBox">
+    <div class="score-num" id="scoreNum"></div>
+    <div class="score-label" id="scoreLabel"></div>
+    <div class="score-msg" id="scoreMsg"></div>
+  </div>
+</div>
+
+<h2>💬 Exit ticket</h2>
+<div class="reflection">
+  <div class="label">💬 Canvas Discussion — post before class ends</div>
+  <p>Of the three components of work ethic — attendance and punctuality, taking direction, and staying motivated on task — which do you think is most important to an employer, and which is most challenging for someone your age? Write 3–5 sentences and explain your reasoning. Then reply to at least one classmate.</p>
+  <p style="font-size:12px;color:#3C3489;margin-bottom:0;"><em>Post your response in the Canvas Discussion board for this module.</em></p>
+</div>
+
+<div class="footer">
+  Standard 1.1.1 — Positive Work Ethic | Sub Lesson | Foundational + Applied | WRS Canvas Course
+</div>
+
+<script>
+  function toggleScenario(id) {
+    const btn = document.getElementById('btn-' + id);
+    const body = document.getElementById('body-' + id);
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    btn.classList.toggle('open', !isOpen);
+    btn.setAttribute('aria-expanded', !isOpen);
+  }
+
+  const answers = { 1: 'c', 2: 'b', 3: 'c', 4: 'b', 5: 'b' };
+  const explanations = {
+    1: {
+      correct: 'Correct! Work ethic means following the workplace standard even when you personally disagree.',
+      incorrect: {
+        a: 'Trying to change the policy in the moment puts Carla in an adversarial position. Follow the policy now and raise the concern separately.',
+        b: 'Using headphones discreetly is still violating the policy — and adds deception on top of the original problem.',
+        d: 'Personal productivity preference never overrides a workplace policy.'
+      }
+    },
+    2: {
+      correct: 'Correct! Strong individual output is only one piece. A complete work ethic includes contributing to the team and going beyond the bare minimum.',
+      incorrect: {
+        a: 'The question gives clear behavioral evidence — Hector refuses to help. Personal bias isn\'t supported by the information given.',
+        c: 'High performance doesn\'t inherently create resentment. The issue is Hector\'s refusal to collaborate.',
+        d: 'Contributing beyond individual output is a standard expectation for advancement — not an unfair bar.'
+      }
+    },
+    3: {
+      correct: 'Correct! Repeated late arrivals after direct conversations is a behavioral choice — that\'s a work ethic failure. The others describe training or knowledge gaps.',
+      incorrect: {
+        a: 'Errors on untrained software is a training gap, not a work ethic problem.',
+        b: 'Asking too many questions while learning is a sign of engagement, not a work ethic failure.',
+        d: 'Quality issues on a complex new task are expected during a learning curve.'
+      }
+    },
+    4: {
+      correct: 'Correct! Surface the better idea through proper channels and wait for approval. Work ethic means respecting the system even when you can see a better way.',
+      incorrect: {
+        a: 'Using the new method quietly is still an unauthorized deviation — and adds deception.',
+        c: 'Simply continuing the old method isn\'t quite right — a professional should raise the better idea, just through the right channel.',
+        d: 'Encouraging coworkers to adopt an unapproved method creates a systemic problem.'
+      }
+    },
+    5: {
+      correct: 'Correct! Marco\'s job is to cover his station. A personal errand doesn\'t override that responsibility. The professional move is to complete the work or speak with his supervisor if there is a genuine conflict.',
+      incorrect: {
+        a: 'Leaving early without supervisor approval is an attendance violation — one of the most commonly cited work ethic failures.',
+        c: 'Asking a coworker to cover without supervisor approval bypasses the chain of command.',
+        d: 'Explaining why he can\'t finish is not the same as finding a solution.'
+      }
+    }
+  };
+  const selections = {};
+
+  document.querySelectorAll('.option-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const q = this.dataset.q;
+      document.querySelectorAll(`.option-btn[data-q="${q}"]`).forEach(b => { b.style.background = ''; b.style.borderColor = ''; });
+      this.style.background = '#fff8e1';
+      this.style.borderColor = '#EF9F27';
+      selections[q] = this.dataset.val;
+    });
+  });
+
+  function checkAnswers() {
+    const total = Object.keys(answers).length;
+    for (let q in answers) { if (!selections[q]) { alert('Please answer all questions before checking.'); return; } }
+    let score = 0;
+    for (let q in answers) {
+      const isCorrect = selections[q] === answers[q];
+      if (isCorrect) score++;
+      const fb = document.getElementById('fb' + q);
+      const exp = explanations[q];
+      if (isCorrect) {
+        fb.textContent = exp.correct;
+        fb.className = 'feedback show-correct';
+      } else {
+        const wrongMsg = typeof exp.incorrect === 'object' ? (exp.incorrect[selections[q]] || 'Not quite. Review the content above and try again.') : exp.incorrect;
+        fb.textContent = wrongMsg;
+        fb.className = 'feedback show-incorrect';
+      }
+      document.querySelectorAll(`.option-btn[data-q="${q}"]`).forEach(btn => {
+        btn.disabled = true;
+        btn.style.background = ''; btn.style.borderColor = '';
+        if (btn.dataset.val === answers[q]) btn.classList.add('correct');
+        else if (btn.dataset.val === selections[q] && !isCorrect) btn.classList.add('incorrect');
+      });
+    }
+    const msgs = {
+      5: 'Strong work. You understand what work ethic looks like in practice — and where the line is between a work ethic failure and a skills gap.',
+      4: 'Good — review the feedback on the one you missed.',
+      3: 'Getting there. Read the feedback on the questions you missed before trying again.',
+      2: 'Go back through the content above, then try again.',
+      1: 'Revisit the content above carefully before retrying.',
+      0: 'Start from the top and read carefully.'
+    };
+    document.getElementById('scoreNum').textContent = `${score}/${total}`;
+    document.getElementById('scoreLabel').textContent = score === total ? 'Perfect score!' : score >= 4 ? 'Good work!' : 'Keep reviewing.';
+    document.getElementById('scoreMsg').textContent = msgs[score];
+    document.getElementById('scoreBox').style.display = 'block';
+    document.getElementById('checkBtn').style.display = 'none';
+    document.getElementById('resetBtn').style.display = 'block';
+  }
+
+  function resetQuiz() {
+    Object.keys(selections).forEach(k => delete selections[k]);
+    document.querySelectorAll('.option-btn').forEach(btn => {
+      btn.disabled = false; btn.className = 'option-btn'; btn.style.background = ''; btn.style.borderColor = '';
+    });
+    document.querySelectorAll('.feedback').forEach(fb => { fb.className = 'feedback'; fb.textContent = ''; });
+    document.getElementById('scoreBox').style.display = 'none';
+    document.getElementById('checkBtn').style.display = 'block';
+    document.getElementById('resetBtn').style.display = 'none';
+  }
+</script>
+</body>
+</html>
