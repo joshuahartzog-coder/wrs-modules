@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WRS Practice Quiz — Math & Tech 1 — Nevada CTE WRS</title>
+<style>
+  :root {
+    --green-dark: #085041; --green-mid: #1D9E75; --green-light: #E1F5EE;
+    --amber: #EF9F27; --amber-light: #FAEEDA; --purple: #3C3489;
+    --purple-light: #EEEDFE; --red-light: #FEE2E2; --red: #DC2626;
+    --body: #1a1a1a; --border: #DDDDDD; --gray-bg: #F5F5F5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Helvetica, Arial, sans-serif; background: #f0f4f3; color: var(--body); }
+  .site-header { background: var(--green-dark); color: white; padding: 18px 32px; display: flex; align-items: center; justify-content: space-between; }
+  .site-header .title-block h1 { font-size: 20px; font-weight: 700; }
+  .site-header .title-block p { font-size: 12px; opacity: 0.75; margin-top: 3px; }
+  .score-badge { background: var(--green-mid); border-radius: 8px; padding: 10px 18px; text-align: center; min-width: 110px; }
+  .score-badge .score-num { font-size: 26px; font-weight: 700; line-height: 1; }
+  .score-badge .score-label { font-size: 10px; opacity: 0.85; margin-top: 2px; }
+  .progress-bar-wrap { background: white; border-bottom: 1px solid var(--border); padding: 10px 32px; display: flex; align-items: center; gap: 14px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+  .progress-track { flex: 1; background: #e0e0e0; border-radius: 6px; height: 8px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--green-mid); border-radius: 6px; transition: width 0.3s; width: 0%; }
+  .progress-text { font-size: 12px; color: #555; white-space: nowrap; min-width: 110px; text-align: right; }
+  .intro-card { max-width: 860px; margin: 28px auto 0; background: white; border-radius: 10px; border: 1px solid var(--border); padding: 24px 28px; border-left: 5px solid var(--green-mid); }
+  .intro-card h2 { font-size: 16px; color: var(--green-dark); margin-bottom: 8px; }
+  .intro-card p { font-size: 14px; line-height: 1.7; color: #444; }
+  .exam-meta { display: flex; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
+  .meta-pill { background: var(--green-light); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: 11px; font-weight: 600; color: var(--green-dark); }
+  .question-card { max-width: 860px; margin: 20px auto 0; background: white; border: 1px solid var(--border); border-radius: 10px; padding: 22px 26px; }
+  .q-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+  .q-num { background: var(--green-light); color: var(--green-dark); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+  .q-standard { font-size: 10px; font-weight: 700; color: var(--green-mid); letter-spacing: 0.5px; text-transform: uppercase; margin-top: 2px; }
+  .q-text { font-size: 15px; font-weight: 600; line-height: 1.5; color: var(--body); }
+  .options { list-style: none; margin-top: 4px; display: flex; flex-direction: column; gap: 8px; }
+  .option-label { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border: 2px solid var(--border); border-radius: 7px; cursor: pointer; transition: all 0.15s; font-size: 14px; line-height: 1.5; user-select: none; }
+  .option-label:hover { border-color: var(--green-mid); background: var(--green-light); }
+  .option-label input[type=radio] { display: none; }
+  .opt-letter { width: 24px; height: 24px; border-radius: 50%; background: var(--gray-bg); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; transition: all 0.15s; }
+  .option-label.selected { border-color: var(--green-mid); background: var(--green-light); }
+  .option-label.selected .opt-letter { background: var(--green-mid); border-color: var(--green-mid); color: white; }
+  .option-label.correct { border-color: #16a34a; background: #f0fdf4; }
+  .option-label.correct .opt-letter { background: #16a34a; border-color: #16a34a; color: white; }
+  .option-label.incorrect { border-color: var(--red); background: var(--red-light); }
+  .option-label.incorrect .opt-letter { background: var(--red); border-color: var(--red); color: white; }
+  .feedback { display: none; margin-top: 12px; padding: 10px 14px; border-radius: 7px; font-size: 13px; line-height: 1.6; border-left: 4px solid; }
+  .feedback.show { display: block; }
+  .feedback.correct-fb { background: #f0fdf4; border-color: #16a34a; color: #14532d; }
+  .feedback.incorrect-fb { background: var(--red-light); border-color: var(--red); color: #7f1d1d; }
+  .submit-section { max-width: 860px; margin: 28px auto 48px; background: white; border: 1px solid var(--border); border-top: 2px solid var(--green-mid); border-radius: 10px; padding: 28px 32px; text-align: center; }
+  .btn-submit { background: var(--green-mid); color: white; border: none; padding: 14px 40px; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+  .btn-submit:hover { background: var(--green-dark); }
+  .btn-retry { background: var(--amber); color: white; border: none; padding: 12px 32px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.2s; display: none; margin-top: 10px; }
+  .btn-retry:hover { background: #c97f10; }
+  .unanswered-msg { color: var(--red); font-size: 13px; margin-top: 8px; display: none; }
+  .results-panel { display: none; margin-top: 20px; padding: 20px; border-radius: 8px; border: 1px solid var(--border); }
+  .results-panel.show { display: block; }
+  .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 14px; }
+  .result-box { padding: 14px; border-radius: 8px; text-align: center; }
+  .result-box .rb-num { font-size: 28px; font-weight: 700; line-height: 1; }
+  .result-box .rb-label { font-size: 11px; margin-top: 4px; font-weight: 600; }
+  .rb-pass { background: #f0fdf4; color: #16a34a; }
+  .rb-fail { background: var(--red-light); color: var(--red); }
+  .rb-neutral { background: var(--green-light); color: var(--green-dark); }
+  .rb-amber { background: var(--amber-light); color: #92400e; }
+  .pass-msg { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+  .pass-sub { font-size: 13px; color: #555; }
+  .standard-breakdown { margin-top: 18px; }
+  .standard-breakdown h4 { font-size: 13px; font-weight: 700; color: var(--green-dark); margin-bottom: 8px; }
+  .db-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font-size: 12px; }
+  .db-label { width: 220px; flex-shrink: 0; color: #444; }
+  .db-track { flex: 1; background: #e0e0e0; border-radius: 4px; height: 8px; overflow: hidden; }
+  .db-fill { height: 100%; border-radius: 4px; }
+  .db-score { width: 36px; text-align: right; font-weight: 700; font-size: 12px; }
+  @media (max-width: 640px) {
+    .site-header { padding: 14px 16px; }
+    .progress-bar-wrap { padding: 8px 16px; }
+    .intro-card, .question-card, .submit-section { margin-left: 12px; margin-right: 12px; padding: 16px; }
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="title-block">
+    <h1>WRS Practice Quiz — Math & Tech 1</h1>
+    <p>20-question quiz focused on Technology Literacy, Internet Safety, IT, and Financial Math</p>
+  </div>
+  <div class="score-badge">
+    <div class="score-num" id="live-score">—</div>
+    <div class="score-label">Score</div>
+  </div>
+</header>
+<div class="progress-bar-wrap">
+  <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+  <div class="progress-text" id="progress-text">0 of 20 answered</div>
+</div>
+<div class="intro-card">
+  <h2>About This Quiz</h2>
+  <p>20-question quiz focused on Technology Literacy, Internet Safety, IT, and Financial Math. Read each scenario carefully and select the best answer. After submitting you will see detailed feedback on every question.</p>
+  <div class="exam-meta">
+    <span class="meta-pill">20 Questions</span>
+    <span class="meta-pill">Multiple Choice</span>
+    <span class="meta-pill">Passing Score: 75%</span>
+    <span class="meta-pill">Nevada WRS Assessment Prep</span>
+  </div>
+</div>
+
+<div class="question-card" id="card-1">
+  <div class="q-header">
+    <div class="q-num">1</div>
+    <div>
+      <div class="q-standard">Standard 1.3.4</div>
+      <div class="q-text">A salesperson receives 12% commission on total sales. She sells $3,500 worth of merchandise in one week. How much commission did she earn?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-1-A" onclick="selectOption(1, 'A', 'B')">
+      <input type="radio" name="q1" value="A">
+      <span class="opt-letter">A</span>
+      <span>$350.00</span>
+    </label></li>
+    <li><label class="option-label" id="label-1-B" onclick="selectOption(1, 'B', 'B')">
+      <input type="radio" name="q1" value="B">
+      <span class="opt-letter">B</span>
+      <span>$420.00</span>
+    </label></li>
+    <li><label class="option-label" id="label-1-C" onclick="selectOption(1, 'C', 'B')">
+      <input type="radio" name="q1" value="C">
+      <span class="opt-letter">C</span>
+      <span>$42.00</span>
+    </label></li>
+    <li><label class="option-label" id="label-1-D" onclick="selectOption(1, 'D', 'B')">
+      <input type="radio" name="q1" value="D">
+      <span class="opt-letter">D</span>
+      <span>$4,200.00</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-1"></div>
+</div>
+
+<div class="question-card" id="card-2">
+  <div class="q-header">
+    <div class="q-num">2</div>
+    <div>
+      <div class="q-standard">Standard 1.3.4</div>
+      <div class="q-text">Jordan works 43 hours this week. His regular rate is $15.00/hour. Overtime (over 40 hours) is paid at 1.5x. What is Jordan's gross pay?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-2-A" onclick="selectOption(2, 'A', 'C')">
+      <input type="radio" name="q2" value="A">
+      <span class="opt-letter">A</span>
+      <span>$645.00</span>
+    </label></li>
+    <li><label class="option-label" id="label-2-B" onclick="selectOption(2, 'B', 'C')">
+      <input type="radio" name="q2" value="B">
+      <span class="opt-letter">B</span>
+      <span>$652.50</span>
+    </label></li>
+    <li><label class="option-label" id="label-2-C" onclick="selectOption(2, 'C', 'C')">
+      <input type="radio" name="q2" value="C">
+      <span class="opt-letter">C</span>
+      <span>$667.50</span>
+    </label></li>
+    <li><label class="option-label" id="label-2-D" onclick="selectOption(2, 'D', 'C')">
+      <input type="radio" name="q2" value="D">
+      <span class="opt-letter">D</span>
+      <span>$600.00</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-2"></div>
+</div>
+
+<div class="question-card" id="card-3">
+  <div class="q-header">
+    <div class="q-num">3</div>
+    <div>
+      <div class="q-standard">Standard 1.3.4</div>
+      <div class="q-text">Union dues are $520.00 per year. An employee is paid bi-weekly (every two weeks). How much is deducted from each paycheck for dues? Round to the nearest cent.</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-3-A" onclick="selectOption(3, 'A', 'B')">
+      <input type="radio" name="q3" value="A">
+      <span class="opt-letter">A</span>
+      <span>$10.00</span>
+    </label></li>
+    <li><label class="option-label" id="label-3-B" onclick="selectOption(3, 'B', 'B')">
+      <input type="radio" name="q3" value="B">
+      <span class="opt-letter">B</span>
+      <span>$20.00</span>
+    </label></li>
+    <li><label class="option-label" id="label-3-C" onclick="selectOption(3, 'C', 'B')">
+      <input type="radio" name="q3" value="C">
+      <span class="opt-letter">C</span>
+      <span>$43.33</span>
+    </label></li>
+    <li><label class="option-label" id="label-3-D" onclick="selectOption(3, 'D', 'B')">
+      <input type="radio" name="q3" value="D">
+      <span class="opt-letter">D</span>
+      <span>$26.00</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-3"></div>
+</div>
+
+<div class="question-card" id="card-4">
+  <div class="q-header">
+    <div class="q-num">4</div>
+    <div>
+      <div class="q-standard">Standard 1.3.4</div>
+      <div class="q-text">An employee makes $11.50/hour and works 35 hours per week. Her deductions total 22% of gross pay. What is her weekly net pay?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-4-A" onclick="selectOption(4, 'A', 'B')">
+      <input type="radio" name="q4" value="A">
+      <span class="opt-letter">A</span>
+      <span>$402.50</span>
+    </label></li>
+    <li><label class="option-label" id="label-4-B" onclick="selectOption(4, 'B', 'B')">
+      <input type="radio" name="q4" value="B">
+      <span class="opt-letter">B</span>
+      <span>$313.95</span>
+    </label></li>
+    <li><label class="option-label" id="label-4-C" onclick="selectOption(4, 'C', 'B')">
+      <input type="radio" name="q4" value="C">
+      <span class="opt-letter">C</span>
+      <span>$88.55</span>
+    </label></li>
+    <li><label class="option-label" id="label-4-D" onclick="selectOption(4, 'D', 'B')">
+      <input type="radio" name="q4" value="D">
+      <span class="opt-letter">D</span>
+      <span>$314.75</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-4"></div>
+</div>
+
+<div class="question-card" id="card-5">
+  <div class="q-header">
+    <div class="q-num">5</div>
+    <div>
+      <div class="q-standard">Standard 1.3.4</div>
+      <div class="q-text">Your employer reimburses mileage at $0.58 per mile. You drive 14.5 miles on a work errand. What is your reimbursement?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-5-A" onclick="selectOption(5, 'A', 'A')">
+      <input type="radio" name="q5" value="A">
+      <span class="opt-letter">A</span>
+      <span>$8.41</span>
+    </label></li>
+    <li><label class="option-label" id="label-5-B" onclick="selectOption(5, 'B', 'A')">
+      <input type="radio" name="q5" value="B">
+      <span class="opt-letter">B</span>
+      <span>$7.25</span>
+    </label></li>
+    <li><label class="option-label" id="label-5-C" onclick="selectOption(5, 'C', 'A')">
+      <input type="radio" name="q5" value="C">
+      <span class="opt-letter">C</span>
+      <span>$5.80</span>
+    </label></li>
+    <li><label class="option-label" id="label-5-D" onclick="selectOption(5, 'D', 'A')">
+      <input type="radio" name="q5" value="D">
+      <span class="opt-letter">D</span>
+      <span>$9.28</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-5"></div>
+</div>
+
+<div class="question-card" id="card-6">
+  <div class="q-header">
+    <div class="q-num">6</div>
+    <div>
+      <div class="q-standard">Standard 1.3.4</div>
+      <div class="q-text">A rectangular warehouse floor is 80 ft. long and 40 ft. wide. What is the total area of the floor?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-6-A" onclick="selectOption(6, 'A', 'B')">
+      <input type="radio" name="q6" value="A">
+      <span class="opt-letter">A</span>
+      <span>240 sq. ft.</span>
+    </label></li>
+    <li><label class="option-label" id="label-6-B" onclick="selectOption(6, 'B', 'B')">
+      <input type="radio" name="q6" value="B">
+      <span class="opt-letter">B</span>
+      <span>3,200 sq. ft.</span>
+    </label></li>
+    <li><label class="option-label" id="label-6-C" onclick="selectOption(6, 'C', 'B')">
+      <input type="radio" name="q6" value="C">
+      <span class="opt-letter">C</span>
+      <span>120 sq. ft.</span>
+    </label></li>
+    <li><label class="option-label" id="label-6-D" onclick="selectOption(6, 'D', 'B')">
+      <input type="radio" name="q6" value="D">
+      <span class="opt-letter">D</span>
+      <span>1,600 sq. ft.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-6"></div>
+</div>
+
+<div class="question-card" id="card-7">
+  <div class="q-header">
+    <div class="q-num">7</div>
+    <div>
+      <div class="q-standard">Standard 1.3.4</div>
+      <div class="q-text">A company has 12 hourly employees. Each works 38 hours this week at $13.25/hour. What is the total payroll for the week?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-7-A" onclick="selectOption(7, 'A', 'A')">
+      <input type="radio" name="q7" value="A">
+      <span class="opt-letter">A</span>
+      <span>$6,042.00</span>
+    </label></li>
+    <li><label class="option-label" id="label-7-B" onclick="selectOption(7, 'B', 'A')">
+      <input type="radio" name="q7" value="B">
+      <span class="opt-letter">B</span>
+      <span>$5,814.00</span>
+    </label></li>
+    <li><label class="option-label" id="label-7-C" onclick="selectOption(7, 'C', 'A')">
+      <input type="radio" name="q7" value="C">
+      <span class="opt-letter">C</span>
+      <span>$6,234.00</span>
+    </label></li>
+    <li><label class="option-label" id="label-7-D" onclick="selectOption(7, 'D', 'A')">
+      <input type="radio" name="q7" value="D">
+      <span class="opt-letter">D</span>
+      <span>$5,662.00</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-7"></div>
+</div>
+
+<div class="question-card" id="card-8">
+  <div class="q-header">
+    <div class="q-num">8</div>
+    <div>
+      <div class="q-standard">Standard 1.3.4</div>
+      <div class="q-text">What is the result of a large supply but very low demand for a particular product?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-8-A" onclick="selectOption(8, 'A', 'C')">
+      <input type="radio" name="q8" value="A">
+      <span class="opt-letter">A</span>
+      <span>An increase in price.</span>
+    </label></li>
+    <li><label class="option-label" id="label-8-B" onclick="selectOption(8, 'B', 'C')">
+      <input type="radio" name="q8" value="B">
+      <span class="opt-letter">B</span>
+      <span>An increase in competition.</span>
+    </label></li>
+    <li><label class="option-label" id="label-8-C" onclick="selectOption(8, 'C', 'C')">
+      <input type="radio" name="q8" value="C">
+      <span class="opt-letter">C</span>
+      <span>A surplus.</span>
+    </label></li>
+    <li><label class="option-label" id="label-8-D" onclick="selectOption(8, 'D', 'C')">
+      <input type="radio" name="q8" value="D">
+      <span class="opt-letter">D</span>
+      <span>A monopoly.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-8"></div>
+</div>
+
+<div class="question-card" id="card-9">
+  <div class="q-header">
+    <div class="q-num">9</div>
+    <div>
+      <div class="q-standard">Standard 1.3.1</div>
+      <div class="q-text">The primary internal component of a desktop computer used for information storage is the</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-9-A" onclick="selectOption(9, 'A', 'C')">
+      <input type="radio" name="q9" value="A">
+      <span class="opt-letter">A</span>
+      <span>Monitor.</span>
+    </label></li>
+    <li><label class="option-label" id="label-9-B" onclick="selectOption(9, 'B', 'C')">
+      <input type="radio" name="q9" value="B">
+      <span class="opt-letter">B</span>
+      <span>Video card.</span>
+    </label></li>
+    <li><label class="option-label" id="label-9-C" onclick="selectOption(9, 'C', 'C')">
+      <input type="radio" name="q9" value="C">
+      <span class="opt-letter">C</span>
+      <span>Hard drive.</span>
+    </label></li>
+    <li><label class="option-label" id="label-9-D" onclick="selectOption(9, 'D', 'C')">
+      <input type="radio" name="q9" value="D">
+      <span class="opt-letter">D</span>
+      <span>USB drive.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-9"></div>
+</div>
+
+<div class="question-card" id="card-10">
+  <div class="q-header">
+    <div class="q-num">10</div>
+    <div>
+      <div class="q-standard">Standard 1.3.1</div>
+      <div class="q-text">Different devices that cannot interact or communicate with each other are said to have _____ issues.</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-10-A" onclick="selectOption(10, 'A', 'C')">
+      <input type="radio" name="q10" value="A">
+      <span class="opt-letter">A</span>
+      <span>Productivity.</span>
+    </label></li>
+    <li><label class="option-label" id="label-10-B" onclick="selectOption(10, 'B', 'C')">
+      <input type="radio" name="q10" value="B">
+      <span class="opt-letter">B</span>
+      <span>Telecommuting.</span>
+    </label></li>
+    <li><label class="option-label" id="label-10-C" onclick="selectOption(10, 'C', 'C')">
+      <input type="radio" name="q10" value="C">
+      <span class="opt-letter">C</span>
+      <span>Compatibility.</span>
+    </label></li>
+    <li><label class="option-label" id="label-10-D" onclick="selectOption(10, 'D', 'C')">
+      <input type="radio" name="q10" value="D">
+      <span class="opt-letter">D</span>
+      <span>Simulation.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-10"></div>
+</div>
+
+<div class="question-card" id="card-11">
+  <div class="q-header">
+    <div class="q-num">11</div>
+    <div>
+      <div class="q-standard">Standard 1.3.1</div>
+      <div class="q-text">Technology is important in the workplace for all of the following reasons EXCEPT:</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-11-A" onclick="selectOption(11, 'A', 'A')">
+      <input type="radio" name="q11" value="A">
+      <span class="opt-letter">A</span>
+      <span>Personal entertainment interests.</span>
+    </label></li>
+    <li><label class="option-label" id="label-11-B" onclick="selectOption(11, 'B', 'A')">
+      <input type="radio" name="q11" value="B">
+      <span class="opt-letter">B</span>
+      <span>Improving communication efficiency.</span>
+    </label></li>
+    <li><label class="option-label" id="label-11-C" onclick="selectOption(11, 'C', 'A')">
+      <input type="radio" name="q11" value="C">
+      <span class="opt-letter">C</span>
+      <span>Increasing operational efficiency.</span>
+    </label></li>
+    <li><label class="option-label" id="label-11-D" onclick="selectOption(11, 'D', 'A')">
+      <input type="radio" name="q11" value="D">
+      <span class="opt-letter">D</span>
+      <span>Supporting employee mobility.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-11"></div>
+</div>
+
+<div class="question-card" id="card-12">
+  <div class="q-header">
+    <div class="q-num">12</div>
+    <div>
+      <div class="q-standard">Standard 1.3.1</div>
+      <div class="q-text">Companies can benefit from allowing employees to telecommute. Which is a common DISADVANTAGE of this practice?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-12-A" onclick="selectOption(12, 'A', 'C')">
+      <input type="radio" name="q12" value="A">
+      <span class="opt-letter">A</span>
+      <span>Improved employee satisfaction.</span>
+    </label></li>
+    <li><label class="option-label" id="label-12-B" onclick="selectOption(12, 'B', 'C')">
+      <input type="radio" name="q12" value="B">
+      <span class="opt-letter">B</span>
+      <span>Increased productivity.</span>
+    </label></li>
+    <li><label class="option-label" id="label-12-C" onclick="selectOption(12, 'C', 'C')">
+      <input type="radio" name="q12" value="C">
+      <span class="opt-letter">C</span>
+      <span>Vulnerability to security and confidentiality issues.</span>
+    </label></li>
+    <li><label class="option-label" id="label-12-D" onclick="selectOption(12, 'D', 'C')">
+      <input type="radio" name="q12" value="D">
+      <span class="opt-letter">D</span>
+      <span>Reduced overhead costs.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-12"></div>
+</div>
+
+<div class="question-card" id="card-13">
+  <div class="q-header">
+    <div class="q-num">13</div>
+    <div>
+      <div class="q-standard">Standard 1.3.2</div>
+      <div class="q-text">What is the MOST important reason for clearing your web browser cache after using a public or shared computer?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-13-A" onclick="selectOption(13, 'A', 'C')">
+      <input type="radio" name="q13" value="A">
+      <span class="opt-letter">A</span>
+      <span>To speed up browsing performance.</span>
+    </label></li>
+    <li><label class="option-label" id="label-13-B" onclick="selectOption(13, 'B', 'C')">
+      <input type="radio" name="q13" value="B">
+      <span class="opt-letter">B</span>
+      <span>To tag important websites.</span>
+    </label></li>
+    <li><label class="option-label" id="label-13-C" onclick="selectOption(13, 'C', 'C')">
+      <input type="radio" name="q13" value="C">
+      <span class="opt-letter">C</span>
+      <span>To maintain your privacy.</span>
+    </label></li>
+    <li><label class="option-label" id="label-13-D" onclick="selectOption(13, 'D', 'C')">
+      <input type="radio" name="q13" value="D">
+      <span class="opt-letter">D</span>
+      <span>To prevent computer viruses.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-13"></div>
+</div>
+
+<div class="question-card" id="card-14">
+  <div class="q-header">
+    <div class="q-num">14</div>
+    <div>
+      <div class="q-standard">Standard 1.3.2</div>
+      <div class="q-text">Social networking websites can reveal a great deal about an individual. What should you avoid posting professionally?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-14-A" onclick="selectOption(14, 'A', 'B')">
+      <input type="radio" name="q14" value="A">
+      <span class="opt-letter">A</span>
+      <span>Photos of personal hobbies.</span>
+    </label></li>
+    <li><label class="option-label" id="label-14-B" onclick="selectOption(14, 'B', 'B')">
+      <input type="radio" name="q14" value="B">
+      <span class="opt-letter">B</span>
+      <span>Sensitive or negative comments about your workplace.</span>
+    </label></li>
+    <li><label class="option-label" id="label-14-C" onclick="selectOption(14, 'C', 'B')">
+      <input type="radio" name="q14" value="C">
+      <span class="opt-letter">C</span>
+      <span>Photos of family events.</span>
+    </label></li>
+    <li><label class="option-label" id="label-14-D" onclick="selectOption(14, 'D', 'B')">
+      <input type="radio" name="q14" value="D">
+      <span class="opt-letter">D</span>
+      <span>Your favorite sports teams.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-14"></div>
+</div>
+
+<div class="question-card" id="card-15">
+  <div class="q-header">
+    <div class="q-num">15</div>
+    <div>
+      <div class="q-standard">Standard 1.3.2</div>
+      <div class="q-text">Which of the following is the BEST description of SPAM?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-15-A" onclick="selectOption(15, 'A', 'B')">
+      <input type="radio" name="q15" value="A">
+      <span class="opt-letter">A</span>
+      <span>A smartphone security application.</span>
+    </label></li>
+    <li><label class="option-label" id="label-15-B" onclick="selectOption(15, 'B', 'B')">
+      <input type="radio" name="q15" value="B">
+      <span class="opt-letter">B</span>
+      <span>An unsolicited email message or advertisement.</span>
+    </label></li>
+    <li><label class="option-label" id="label-15-C" onclick="selectOption(15, 'C', 'B')">
+      <input type="radio" name="q15" value="C">
+      <span class="opt-letter">C</span>
+      <span>An unsecured URL protocol.</span>
+    </label></li>
+    <li><label class="option-label" id="label-15-D" onclick="selectOption(15, 'D', 'B')">
+      <input type="radio" name="q15" value="D">
+      <span class="opt-letter">D</span>
+      <span>A type of web browser firewall.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-15"></div>
+</div>
+
+<div class="question-card" id="card-16">
+  <div class="q-header">
+    <div class="q-num">16</div>
+    <div>
+      <div class="q-standard">Standard 1.3.3</div>
+      <div class="q-text">To reorder the 'Employee Name' column alphabetically in a spreadsheet table, you should use the</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-16-A" onclick="selectOption(16, 'A', 'C')">
+      <input type="radio" name="q16" value="A">
+      <span class="opt-letter">A</span>
+      <span>Numeric listing function.</span>
+    </label></li>
+    <li><label class="option-label" id="label-16-B" onclick="selectOption(16, 'B', 'C')">
+      <input type="radio" name="q16" value="B">
+      <span class="opt-letter">B</span>
+      <span>Convert to text function.</span>
+    </label></li>
+    <li><label class="option-label" id="label-16-C" onclick="selectOption(16, 'C', 'C')">
+      <input type="radio" name="q16" value="C">
+      <span class="opt-letter">C</span>
+      <span>Sort function.</span>
+    </label></li>
+    <li><label class="option-label" id="label-16-D" onclick="selectOption(16, 'D', 'C')">
+      <input type="radio" name="q16" value="D">
+      <span class="opt-letter">D</span>
+      <span>Formula function.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-16"></div>
+</div>
+
+<div class="question-card" id="card-17">
+  <div class="q-header">
+    <div class="q-num">17</div>
+    <div>
+      <div class="q-standard">Standard 1.3.3</div>
+      <div class="q-text">Which of the following is NOT a web browser?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-17-A" onclick="selectOption(17, 'A', 'D')">
+      <input type="radio" name="q17" value="A">
+      <span class="opt-letter">A</span>
+      <span>Mozilla Firefox.</span>
+    </label></li>
+    <li><label class="option-label" id="label-17-B" onclick="selectOption(17, 'B', 'D')">
+      <input type="radio" name="q17" value="B">
+      <span class="opt-letter">B</span>
+      <span>Google Chrome.</span>
+    </label></li>
+    <li><label class="option-label" id="label-17-C" onclick="selectOption(17, 'C', 'D')">
+      <input type="radio" name="q17" value="C">
+      <span class="opt-letter">C</span>
+      <span>Microsoft Edge.</span>
+    </label></li>
+    <li><label class="option-label" id="label-17-D" onclick="selectOption(17, 'D', 'D')">
+      <input type="radio" name="q17" value="D">
+      <span class="opt-letter">D</span>
+      <span>Google Docs.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-17"></div>
+</div>
+
+<div class="question-card" id="card-18">
+  <div class="q-header">
+    <div class="q-num">18</div>
+    <div>
+      <div class="q-standard">Standard 1.3.3</div>
+      <div class="q-text">The best way to send an email to a large group of recipients without revealing their addresses to each other is to use the</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-18-A" onclick="selectOption(18, 'A', 'C')">
+      <input type="radio" name="q18" value="A">
+      <span class="opt-letter">A</span>
+      <span>TO field for all addresses.</span>
+    </label></li>
+    <li><label class="option-label" id="label-18-B" onclick="selectOption(18, 'B', 'C')">
+      <input type="radio" name="q18" value="B">
+      <span class="opt-letter">B</span>
+      <span>CC field for all addresses.</span>
+    </label></li>
+    <li><label class="option-label" id="label-18-C" onclick="selectOption(18, 'C', 'C')">
+      <input type="radio" name="q18" value="C">
+      <span class="opt-letter">C</span>
+      <span>BCC field for all addresses.</span>
+    </label></li>
+    <li><label class="option-label" id="label-18-D" onclick="selectOption(18, 'D', 'C')">
+      <input type="radio" name="q18" value="D">
+      <span class="opt-letter">D</span>
+      <span>Reply All feature.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-18"></div>
+</div>
+
+<div class="question-card" id="card-19">
+  <div class="q-header">
+    <div class="q-num">19</div>
+    <div>
+      <div class="q-standard">Standard 1.3.3</div>
+      <div class="q-text">The ability to use technology efficiently across a range of skill levels — from basic use to advanced specialized applications — is known as:</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-19-A" onclick="selectOption(19, 'A', 'C')">
+      <input type="radio" name="q19" value="A">
+      <span class="opt-letter">A</span>
+      <span>IT certification.</span>
+    </label></li>
+    <li><label class="option-label" id="label-19-B" onclick="selectOption(19, 'B', 'C')">
+      <input type="radio" name="q19" value="B">
+      <span class="opt-letter">B</span>
+      <span>Internet ethics.</span>
+    </label></li>
+    <li><label class="option-label" id="label-19-C" onclick="selectOption(19, 'C', 'C')">
+      <input type="radio" name="q19" value="C">
+      <span class="opt-letter">C</span>
+      <span>Computer literacy.</span>
+    </label></li>
+    <li><label class="option-label" id="label-19-D" onclick="selectOption(19, 'D', 'C')">
+      <input type="radio" name="q19" value="D">
+      <span class="opt-letter">D</span>
+      <span>Telecommunications.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-19"></div>
+</div>
+
+<div class="question-card" id="card-20">
+  <div class="q-header">
+    <div class="q-num">20</div>
+    <div>
+      <div class="q-standard">Standard 1.3.4</div>
+      <div class="q-text">Sara earns $10.50/hour and works 40 hours per week. Her total deductions are 28%. What is her net pay for one week?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-20-A" onclick="selectOption(20, 'A', 'B')">
+      <input type="radio" name="q20" value="A">
+      <span class="opt-letter">A</span>
+      <span>$420.00</span>
+    </label></li>
+    <li><label class="option-label" id="label-20-B" onclick="selectOption(20, 'B', 'B')">
+      <input type="radio" name="q20" value="B">
+      <span class="opt-letter">B</span>
+      <span>$302.40</span>
+    </label></li>
+    <li><label class="option-label" id="label-20-C" onclick="selectOption(20, 'C', 'B')">
+      <input type="radio" name="q20" value="C">
+      <span class="opt-letter">C</span>
+      <span>$117.60</span>
+    </label></li>
+    <li><label class="option-label" id="label-20-D" onclick="selectOption(20, 'D', 'B')">
+      <input type="radio" name="q20" value="D">
+      <span class="opt-letter">D</span>
+      <span>$380.00</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-20"></div>
+</div>
+
+<div class="submit-section" id="submit-section">
+  <button class="btn-submit" onclick="submitQuiz()">Check My Answers</button>
+  <div class="unanswered-msg" id="unanswered-msg"></div>
+  <button class="btn-retry" onclick="retryQuiz()">Try Again</button>
+  <div class="results-panel" id="results-panel">
+    <div class="pass-msg" id="pass-msg"></div>
+    <div class="pass-sub" id="pass-sub"></div>
+    <div class="results-grid" id="results-grid"></div>
+    <div class="standard-breakdown" id="standard-breakdown"></div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = {
+  1: {correct:"B", std:"1.3.4", fbCorrect:"Commission = $3,500 × 0.12 = $420.00.", fbWrong:"$350 would be 10% commission. $42 would be 1.2%. $4,200 is 10 times too high. Multiply total sales by the decimal form of the rate: $3,500 × 0.12 = $420."},
+  2: {correct:"C", std:"1.3.4", fbCorrect:"Regular: 40 × $15 = $600. Overtime: 3 × ($15 × 1.5) = 3 × $22.50 = $67.50. Total = $600 + $67.50 = $667.50.", fbWrong:"Multiplying all 43 hours by $15 gives $645, missing the overtime premium. The 3 overtime hours are paid at $22.50 each = $67.50. $600 + $67.50 = $667.50."},
+  3: {correct:"B", std:"1.3.4", fbCorrect:"Bi-weekly = 26 pay periods per year. $520 ÷ 26 = $20.00 per paycheck.", fbWrong:"There are 26 bi-weekly pay periods in a year (52 weeks ÷ 2). $520 ÷ 26 = $20.00. Dividing by 12 gives a monthly amount, not bi-weekly."},
+  4: {correct:"B", std:"1.3.4", fbCorrect:"Gross: 35 × $11.50 = $402.50. Deductions: $402.50 × 0.22 = $88.55. Net: $402.50 − $88.55 = $313.95.", fbWrong:"Gross pay is 35 × $11.50 = $402.50. Deduct 22%: $402.50 × 0.22 = $88.55. Net pay = $402.50 − $88.55 = $313.95."},
+  5: {correct:"A", std:"1.3.4", fbCorrect:"Reimbursement = 14.5 × $0.58 = $8.41.", fbWrong:"Multiply miles driven by the rate per mile: 14.5 × $0.58 = $8.41. Using $0.50/mile would give $7.25; using $0.40/mile would give $5.80."},
+  6: {correct:"B", std:"1.3.4", fbCorrect:"Area of a rectangle = length × width = 80 × 40 = 3,200 sq. ft.", fbWrong:"240 ft. is the perimeter (2 × 80 + 2 × 40). Area is calculated by multiplying length by width: 80 × 40 = 3,200 square feet."},
+  7: {correct:"A", std:"1.3.4", fbCorrect:"One employee: 38 × $13.25 = $503.50. Total: $503.50 × 12 = $6,042.00.", fbWrong:"Multiply hours by rate per person: 38 × $13.25 = $503.50. Then multiply by 12 employees: $503.50 × 12 = $6,042.00."},
+  8: {correct:"C", std:"1.3.4", fbCorrect:"When supply exceeds demand significantly, the result is a surplus — more of the product exists than the market is willing to purchase at the current price.", fbWrong:"High supply and low demand drives prices down, not up. Competition levels depend on the number of sellers, not the supply-demand balance. A surplus — excess unsold inventory — is the direct economic result."},
+  9: {correct:"C", std:"1.3.1", fbCorrect:"The hard drive (or SSD) is the main internal storage component of a desktop computer, where the operating system, applications, and files are permanently stored.", fbWrong:"Monitors are display devices. Video cards process graphics. USB drives are external, removable storage. The hard drive is the primary internal permanent storage component."},
+  10: {correct:"C", std:"1.3.1", fbCorrect:"Compatibility describes whether different hardware or software systems can work together. When two devices or programs cannot interact, the problem is a compatibility issue.", fbWrong:"Productivity is about output efficiency. Telecommuting means working remotely. Simulation involves modeling scenarios. Compatibility is specifically the technical term for whether systems can work together."},
+  11: {correct:"A", std:"1.3.1", fbCorrect:"Technology in the workplace is valued for improving communication, operational efficiency, and mobility — all directly work-related benefits. Personal entertainment is not a professional justification for workplace technology.", fbWrong:"Communication, operational efficiency, and mobility are legitimate and widely cited workplace benefits of technology. Personal entertainment is a personal use — not a professional justification for workplace technology investment."},
+  12: {correct:"C", std:"1.3.1", fbCorrect:"While telecommuting offers many benefits, the primary disadvantage is the increased security risk — employees accessing company systems from home networks are more vulnerable to data breaches.", fbWrong:"Satisfaction, productivity, and cost reduction are all advantages of telecommuting. The main disadvantage is cybersecurity vulnerability — home networks lack the security protections of office infrastructure."},
+  13: {correct:"C", std:"1.3.2", fbCorrect:"Clearing the cache removes stored data about your browsing session — including login information and site history — which protects your privacy when using shared devices.", fbWrong:"Speed improvement is a secondary benefit. Bookmarking is unrelated to cache. While clearing cache may marginally reduce some risks, the primary professional reason — especially on shared devices — is privacy protection."},
+  14: {correct:"B", std:"1.3.2", fbCorrect:"Negative workplace comments on social media can damage your professional reputation, violate confidentiality expectations, and create legal liability. Professional online conduct is an extension of workplace behavior.", fbWrong:"Personal hobby, family, and interest content carries minimal professional risk. Sensitive workplace commentary is the category most likely to have serious professional and legal consequences."},
+  15: {correct:"B", std:"1.3.2", fbCorrect:"SPAM refers to unsolicited bulk email — typically advertisements or phishing attempts — sent without the recipient's request or consent.", fbWrong:"SPAM is not an application, a URL format, or a firewall type. It is specifically unsolicited email communication — one of the most common internet safety concerns in professional environments."},
+  16: {correct:"C", std:"1.3.3", fbCorrect:"The sort function organizes data in a specified order — alphabetical, numerical, or by date — within a selected column or across a dataset.", fbWrong:"Numeric listing numbers items sequentially but does not reorder them. Converting to text removes the table structure. Formulas calculate values. The sort function is specifically designed to reorder data."},
+  17: {correct:"D", std:"1.3.3", fbCorrect:"Google Docs is a cloud-based document application, not a web browser. Firefox, Chrome, and Edge are all web browsers used to navigate the internet.", fbWrong:"Firefox, Chrome, and Edge are all web browsers — software used to access websites. Google Docs is a word processing application that you access through a browser."},
+  18: {correct:"C", std:"1.3.3", fbCorrect:"BCC (Blind Carbon Copy) sends the email to all recipients while keeping each person's address hidden from the others — protecting recipient privacy.", fbWrong:"TO and CC fields display all recipient addresses to everyone on the list. Reply All responds to all visible recipients. BCC is specifically designed for private mass email distribution."},
+  19: {correct:"C", std:"1.3.3", fbCorrect:"Computer literacy is defined as the ability to use computers and technology effectively across a range of tasks and complexity levels — from basic operations to advanced use.", fbWrong:"IT certification is a formal credential. Internet ethics refers to appropriate online behavior. Telecommunications involves communication systems. Computer literacy specifically describes the breadth of practical technology skills."},
+  20: {correct:"B", std:"1.3.4", fbCorrect:"Gross pay: 40 × $10.50 = $420.00. Deductions: $420 × 0.28 = $117.60. Net pay: $420 − $117.60 = $302.40.", fbWrong:"Gross pay is $420. Subtract 28% ($117.60) to find net pay: $420 − $117.60 = $302.40. $420 is gross, not net."},
+};
+
+const TOTAL = 20;
+const answers = {};
+let submitted = false;
+
+function selectOption(qNum, letter) {
+  if (submitted) return;
+  answers[qNum] = letter;
+  ['A','B','C','D'].forEach(l => {
+    const lbl = document.getElementById('label-' + qNum + '-' + l);
+    if (lbl) lbl.classList.remove('selected');
+  });
+  const sel = document.getElementById('label-' + qNum + '-' + letter);
+  if (sel) sel.classList.add('selected');
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = Object.keys(answers).length;
+  const pct = (answered / TOTAL) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = answered + ' of ' + TOTAL + ' answered';
+  if (answered > 0) {
+    const correct = Object.keys(answers).filter(n => answers[n] === QUESTIONS[parseInt(n)].correct).length;
+    document.getElementById('live-score').textContent = Math.round((correct/answered)*100) + '%';
+  }
+}
+
+function submitQuiz() {
+  const answered = Object.keys(answers).length;
+  if (answered < TOTAL) {
+    const remaining = TOTAL - answered;
+    const msg = document.getElementById('unanswered-msg');
+    msg.textContent = remaining + ' question' + (remaining > 1 ? 's' : '') + ' unanswered. Unanswered questions will count as incorrect.';
+    msg.style.display = 'block';
+    if (answered < Math.floor(TOTAL * 0.5)) return;
+  }
+  submitted = true;
+  document.querySelector('.btn-submit').style.display = 'none';
+  document.querySelector('.btn-retry').style.display = 'inline-block';
+
+  let correct = 0;
+  const stdStats = {};
+
+  Object.keys(QUESTIONS).forEach(n => {
+    const num = parseInt(n);
+    const q = QUESTIONS[num];
+    const userAns = answers[num] || null;
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) correct++;
+
+    if (!stdStats[q.std]) stdStats[q.std] = {correct:0, total:0};
+    stdStats[q.std].total++;
+    if (isCorrect) stdStats[q.std].correct++;
+
+    ['A','B','C','D'].forEach(l => {
+      const lbl = document.getElementById('label-' + num + '-' + l);
+      if (!lbl) return;
+      lbl.style.pointerEvents = 'none';
+      if (l === q.correct) lbl.classList.add('correct');
+      else if (l === userAns && !isCorrect) lbl.classList.add('incorrect');
+    });
+
+    const fb = document.getElementById('fb-' + num);
+    if (fb) {
+      fb.classList.add('show');
+      if (isCorrect) {
+        fb.classList.add('correct-fb');
+        fb.innerHTML = '<strong>✓ Correct.</strong> ' + q.fbCorrect;
+      } else {
+        fb.classList.add('incorrect-fb');
+        fb.innerHTML = '<strong>✗ Incorrect. The correct answer is ' + q.correct + '.</strong> ' + q.fbWrong;
+      }
+    }
+  });
+
+  const pct = Math.round((correct / TOTAL) * 100);
+  document.getElementById('live-score').textContent = pct + '%';
+  const passed = pct >= 75;
+  const panel = document.getElementById('results-panel');
+  panel.classList.add('show');
+  document.getElementById('pass-msg').textContent = passed ? '🎉 Passed!' : '📚 Keep practicing.';
+  document.getElementById('pass-msg').style.color = passed ? '#16a34a' : '#dc2626';
+  document.getElementById('pass-sub').textContent = 'You scored ' + correct + ' out of ' + TOTAL + ' (' + pct + '%). Passing is 75%.';
+  document.getElementById('results-grid').innerHTML = `
+    <div class="result-box ${passed ? 'rb-pass' : 'rb-fail'}"><div class="rb-num">${pct}%</div><div class="rb-label">Score</div></div>
+    <div class="result-box rb-neutral"><div class="rb-num">${correct}</div><div class="rb-label">Correct</div></div>
+    <div class="result-box rb-amber"><div class="rb-num">${TOTAL - correct}</div><div class="rb-label">Incorrect</div></div>
+  `;
+
+  let dbHTML = '<h4>By Standard</h4>';
+  Object.keys(stdStats).sort().forEach(std => {
+    const s = stdStats[std];
+    const dp = Math.round((s.correct/s.total)*100);
+    const color = dp >= 75 ? '#1D9E75' : (dp >= 50 ? '#EF9F27' : '#DC2626');
+    dbHTML += `<div class="db-row"><div class="db-label">Standard ${std}</div><div class="db-track"><div class="db-fill" style="width:${dp}%;background:${color}"></div></div><div class="db-score" style="color:${color}">${dp}%</div></div>`;
+  });
+  document.getElementById('standard-breakdown').innerHTML = dbHTML;
+  panel.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function retryQuiz() {
+  submitted = false;
+  Object.keys(answers).forEach(k => delete answers[k]);
+  Object.keys(QUESTIONS).forEach(n => {
+    const num = parseInt(n);
+    ['A','B','C','D'].forEach(l => {
+      const lbl = document.getElementById('label-' + num + '-' + l);
+      if (lbl) { lbl.classList.remove('selected','correct','incorrect'); lbl.style.pointerEvents = ''; }
+    });
+    const fb = document.getElementById('fb-' + num);
+    if (fb) { fb.classList.remove('show','correct-fb','incorrect-fb'); fb.innerHTML = ''; }
+  });
+  document.getElementById('results-panel').classList.remove('show');
+  document.querySelector('.btn-submit').style.display = 'inline-block';
+  document.querySelector('.btn-retry').style.display = 'none';
+  document.getElementById('unanswered-msg').style.display = 'none';
+  document.getElementById('live-score').textContent = '—';
+  updateProgress();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+</body>
+</html>

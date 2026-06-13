@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WRS Practice Quiz — Mixed 1 — Nevada CTE WRS</title>
+<style>
+  :root {
+    --green-dark: #085041; --green-mid: #1D9E75; --green-light: #E1F5EE;
+    --amber: #EF9F27; --amber-light: #FAEEDA; --purple: #3C3489;
+    --purple-light: #EEEDFE; --red-light: #FEE2E2; --red: #DC2626;
+    --body: #1a1a1a; --border: #DDDDDD; --gray-bg: #F5F5F5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Helvetica, Arial, sans-serif; background: #f0f4f3; color: var(--body); }
+  .site-header { background: var(--green-dark); color: white; padding: 18px 32px; display: flex; align-items: center; justify-content: space-between; }
+  .site-header .title-block h1 { font-size: 20px; font-weight: 700; }
+  .site-header .title-block p { font-size: 12px; opacity: 0.75; margin-top: 3px; }
+  .score-badge { background: var(--green-mid); border-radius: 8px; padding: 10px 18px; text-align: center; min-width: 110px; }
+  .score-badge .score-num { font-size: 26px; font-weight: 700; line-height: 1; }
+  .score-badge .score-label { font-size: 10px; opacity: 0.85; margin-top: 2px; }
+  .progress-bar-wrap { background: white; border-bottom: 1px solid var(--border); padding: 10px 32px; display: flex; align-items: center; gap: 14px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+  .progress-track { flex: 1; background: #e0e0e0; border-radius: 6px; height: 8px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--green-mid); border-radius: 6px; transition: width 0.3s; width: 0%; }
+  .progress-text { font-size: 12px; color: #555; white-space: nowrap; min-width: 110px; text-align: right; }
+  .intro-card { max-width: 860px; margin: 28px auto 0; background: white; border-radius: 10px; border: 1px solid var(--border); padding: 24px 28px; border-left: 5px solid var(--green-mid); }
+  .intro-card h2 { font-size: 16px; color: var(--green-dark); margin-bottom: 8px; }
+  .intro-card p { font-size: 14px; line-height: 1.7; color: #444; }
+  .exam-meta { display: flex; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
+  .meta-pill { background: var(--green-light); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: 11px; font-weight: 600; color: var(--green-dark); }
+  .question-card { max-width: 860px; margin: 20px auto 0; background: white; border: 1px solid var(--border); border-radius: 10px; padding: 22px 26px; }
+  .q-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+  .q-num { background: var(--green-light); color: var(--green-dark); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+  .q-standard { font-size: 10px; font-weight: 700; color: var(--green-mid); letter-spacing: 0.5px; text-transform: uppercase; margin-top: 2px; }
+  .q-text { font-size: 15px; font-weight: 600; line-height: 1.5; color: var(--body); }
+  .options { list-style: none; margin-top: 4px; display: flex; flex-direction: column; gap: 8px; }
+  .option-label { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border: 2px solid var(--border); border-radius: 7px; cursor: pointer; transition: all 0.15s; font-size: 14px; line-height: 1.5; user-select: none; }
+  .option-label:hover { border-color: var(--green-mid); background: var(--green-light); }
+  .option-label input[type=radio] { display: none; }
+  .opt-letter { width: 24px; height: 24px; border-radius: 50%; background: var(--gray-bg); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; transition: all 0.15s; }
+  .option-label.selected { border-color: var(--green-mid); background: var(--green-light); }
+  .option-label.selected .opt-letter { background: var(--green-mid); border-color: var(--green-mid); color: white; }
+  .option-label.correct { border-color: #16a34a; background: #f0fdf4; }
+  .option-label.correct .opt-letter { background: #16a34a; border-color: #16a34a; color: white; }
+  .option-label.incorrect { border-color: var(--red); background: var(--red-light); }
+  .option-label.incorrect .opt-letter { background: var(--red); border-color: var(--red); color: white; }
+  .feedback { display: none; margin-top: 12px; padding: 10px 14px; border-radius: 7px; font-size: 13px; line-height: 1.6; border-left: 4px solid; }
+  .feedback.show { display: block; }
+  .feedback.correct-fb { background: #f0fdf4; border-color: #16a34a; color: #14532d; }
+  .feedback.incorrect-fb { background: var(--red-light); border-color: var(--red); color: #7f1d1d; }
+  .submit-section { max-width: 860px; margin: 28px auto 48px; background: white; border: 1px solid var(--border); border-top: 2px solid var(--green-mid); border-radius: 10px; padding: 28px 32px; text-align: center; }
+  .btn-submit { background: var(--green-mid); color: white; border: none; padding: 14px 40px; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+  .btn-submit:hover { background: var(--green-dark); }
+  .btn-retry { background: var(--amber); color: white; border: none; padding: 12px 32px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.2s; display: none; margin-top: 10px; }
+  .btn-retry:hover { background: #c97f10; }
+  .unanswered-msg { color: var(--red); font-size: 13px; margin-top: 8px; display: none; }
+  .results-panel { display: none; margin-top: 20px; padding: 20px; border-radius: 8px; border: 1px solid var(--border); }
+  .results-panel.show { display: block; }
+  .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 14px; }
+  .result-box { padding: 14px; border-radius: 8px; text-align: center; }
+  .result-box .rb-num { font-size: 28px; font-weight: 700; line-height: 1; }
+  .result-box .rb-label { font-size: 11px; margin-top: 4px; font-weight: 600; }
+  .rb-pass { background: #f0fdf4; color: #16a34a; }
+  .rb-fail { background: var(--red-light); color: var(--red); }
+  .rb-neutral { background: var(--green-light); color: var(--green-dark); }
+  .rb-amber { background: var(--amber-light); color: #92400e; }
+  .pass-msg { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+  .pass-sub { font-size: 13px; color: #555; }
+  .standard-breakdown { margin-top: 18px; }
+  .standard-breakdown h4 { font-size: 13px; font-weight: 700; color: var(--green-dark); margin-bottom: 8px; }
+  .db-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font-size: 12px; }
+  .db-label { width: 220px; flex-shrink: 0; color: #444; }
+  .db-track { flex: 1; background: #e0e0e0; border-radius: 4px; height: 8px; overflow: hidden; }
+  .db-fill { height: 100%; border-radius: 4px; }
+  .db-score { width: 36px; text-align: right; font-weight: 700; font-size: 12px; }
+  @media (max-width: 640px) {
+    .site-header { padding: 14px 16px; }
+    .progress-bar-wrap { padding: 8px 16px; }
+    .intro-card, .question-card, .submit-section { margin-left: 12px; margin-right: 12px; padding: 16px; }
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="title-block">
+    <h1>WRS Practice Quiz — Mixed 1</h1>
+    <p>20-question mixed quiz covering all 22 Nevada Workplace Readiness Standards</p>
+  </div>
+  <div class="score-badge">
+    <div class="score-num" id="live-score">—</div>
+    <div class="score-label">Score</div>
+  </div>
+</header>
+<div class="progress-bar-wrap">
+  <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+  <div class="progress-text" id="progress-text">0 of 20 answered</div>
+</div>
+<div class="intro-card">
+  <h2>About This Quiz</h2>
+  <p>20-question mixed quiz covering all 22 Nevada Workplace Readiness Standards. Read each scenario carefully and select the best answer. After submitting you will see detailed feedback on every question.</p>
+  <div class="exam-meta">
+    <span class="meta-pill">20 Questions</span>
+    <span class="meta-pill">Multiple Choice</span>
+    <span class="meta-pill">Passing Score: 75%</span>
+    <span class="meta-pill">Nevada WRS Assessment Prep</span>
+  </div>
+</div>
+
+<div class="question-card" id="card-1">
+  <div class="q-header">
+    <div class="q-num">1</div>
+    <div>
+      <div class="q-standard">Standard 1.1.1</div>
+      <div class="q-text">Marcus arrives five minutes late to his shift three days in a row. Each time, he has a different excuse. His supervisor has not said anything yet. What should Marcus do?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-1-A" onclick="selectOption(1, 'A', 'B')">
+      <input type="radio" name="q1" value="A">
+      <span class="opt-letter">A</span>
+      <span>Wait to see if his supervisor brings it up.</span>
+    </label></li>
+    <li><label class="option-label" id="label-1-B" onclick="selectOption(1, 'B', 'B')">
+      <input type="radio" name="q1" value="B">
+      <span class="opt-letter">B</span>
+      <span>Arrive on time going forward and acknowledge the pattern to his supervisor.</span>
+    </label></li>
+    <li><label class="option-label" id="label-1-C" onclick="selectOption(1, 'C', 'B')">
+      <input type="radio" name="q1" value="C">
+      <span class="opt-letter">C</span>
+      <span>Continue as-is since no formal warning has been given.</span>
+    </label></li>
+    <li><label class="option-label" id="label-1-D" onclick="selectOption(1, 'D', 'B')">
+      <input type="radio" name="q1" value="D">
+      <span class="opt-letter">D</span>
+      <span>Ask a coworker to cover his late arrivals in the sign-in log.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-1"></div>
+</div>
+
+<div class="question-card" id="card-2">
+  <div class="q-header">
+    <div class="q-num">2</div>
+    <div>
+      <div class="q-standard">Standard 1.1.2</div>
+      <div class="q-text">Deon discovers that a coworker has been padding her timesheet by 15 minutes each day. Deon should</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-2-A" onclick="selectOption(2, 'A', 'C')">
+      <input type="radio" name="q2" value="A">
+      <span class="opt-letter">A</span>
+      <span>Ignore it — it is not his responsibility.</span>
+    </label></li>
+    <li><label class="option-label" id="label-2-B" onclick="selectOption(2, 'B', 'C')">
+      <input type="radio" name="q2" value="B">
+      <span class="opt-letter">B</span>
+      <span>Confront the coworker directly and threaten to report her.</span>
+    </label></li>
+    <li><label class="option-label" id="label-2-C" onclick="selectOption(2, 'C', 'C')">
+      <input type="radio" name="q2" value="C">
+      <span class="opt-letter">C</span>
+      <span>Report the issue to his supervisor through proper channels.</span>
+    </label></li>
+    <li><label class="option-label" id="label-2-D" onclick="selectOption(2, 'D', 'C')">
+      <input type="radio" name="q2" value="D">
+      <span class="opt-letter">D</span>
+      <span>Start padding his own timesheet so the situation is fair.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-2"></div>
+</div>
+
+<div class="question-card" id="card-3">
+  <div class="q-header">
+    <div class="q-num">3</div>
+    <div>
+      <div class="q-standard">Standard 1.1.3</div>
+      <div class="q-text">Your team is working on a group project and one member consistently misses deadlines, putting the whole team behind. The BEST first step is to</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-3-A" onclick="selectOption(3, 'A', 'C')">
+      <input type="radio" name="q3" value="A">
+      <span class="opt-letter">A</span>
+      <span>Remove them from the team immediately.</span>
+    </label></li>
+    <li><label class="option-label" id="label-3-B" onclick="selectOption(3, 'B', 'C')">
+      <input type="radio" name="q3" value="B">
+      <span class="opt-letter">B</span>
+      <span>Cover for them by doing their work yourself without saying anything.</span>
+    </label></li>
+    <li><label class="option-label" id="label-3-C" onclick="selectOption(3, 'C', 'C')">
+      <input type="radio" name="q3" value="C">
+      <span class="opt-letter">C</span>
+      <span>Address it as a team and clarify expectations and deadlines together.</span>
+    </label></li>
+    <li><label class="option-label" id="label-3-D" onclick="selectOption(3, 'D', 'C')">
+      <input type="radio" name="q3" value="D">
+      <span class="opt-letter">D</span>
+      <span>Tell your supervisor without speaking to the team member first.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-3"></div>
+</div>
+
+<div class="question-card" id="card-4">
+  <div class="q-header">
+    <div class="q-num">4</div>
+    <div>
+      <div class="q-standard">Standard 1.1.4</div>
+      <div class="q-text">Jamie works with elementary school-aged children in the afternoons and is very conscious of how she presents herself, knowing her appearance makes an impact on the children. Jamie is demonstrating:</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-4-A" onclick="selectOption(4, 'A', 'C')">
+      <input type="radio" name="q4" value="A">
+      <span class="opt-letter">A</span>
+      <span>Integrity.</span>
+    </label></li>
+    <li><label class="option-label" id="label-4-B" onclick="selectOption(4, 'B', 'C')">
+      <input type="radio" name="q4" value="B">
+      <span class="opt-letter">B</span>
+      <span>Creativity.</span>
+    </label></li>
+    <li><label class="option-label" id="label-4-C" onclick="selectOption(4, 'C', 'C')">
+      <input type="radio" name="q4" value="C">
+      <span class="opt-letter">C</span>
+      <span>Professionalism.</span>
+    </label></li>
+    <li><label class="option-label" id="label-4-D" onclick="selectOption(4, 'D', 'C')">
+      <input type="radio" name="q4" value="D">
+      <span class="opt-letter">D</span>
+      <span>Teamwork.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-4"></div>
+</div>
+
+<div class="question-card" id="card-5">
+  <div class="q-header">
+    <div class="q-num">5</div>
+    <div>
+      <div class="q-standard">Standard 1.1.5</div>
+      <div class="q-text">Oki is a sales associate and notices an older man with tattered clothing enter the store. How should he first approach the customer?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-5-A" onclick="selectOption(5, 'A', 'C')">
+      <input type="radio" name="q5" value="A">
+      <span class="opt-letter">A</span>
+      <span>Inform him of available layaway plans.</span>
+    </label></li>
+    <li><label class="option-label" id="label-5-B" onclick="selectOption(5, 'B', 'C')">
+      <input type="radio" name="q5" value="B">
+      <span class="opt-letter">B</span>
+      <span>Ask him to review the posted dress code and leave.</span>
+    </label></li>
+    <li><label class="option-label" id="label-5-C" onclick="selectOption(5, 'C', 'C')">
+      <input type="radio" name="q5" value="C">
+      <span class="opt-letter">C</span>
+      <span>Greet him and ask if he would like assistance.</span>
+    </label></li>
+    <li><label class="option-label" id="label-5-D" onclick="selectOption(5, 'D', 'C')">
+      <input type="radio" name="q5" value="D">
+      <span class="opt-letter">D</span>
+      <span>Wait until the customer approaches him.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-5"></div>
+</div>
+
+<div class="question-card" id="card-6">
+  <div class="q-header">
+    <div class="q-num">6</div>
+    <div>
+      <div class="q-standard">Standard 1.1.6</div>
+      <div class="q-text">When resolving a workplace conflict, the main goal is to:</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-6-A" onclick="selectOption(6, 'A', 'C')">
+      <input type="radio" name="q6" value="A">
+      <span class="opt-letter">A</span>
+      <span>Debate the problem and choose a winner.</span>
+    </label></li>
+    <li><label class="option-label" id="label-6-B" onclick="selectOption(6, 'B', 'C')">
+      <input type="radio" name="q6" value="B">
+      <span class="opt-letter">B</span>
+      <span>Explore solutions but assign blame to one party.</span>
+    </label></li>
+    <li><label class="option-label" id="label-6-C" onclick="selectOption(6, 'C', 'C')">
+      <input type="radio" name="q6" value="C">
+      <span class="opt-letter">C</span>
+      <span>Find middle ground or a win-win solution.</span>
+    </label></li>
+    <li><label class="option-label" id="label-6-D" onclick="selectOption(6, 'D', 'C')">
+      <input type="radio" name="q6" value="D">
+      <span class="opt-letter">D</span>
+      <span>Determine the strengths and weaknesses of each side.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-6"></div>
+</div>
+
+<div class="question-card" id="card-7">
+  <div class="q-header">
+    <div class="q-num">7</div>
+    <div>
+      <div class="q-standard">Standard 1.1.7</div>
+      <div class="q-text">A coworker is using a piece of equipment incorrectly in a way that could cause injury. You should</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-7-A" onclick="selectOption(7, 'A', 'C')">
+      <input type="radio" name="q7" value="A">
+      <span class="opt-letter">A</span>
+      <span>Mind your own business — it is not your station.</span>
+    </label></li>
+    <li><label class="option-label" id="label-7-B" onclick="selectOption(7, 'B', 'C')">
+      <input type="radio" name="q7" value="B">
+      <span class="opt-letter">B</span>
+      <span>Wait to see if a supervisor notices.</span>
+    </label></li>
+    <li><label class="option-label" id="label-7-C" onclick="selectOption(7, 'C', 'C')">
+      <input type="radio" name="q7" value="C">
+      <span class="opt-letter">C</span>
+      <span>Calmly point out the safety concern and suggest the correct procedure.</span>
+    </label></li>
+    <li><label class="option-label" id="label-7-D" onclick="selectOption(7, 'D', 'C')">
+      <input type="radio" name="q7" value="D">
+      <span class="opt-letter">D</span>
+      <span>Immediately file a formal safety complaint.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-7"></div>
+</div>
+
+<div class="question-card" id="card-8">
+  <div class="q-header">
+    <div class="q-num">8</div>
+    <div>
+      <div class="q-standard">Standard 1.2.1</div>
+      <div class="q-text">During a staff meeting a supervisor asks employees to bring new ideas to the next meeting that will improve customer service. The BEST way to come up with good ideas is to</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-8-A" onclick="selectOption(8, 'A', 'B')">
+      <input type="radio" name="q8" value="A">
+      <span class="opt-letter">A</span>
+      <span>Ignore requests outside your job description.</span>
+    </label></li>
+    <li><label class="option-label" id="label-8-B" onclick="selectOption(8, 'B', 'B')">
+      <input type="radio" name="q8" value="B">
+      <span class="opt-letter">B</span>
+      <span>Research how competitors have approached the same challenge.</span>
+    </label></li>
+    <li><label class="option-label" id="label-8-C" onclick="selectOption(8, 'C', 'B')">
+      <input type="radio" name="q8" value="C">
+      <span class="opt-letter">C</span>
+      <span>Ask your coworker what they would do.</span>
+    </label></li>
+    <li><label class="option-label" id="label-8-D" onclick="selectOption(8, 'D', 'B')">
+      <input type="radio" name="q8" value="D">
+      <span class="opt-letter">D</span>
+      <span>Consult the employee handbook.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-8"></div>
+</div>
+
+<div class="question-card" id="card-9">
+  <div class="q-header">
+    <div class="q-num">9</div>
+    <div>
+      <div class="q-standard">Standard 1.2.2</div>
+      <div class="q-text">What would be the preferred way to start a professional email to a new potential customer whose name you do not know?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-9-A" onclick="selectOption(9, 'A', 'C')">
+      <input type="radio" name="q9" value="A">
+      <span class="opt-letter">A</span>
+      <span>Dear Mister or Madam (last name)</span>
+    </label></li>
+    <li><label class="option-label" id="label-9-B" onclick="selectOption(9, 'B', 'C')">
+      <input type="radio" name="q9" value="B">
+      <span class="opt-letter">B</span>
+      <span>Mr. or Ms. (last name)</span>
+    </label></li>
+    <li><label class="option-label" id="label-9-C" onclick="selectOption(9, 'C', 'C')">
+      <input type="radio" name="q9" value="C">
+      <span class="opt-letter">C</span>
+      <span>To Whom It May Concern</span>
+    </label></li>
+    <li><label class="option-label" id="label-9-D" onclick="selectOption(9, 'D', 'C')">
+      <input type="radio" name="q9" value="D">
+      <span class="opt-letter">D</span>
+      <span>Greetings from (company name)</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-9"></div>
+</div>
+
+<div class="question-card" id="card-10">
+  <div class="q-header">
+    <div class="q-num">10</div>
+    <div>
+      <div class="q-standard">Standard 1.2.3</div>
+      <div class="q-text">Paul feels the work schedule at his job is confusing. He creates a new format and presents it to his manager with his reasoning. This shows Paul's:</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-10-A" onclick="selectOption(10, 'A', 'A')">
+      <input type="radio" name="q10" value="A">
+      <span class="opt-letter">A</span>
+      <span>Initiative.</span>
+    </label></li>
+    <li><label class="option-label" id="label-10-B" onclick="selectOption(10, 'B', 'A')">
+      <input type="radio" name="q10" value="B">
+      <span class="opt-letter">B</span>
+      <span>Values.</span>
+    </label></li>
+    <li><label class="option-label" id="label-10-C" onclick="selectOption(10, 'C', 'A')">
+      <input type="radio" name="q10" value="C">
+      <span class="opt-letter">C</span>
+      <span>Diversity awareness.</span>
+    </label></li>
+    <li><label class="option-label" id="label-10-D" onclick="selectOption(10, 'D', 'A')">
+      <input type="radio" name="q10" value="D">
+      <span class="opt-letter">D</span>
+      <span>Integrity.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-10"></div>
+</div>
+
+<div class="question-card" id="card-11">
+  <div class="q-header">
+    <div class="q-num">11</div>
+    <div>
+      <div class="q-standard">Standard 1.2.4</div>
+      <div class="q-text">You need to research industry salary data for a report. Which source would be MOST credible?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-11-A" onclick="selectOption(11, 'A', 'B')">
+      <input type="radio" name="q11" value="A">
+      <span class="opt-letter">A</span>
+      <span>A comment thread on a career advice forum.</span>
+    </label></li>
+    <li><label class="option-label" id="label-11-B" onclick="selectOption(11, 'B', 'B')">
+      <input type="radio" name="q11" value="B">
+      <span class="opt-letter">B</span>
+      <span>The U.S. Bureau of Labor Statistics website.</span>
+    </label></li>
+    <li><label class="option-label" id="label-11-C" onclick="selectOption(11, 'C', 'B')">
+      <input type="radio" name="q11" value="C">
+      <span class="opt-letter">C</span>
+      <span>A blog post written by a job seeker.</span>
+    </label></li>
+    <li><label class="option-label" id="label-11-D" onclick="selectOption(11, 'D', 'B')">
+      <input type="radio" name="q11" value="D">
+      <span class="opt-letter">D</span>
+      <span>A social media post from a recruiter.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-11"></div>
+</div>
+
+<div class="question-card" id="card-12">
+  <div class="q-header">
+    <div class="q-num">12</div>
+    <div>
+      <div class="q-standard">Standard 1.2.5</div>
+      <div class="q-text">Shawnee submitted new procedures to her supervisor on how to improve sales and service, based on a model she learned about at a professional development conference. These new procedures represent a:</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-12-A" onclick="selectOption(12, 'A', 'B')">
+      <input type="radio" name="q12" value="A">
+      <span class="opt-letter">A</span>
+      <span>Negotiation.</span>
+    </label></li>
+    <li><label class="option-label" id="label-12-B" onclick="selectOption(12, 'B', 'B')">
+      <input type="radio" name="q12" value="B">
+      <span class="opt-letter">B</span>
+      <span>Innovation.</span>
+    </label></li>
+    <li><label class="option-label" id="label-12-C" onclick="selectOption(12, 'C', 'B')">
+      <input type="radio" name="q12" value="C">
+      <span class="opt-letter">C</span>
+      <span>Collaboration.</span>
+    </label></li>
+    <li><label class="option-label" id="label-12-D" onclick="selectOption(12, 'D', 'B')">
+      <input type="radio" name="q12" value="D">
+      <span class="opt-letter">D</span>
+      <span>Initiative only.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-12"></div>
+</div>
+
+<div class="question-card" id="card-13">
+  <div class="q-header">
+    <div class="q-num">13</div>
+    <div>
+      <div class="q-standard">Standard 1.2.6</div>
+      <div class="q-text">Which of the following is most essential if you are interested in earning a promotion?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-13-A" onclick="selectOption(13, 'A', 'C')">
+      <input type="radio" name="q13" value="A">
+      <span class="opt-letter">A</span>
+      <span>Take coworkers to lunch regularly.</span>
+    </label></li>
+    <li><label class="option-label" id="label-13-B" onclick="selectOption(13, 'B', 'C')">
+      <input type="radio" name="q13" value="B">
+      <span class="opt-letter">B</span>
+      <span>Develop a close friendship with your supervisor.</span>
+    </label></li>
+    <li><label class="option-label" id="label-13-C" onclick="selectOption(13, 'C', 'C')">
+      <input type="radio" name="q13" value="C">
+      <span class="opt-letter">C</span>
+      <span>Acquire and demonstrate new industry knowledge.</span>
+    </label></li>
+    <li><label class="option-label" id="label-13-D" onclick="selectOption(13, 'D', 'C')">
+      <input type="radio" name="q13" value="D">
+      <span class="opt-letter">D</span>
+      <span>Hire a professional career coach.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-13"></div>
+</div>
+
+<div class="question-card" id="card-14">
+  <div class="q-header">
+    <div class="q-num">14</div>
+    <div>
+      <div class="q-standard">Standard 1.2.7</div>
+      <div class="q-text">Many industry groups have professional associations related to their work. What opportunities do these organizations offer to support continuous learning?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-14-A" onclick="selectOption(14, 'A', 'D')">
+      <input type="radio" name="q14" value="A">
+      <span class="opt-letter">A</span>
+      <span>Travel and class reunions.</span>
+    </label></li>
+    <li><label class="option-label" id="label-14-B" onclick="selectOption(14, 'B', 'D')">
+      <input type="radio" name="q14" value="B">
+      <span class="opt-letter">B</span>
+      <span>Conferences and friendships.</span>
+    </label></li>
+    <li><label class="option-label" id="label-14-C" onclick="selectOption(14, 'C', 'D')">
+      <input type="radio" name="q14" value="C">
+      <span class="opt-letter">C</span>
+      <span>Resume enhancement only.</span>
+    </label></li>
+    <li><label class="option-label" id="label-14-D" onclick="selectOption(14, 'D', 'D')">
+      <input type="radio" name="q14" value="D">
+      <span class="opt-letter">D</span>
+      <span>Education and professional networking.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-14"></div>
+</div>
+
+<div class="question-card" id="card-15">
+  <div class="q-header">
+    <div class="q-num">15</div>
+    <div>
+      <div class="q-standard">Standard 1.2.8</div>
+      <div class="q-text">During her interview, Susie was asked if she would attend occasional overnight training sessions. This question is typically asked to discover:</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-15-A" onclick="selectOption(15, 'A', 'B')">
+      <input type="radio" name="q15" value="A">
+      <span class="opt-letter">A</span>
+      <span>Whether she would work overtime hours.</span>
+    </label></li>
+    <li><label class="option-label" id="label-15-B" onclick="selectOption(15, 'B', 'B')">
+      <input type="radio" name="q15" value="B">
+      <span class="opt-letter">B</span>
+      <span>Her commitment to professional growth.</span>
+    </label></li>
+    <li><label class="option-label" id="label-15-C" onclick="selectOption(15, 'C', 'B')">
+      <input type="radio" name="q15" value="C">
+      <span class="opt-letter">C</span>
+      <span>Her desire to move into management.</span>
+    </label></li>
+    <li><label class="option-label" id="label-15-D" onclick="selectOption(15, 'D', 'B')">
+      <input type="radio" name="q15" value="D">
+      <span class="opt-letter">D</span>
+      <span>Whether she is willing to sacrifice personal values.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-15"></div>
+</div>
+
+<div class="question-card" id="card-16">
+  <div class="q-header">
+    <div class="q-num">16</div>
+    <div>
+      <div class="q-standard">Standard 1.2.9</div>
+      <div class="q-text">The sometimes predictable fluctuations in economic activity — such as employment and production — are referred to as:</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-16-A" onclick="selectOption(16, 'A', 'A')">
+      <input type="radio" name="q16" value="A">
+      <span class="opt-letter">A</span>
+      <span>The business cycle.</span>
+    </label></li>
+    <li><label class="option-label" id="label-16-B" onclick="selectOption(16, 'B', 'A')">
+      <input type="radio" name="q16" value="B">
+      <span class="opt-letter">B</span>
+      <span>Microeconomics.</span>
+    </label></li>
+    <li><label class="option-label" id="label-16-C" onclick="selectOption(16, 'C', 'A')">
+      <input type="radio" name="q16" value="C">
+      <span class="opt-letter">C</span>
+      <span>The law of demand.</span>
+    </label></li>
+    <li><label class="option-label" id="label-16-D" onclick="selectOption(16, 'D', 'A')">
+      <input type="radio" name="q16" value="D">
+      <span class="opt-letter">D</span>
+      <span>The law of supply.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-16"></div>
+</div>
+
+<div class="question-card" id="card-17">
+  <div class="q-header">
+    <div class="q-num">17</div>
+    <div>
+      <div class="q-standard">Standard 1.2.10</div>
+      <div class="q-text">In the graphic below, which personal skill BEST fits into a shaded area that combines your expertise, your ability to think outside the box, and motivation from within?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-17-A" onclick="selectOption(17, 'A', 'A')">
+      <input type="radio" name="q17" value="A">
+      <span class="opt-letter">A</span>
+      <span>Resourcefulness.</span>
+    </label></li>
+    <li><label class="option-label" id="label-17-B" onclick="selectOption(17, 'B', 'A')">
+      <input type="radio" name="q17" value="B">
+      <span class="opt-letter">B</span>
+      <span>Teamwork.</span>
+    </label></li>
+    <li><label class="option-label" id="label-17-C" onclick="selectOption(17, 'C', 'A')">
+      <input type="radio" name="q17" value="C">
+      <span class="opt-letter">C</span>
+      <span>Positive work ethic.</span>
+    </label></li>
+    <li><label class="option-label" id="label-17-D" onclick="selectOption(17, 'D', 'A')">
+      <input type="radio" name="q17" value="D">
+      <span class="opt-letter">D</span>
+      <span>Integrity.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-17"></div>
+</div>
+
+<div class="question-card" id="card-18">
+  <div class="q-header">
+    <div class="q-num">18</div>
+    <div>
+      <div class="q-standard">Standard 1.3.1</div>
+      <div class="q-text">Trevor frequently cannot access his work files on his laptop when away from the office. Which should be his FIRST resource to solve this problem?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-18-A" onclick="selectOption(18, 'A', 'D')">
+      <input type="radio" name="q18" value="A">
+      <span class="opt-letter">A</span>
+      <span>His supervisor or manager.</span>
+    </label></li>
+    <li><label class="option-label" id="label-18-B" onclick="selectOption(18, 'B', 'D')">
+      <input type="radio" name="q18" value="B">
+      <span class="opt-letter">B</span>
+      <span>Online research forums.</span>
+    </label></li>
+    <li><label class="option-label" id="label-18-C" onclick="selectOption(18, 'C', 'D')">
+      <input type="radio" name="q18" value="C">
+      <span class="opt-letter">C</span>
+      <span>A tech-savvy personal friend.</span>
+    </label></li>
+    <li><label class="option-label" id="label-18-D" onclick="selectOption(18, 'D', 'D')">
+      <input type="radio" name="q18" value="D">
+      <span class="opt-letter">D</span>
+      <span>The company IT department.</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-18"></div>
+</div>
+
+<div class="question-card" id="card-19">
+  <div class="q-header">
+    <div class="q-num">19</div>
+    <div>
+      <div class="q-standard">Standard 1.3.2</div>
+      <div class="q-text">Nicholas needs a strong password for his online banking. Which of the following is the strongest?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-19-A" onclick="selectOption(19, 'A', 'A')">
+      <input type="radio" name="q19" value="A">
+      <span class="opt-letter">A</span>
+      <span>pq98#3!4dn</span>
+    </label></li>
+    <li><label class="option-label" id="label-19-B" onclick="selectOption(19, 'B', 'A')">
+      <input type="radio" name="q19" value="B">
+      <span class="opt-letter">B</span>
+      <span>12898Nicholas</span>
+    </label></li>
+    <li><label class="option-label" id="label-19-C" onclick="selectOption(19, 'C', 'A')">
+      <input type="radio" name="q19" value="C">
+      <span class="opt-letter">C</span>
+      <span>Nich0laS</span>
+    </label></li>
+    <li><label class="option-label" id="label-19-D" onclick="selectOption(19, 'D', 'A')">
+      <input type="radio" name="q19" value="D">
+      <span class="opt-letter">D</span>
+      <span>33ElmStreet</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-19"></div>
+</div>
+
+<div class="question-card" id="card-20">
+  <div class="q-header">
+    <div class="q-num">20</div>
+    <div>
+      <div class="q-standard">Standard 1.3.4</div>
+      <div class="q-text">A salesperson earns 8% commission on total sales. This week she sold $2,250 worth of merchandise. How much commission did she earn?</div>
+    </div>
+  </div>
+  <ul class="options">
+    <li><label class="option-label" id="label-20-A" onclick="selectOption(20, 'A', 'B')">
+      <input type="radio" name="q20" value="A">
+      <span class="opt-letter">A</span>
+      <span>$225.00</span>
+    </label></li>
+    <li><label class="option-label" id="label-20-B" onclick="selectOption(20, 'B', 'B')">
+      <input type="radio" name="q20" value="B">
+      <span class="opt-letter">B</span>
+      <span>$180.00</span>
+    </label></li>
+    <li><label class="option-label" id="label-20-C" onclick="selectOption(20, 'C', 'B')">
+      <input type="radio" name="q20" value="C">
+      <span class="opt-letter">C</span>
+      <span>$22.50</span>
+    </label></li>
+    <li><label class="option-label" id="label-20-D" onclick="selectOption(20, 'D', 'B')">
+      <input type="radio" name="q20" value="D">
+      <span class="opt-letter">D</span>
+      <span>$112.50</span>
+    </label></li>
+  </ul>
+  <div class="feedback" id="fb-20"></div>
+</div>
+
+<div class="submit-section" id="submit-section">
+  <button class="btn-submit" onclick="submitQuiz()">Check My Answers</button>
+  <div class="unanswered-msg" id="unanswered-msg"></div>
+  <button class="btn-retry" onclick="retryQuiz()">Try Again</button>
+  <div class="results-panel" id="results-panel">
+    <div class="pass-msg" id="pass-msg"></div>
+    <div class="pass-sub" id="pass-sub"></div>
+    <div class="results-grid" id="results-grid"></div>
+    <div class="standard-breakdown" id="standard-breakdown"></div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = {
+  1: {correct:"B", std:"1.1.1", fbCorrect:"Work ethic means taking personal accountability for attendance patterns even before being formally addressed. Proactively correcting the behavior and acknowledging it to a supervisor demonstrates integrity and professionalism.", fbWrong:"Waiting for a warning, continuing the pattern, or asking a coworker to cover for you are all failures of work ethic. The professional standard is to self-correct and be transparent."},
+  2: {correct:"C", std:"1.1.2", fbCorrect:"Integrity requires reporting ethical violations through proper channels. Timesheet fraud is theft from the employer, and staying silent makes Deon complicit.", fbWrong:"Ignoring fraud or retaliating by committing it yourself are both integrity failures. Direct confrontation may escalate unnecessarily. Reporting through proper channels is the professional and ethical response."},
+  3: {correct:"C", std:"1.1.3", fbCorrect:"Teamwork requires addressing internal issues collaboratively before escalating. Clarifying expectations and deadlines together gives the team member a chance to correct course within the team.", fbWrong:"Removing someone immediately skips problem-solving steps. Covering silently enables the behavior. Escalating to a supervisor before addressing it internally bypasses the collaborative process teamwork requires."},
+  4: {correct:"C", std:"1.1.4", fbCorrect:"Being mindful of personal appearance and its impact on others — especially in a professional role — is a direct expression of professional self-representation.", fbWrong:"Integrity involves ethical behavior. Creativity involves generating new ideas. Teamwork involves collaboration. Conscious professional self-presentation — especially regarding appearance and its effect on others — is professionalism."},
+  5: {correct:"C", std:"1.1.5", fbCorrect:"Diversity awareness requires equal, respectful treatment of all customers regardless of appearance, age, or perceived economic status. Greeting and offering assistance is the professional standard.", fbWrong:"Assuming financial status based on clothing is stereotyping. Directing him to a dress code is discriminatory and inappropriate. Waiting passively fails the customer service standard. Equal, proactive greeting is correct."},
+  6: {correct:"C", std:"1.1.6", fbCorrect:"Conflict resolution is not about winning or assigning blame — it is about finding a solution that both parties can accept. Win-win outcomes preserve working relationships.", fbWrong:"Declaring a winner or assigning blame damages working relationships and does not resolve underlying issues. Analyzing strengths and weaknesses is part of the process but not the goal. The goal is a mutually acceptable solution."},
+  7: {correct:"C", std:"1.1.7", fbCorrect:"Workplace health and safety is a shared responsibility. Calmly addressing a safety concern directly and immediately is the appropriate first response.", fbWrong:"Ignoring a safety hazard or waiting for a supervisor puts your coworker at risk. Filing a formal complaint is appropriate for persistent or serious violations but not the first step for an in-the-moment correction."},
+  8: {correct:"B", std:"1.2.1", fbCorrect:"Critical thinking and creativity both benefit from researching how others have solved similar problems. Looking at competitor approaches provides concrete, evidence-based inspiration.", fbWrong:"Ignoring the request is unprofessional. Asking a coworker substitutes their opinion for your own research. The handbook addresses policies, not innovation. Researching external approaches is the most productive starting point."},
+  9: {correct:"C", std:"1.2.2", fbCorrect:"When the recipient's name is unknown, 'To Whom It May Concern' is the accepted professional salutation. It is formal, neutral, and widely recognized.", fbWrong:"Using a title without a name is grammatically incomplete. Beginning with just a title and name format without 'Dear' is too abrupt. A company greeting is informal and impersonal. 'To Whom It May Concern' is the standard professional opener when the name is unknown."},
+  10: {correct:"A", std:"1.2.3", fbCorrect:"Initiative means identifying a problem and proactively developing and presenting a solution without being asked. Paul's self-directed improvement effort is a clear demonstration of leadership initiative.", fbWrong:"Values and integrity describe ethical conduct. Diversity awareness involves inclusion. Proactively solving a problem before being asked — and bringing it to management — is specifically initiative."},
+  11: {correct:"B", std:"1.2.4", fbCorrect:"The Bureau of Labor Statistics is a federal government agency that collects and publishes verified, nationally representative wage and employment data — the gold standard for this type of research.", fbWrong:"Forums, personal blogs, and social media posts are unverified opinion sources. Government agencies publish peer-reviewed, evidence-based data. For salary and labor data, BLS is the most credible source."},
+  12: {correct:"B", std:"1.2.5", fbCorrect:"Innovation is the application of new ideas or approaches to improve existing processes. Shawnee learned something new and applied it to create an improved workplace procedure — that is innovation.", fbWrong:"Negotiation involves working out a compromise. Collaboration involves joint effort with others. Initiative describes the act of stepping forward, but the new procedure itself is specifically an innovation — a new approach applied to improve a system."},
+  13: {correct:"C", std:"1.2.6", fbCorrect:"Promotions are earned through demonstrated growth and competency. Acquiring and proving new industry knowledge shows readiness for greater responsibility.", fbWrong:"Social gestures like lunches or friendships may improve relationships but are not the basis for promotion decisions. Career coaches are personal tools. Demonstrated knowledge and skill growth is what organizations reward with advancement."},
+  14: {correct:"D", std:"1.2.7", fbCorrect:"Professional associations provide structured education — conferences, workshops, certifications — and networking opportunities with peers and leaders in the field. Both directly support continuous learning.", fbWrong:"Travel and reunions are social benefits, not learning tools. Friendships may form but are not the primary purpose. Resume enhancement is a byproduct. Education and networking are the core professional development offerings."},
+  15: {correct:"B", std:"1.2.8", fbCorrect:"Willingness to attend professional training — even when it requires travel — signals commitment to learning and development. Employers use this question to identify candidates invested in growing their skills.", fbWrong:"The question is not about overtime pay, management ambition, or values. It is specifically about whether the candidate values and prioritizes professional development — a key trait employers seek."},
+  16: {correct:"A", std:"1.2.9", fbCorrect:"The business cycle describes the recurring pattern of expansion and contraction in economic activity over time — including employment levels and production output.", fbWrong:"Microeconomics studies individual and firm-level decisions. The law of demand and law of supply describe price-quantity relationships. The business cycle specifically refers to the recurring fluctuations in overall economic activity."},
+  17: {correct:"A", std:"1.2.10", fbCorrect:"Resourcefulness combines knowledge and expertise, creative thinking, and internal motivation to find solutions — matching all three elements described in the shaded area.", fbWrong:"Teamwork focuses on collaboration with others. Work ethic relates to reliability and task completion. Integrity involves ethical conduct. Resourcefulness specifically describes the intersection of expertise, creativity, and self-motivation."},
+  18: {correct:"D", std:"1.3.1", fbCorrect:"For work-related technology issues, the IT department has the authority, access, and tools to diagnose and resolve company system problems. They are always the correct first professional resource.", fbWrong:"A supervisor can escalate but typically cannot fix technical issues directly. Personal friends and online forums lack access to company systems and security protocols. IT is the designated first resource for workplace technology problems."},
+  19: {correct:"A", std:"1.3.2", fbCorrect:"A strong password uses a random combination of uppercase and lowercase letters, numbers, and special characters with no recognizable words or personal information.", fbWrong:"Passwords containing your name or address are vulnerable to social engineering attacks. Simple letter-number substitutions like Nich0laS are a well-known hacking technique. Random character combinations with symbols are the most secure."},
+  20: {correct:"B", std:"1.3.4", fbCorrect:"Commission = $2,250 × 0.08 = $180.00.", fbWrong:"$225 would be 10% commission. $22.50 would be 1%. $112.50 would be 5%. The correct calculation is $2,250 × 0.08 = $180.00."},
+};
+
+const TOTAL = 20;
+const answers = {};
+let submitted = false;
+
+function selectOption(qNum, letter) {
+  if (submitted) return;
+  answers[qNum] = letter;
+  ['A','B','C','D'].forEach(l => {
+    const lbl = document.getElementById('label-' + qNum + '-' + l);
+    if (lbl) lbl.classList.remove('selected');
+  });
+  const sel = document.getElementById('label-' + qNum + '-' + letter);
+  if (sel) sel.classList.add('selected');
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = Object.keys(answers).length;
+  const pct = (answered / TOTAL) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = answered + ' of ' + TOTAL + ' answered';
+  if (answered > 0) {
+    const correct = Object.keys(answers).filter(n => answers[n] === QUESTIONS[parseInt(n)].correct).length;
+    document.getElementById('live-score').textContent = Math.round((correct/answered)*100) + '%';
+  }
+}
+
+function submitQuiz() {
+  const answered = Object.keys(answers).length;
+  if (answered < TOTAL) {
+    const remaining = TOTAL - answered;
+    const msg = document.getElementById('unanswered-msg');
+    msg.textContent = remaining + ' question' + (remaining > 1 ? 's' : '') + ' unanswered. Unanswered questions will count as incorrect.';
+    msg.style.display = 'block';
+    if (answered < Math.floor(TOTAL * 0.5)) return;
+  }
+  submitted = true;
+  document.querySelector('.btn-submit').style.display = 'none';
+  document.querySelector('.btn-retry').style.display = 'inline-block';
+
+  let correct = 0;
+  const stdStats = {};
+
+  Object.keys(QUESTIONS).forEach(n => {
+    const num = parseInt(n);
+    const q = QUESTIONS[num];
+    const userAns = answers[num] || null;
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) correct++;
+
+    if (!stdStats[q.std]) stdStats[q.std] = {correct:0, total:0};
+    stdStats[q.std].total++;
+    if (isCorrect) stdStats[q.std].correct++;
+
+    ['A','B','C','D'].forEach(l => {
+      const lbl = document.getElementById('label-' + num + '-' + l);
+      if (!lbl) return;
+      lbl.style.pointerEvents = 'none';
+      if (l === q.correct) lbl.classList.add('correct');
+      else if (l === userAns && !isCorrect) lbl.classList.add('incorrect');
+    });
+
+    const fb = document.getElementById('fb-' + num);
+    if (fb) {
+      fb.classList.add('show');
+      if (isCorrect) {
+        fb.classList.add('correct-fb');
+        fb.innerHTML = '<strong>✓ Correct.</strong> ' + q.fbCorrect;
+      } else {
+        fb.classList.add('incorrect-fb');
+        fb.innerHTML = '<strong>✗ Incorrect. The correct answer is ' + q.correct + '.</strong> ' + q.fbWrong;
+      }
+    }
+  });
+
+  const pct = Math.round((correct / TOTAL) * 100);
+  document.getElementById('live-score').textContent = pct + '%';
+  const passed = pct >= 75;
+  const panel = document.getElementById('results-panel');
+  panel.classList.add('show');
+  document.getElementById('pass-msg').textContent = passed ? '🎉 Passed!' : '📚 Keep practicing.';
+  document.getElementById('pass-msg').style.color = passed ? '#16a34a' : '#dc2626';
+  document.getElementById('pass-sub').textContent = 'You scored ' + correct + ' out of ' + TOTAL + ' (' + pct + '%). Passing is 75%.';
+  document.getElementById('results-grid').innerHTML = `
+    <div class="result-box ${passed ? 'rb-pass' : 'rb-fail'}"><div class="rb-num">${pct}%</div><div class="rb-label">Score</div></div>
+    <div class="result-box rb-neutral"><div class="rb-num">${correct}</div><div class="rb-label">Correct</div></div>
+    <div class="result-box rb-amber"><div class="rb-num">${TOTAL - correct}</div><div class="rb-label">Incorrect</div></div>
+  `;
+
+  let dbHTML = '<h4>By Standard</h4>';
+  Object.keys(stdStats).sort().forEach(std => {
+    const s = stdStats[std];
+    const dp = Math.round((s.correct/s.total)*100);
+    const color = dp >= 75 ? '#1D9E75' : (dp >= 50 ? '#EF9F27' : '#DC2626');
+    dbHTML += `<div class="db-row"><div class="db-label">Standard ${std}</div><div class="db-track"><div class="db-fill" style="width:${dp}%;background:${color}"></div></div><div class="db-score" style="color:${color}">${dp}%</div></div>`;
+  });
+  document.getElementById('standard-breakdown').innerHTML = dbHTML;
+  panel.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function retryQuiz() {
+  submitted = false;
+  Object.keys(answers).forEach(k => delete answers[k]);
+  Object.keys(QUESTIONS).forEach(n => {
+    const num = parseInt(n);
+    ['A','B','C','D'].forEach(l => {
+      const lbl = document.getElementById('label-' + num + '-' + l);
+      if (lbl) { lbl.classList.remove('selected','correct','incorrect'); lbl.style.pointerEvents = ''; }
+    });
+    const fb = document.getElementById('fb-' + num);
+    if (fb) { fb.classList.remove('show','correct-fb','incorrect-fb'); fb.innerHTML = ''; }
+  });
+  document.getElementById('results-panel').classList.remove('show');
+  document.querySelector('.btn-submit').style.display = 'inline-block';
+  document.querySelector('.btn-retry').style.display = 'none';
+  document.getElementById('unanswered-msg').style.display = 'none';
+  document.getElementById('live-score').textContent = '—';
+  updateProgress();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+</body>
+</html>
