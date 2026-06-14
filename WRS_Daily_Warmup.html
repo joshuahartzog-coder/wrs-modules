@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WRS Daily Warm-Up</title>
+<style>
+  :root {
+    --green-dark: #085041;
+    --green-mid: #1D9E75;
+    --green-light: #E1F5EE;
+    --amber: #EF9F27;
+    --amber-light: #FAEEDA;
+    --purple: #3C3489;
+    --purple-light: #EEEDFE;
+    --text: #1a1a1a;
+    --border: #DDDDDD;
+    --gray-bg: #F5F5F5;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: Helvetica, Arial, sans-serif;
+    background: var(--gray-bg);
+    color: var(--text);
+    margin: 0;
+    padding: 16px;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .header {
+    background: var(--green-dark);
+    color: #ffffff;
+    padding: 18px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .header .subtitle {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-top: 2px;
+  }
+
+  .score-box {
+    background: var(--green-light);
+    color: var(--green-dark);
+    border-radius: 8px;
+    padding: 8px 18px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+
+  .controls {
+    padding: 16px 24px;
+    background: var(--purple-light);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .controls label {
+    font-weight: bold;
+    color: var(--purple);
+    margin-right: 8px;
+    font-size: 0.95rem;
+  }
+
+  select {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 0.95rem;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #ffffff;
+    color: var(--text);
+  }
+
+  .main {
+    padding: 28px 24px;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--green-light);
+    color: var(--green-dark);
+    border-radius: 999px;
+    padding: 5px 14px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 18px;
+  }
+
+  .question-text {
+    font-size: 1.6rem;
+    line-height: 1.4;
+    font-weight: bold;
+    margin-bottom: 28px;
+    min-height: 90px;
+  }
+
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 640px) {
+    .options { grid-template-columns: 1fr; }
+    .question-text { font-size: 1.3rem; }
+  }
+
+  .option-btn {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 1.15rem;
+    text-align: left;
+    padding: 20px 22px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: #ffffff;
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--green-mid);
+    background: var(--green-light);
+  }
+
+  .option-btn:disabled {
+    cursor: default;
+  }
+
+  .option-btn.correct {
+    background: var(--green-light);
+    border-color: var(--green-dark);
+    color: var(--green-dark);
+    font-weight: bold;
+  }
+
+  .option-btn.incorrect {
+    background: #FEE2E2;
+    border-color: #DC2626;
+    color: #7f1d1d;
+    font-weight: bold;
+  }
+
+  .feedback {
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    display: none;
+  }
+
+  .feedback.show { display: block; }
+
+  .feedback.correct-fb {
+    background: var(--green-light);
+    color: var(--green-dark);
+    border: 1px solid var(--green-mid);
+  }
+
+  .feedback.incorrect-fb {
+    background: #FEE2E2;
+    color: #7f1d1d;
+    border: 1px solid #DC2626;
+  }
+
+  .feedback strong { display: block; margin-bottom: 4px; font-size: 1.1rem; }
+
+  .actions {
+    display: flex;
+    justify-content: center;
+  }
+
+  .check-btn {
+    font-family: Helvetica, Arial, sans-serif;
+    background: var(--green-mid);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 40px;
+    font-size: 1.15rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .check-btn:hover {
+    background: var(--green-dark);
+  }
+
+  .check-btn:disabled {
+    background: var(--border);
+    cursor: not-allowed;
+  }
+
+  .footer-note {
+    text-align: center;
+    padding: 12px;
+    font-size: 0.8rem;
+    color: #777;
+  }
+
+  @keyframes flashGreen {
+    0% { background-color: var(--green-light); }
+    100% { background-color: transparent; }
+  }
+
+  @keyframes flashRed {
+    0% { background-color: #FEE2E2; }
+    100% { background-color: transparent; }
+  }
+
+  .flash-correct { animation: flashGreen 0.6s ease-out; }
+  .flash-incorrect { animation: flashRed 0.6s ease-out; }
+</style>
+</head>
+<body>
+
+<div class="container" id="appContainer">
+  <div class="header">
+    <div>
+      <h1>WRS Daily Warm-Up</h1>
+      <div class="subtitle">Workplace Readiness Skills — Quick Question Bank</div>
+    </div>
+    <div class="score-box" id="scoreBox">Class Score: 0/0 today</div>
+  </div>
+
+  <div class="controls">
+    <div>
+      <label for="standardFilter">Standard:</label>
+      <select id="standardFilter"></select>
+    </div>
+    <button class="check-btn" id="newQuestionBtn" style="padding:10px 28px; font-size:1rem;">New Question</button>
+  </div>
+
+  <div class="main">
+    <span class="badge" id="standardBadge">1.1.1 — Work Ethic</span>
+    <div class="question-text" id="questionText">Loading question...</div>
+
+    <div class="options" id="optionsContainer"></div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="actions">
+      <button class="check-btn" id="bottomNewQuestionBtn">New Question</button>
+    </div>
+  </div>
+
+  <div class="footer-note">Click an answer to check it. Use "New Question" to continue. Score resets on page reload.</div>
+</div>
+
+<script>
+const questionBank = [
+// ===== 1.1.1 — Work Ethic (12 questions) =====
+{q:"An employee consistently arrives 10 minutes early, prepares their station, and is ready to work at start time. This demonstrates:",o:["Work ethic","Creativity","Conflict resolution","Financial literacy"],a:0,e:"Being punctual and prepared to start work on time is a core element of a positive work ethic.",std:"1.1.1 — Work Ethic"},
+{q:"A worker finishes their assigned tasks early and asks a supervisor what else needs to be done. This is an example of:",o:["Initiative and motivation","Time-wasting","Insubordination","Self-advocacy"],a:0,e:"Seeking out additional productive work without being told shows the motivation that defines a strong work ethic.",std:"1.1.1 — Work Ethic"},
+{q:"Which behavior BEST demonstrates strong attendance habits?",o:["Calling in sick only when truly necessary and giving advance notice","Texting a coworker to cover your shift without telling a supervisor","Arriving whenever traffic allows","Leaving early on slow days without approval"],a:0,e:"Reliable attendance means showing up consistently and following proper notification procedures when absences are unavoidable.",std:"1.1.1 — Work Ethic"},
+{q:"A retail employee notices the stockroom is messy during a slow period. Without being asked, they begin organizing it. This shows:",o:["Initiative and a strong work ethic","Overstepping their role","Poor time management","Disregard for store policy"],a:0,e:"Taking productive action during downtime without direction reflects motivation to accomplish the task at hand.",std:"1.1.1 — Work Ethic"},
+{q:"True or False: Work ethic only matters when a supervisor is watching.",o:["True","False","Only in healthcare settings","Only for entry-level employees"],a:1,e:"Strong work ethic means maintaining the same standards of effort and integrity whether or not you're being observed.",std:"1.1.1 — Work Ethic"},
+{q:"An employee is asked to complete a task they find boring. The professional response is to:",o:["Complete it with the same care as any other task","Do it quickly without attention to quality","Ask a coworker to do it instead","Postpone it until something more interesting comes up"],a:0,e:"Work ethic means giving consistent effort and remaining on task regardless of how interesting the task is.",std:"1.1.1 — Work Ethic"},
+{q:"Which of the following is the strongest sign of dependability on the job?",o:["Following through on commitments without needing reminders","Being friendly with coworkers","Having strong technical skills","Knowing company history"],a:0,e:"Dependability is about consistently following through — coworkers and supervisors can count on you.",std:"1.1.1 — Work Ethic"},
+{q:"A warehouse worker is running 15 minutes late due to traffic. What is the most professional action?",o:["Call or message a supervisor as soon as possible to inform them","Wait until arrival to explain","Have a friend say they were sick instead","Avoid mentioning it since it was only 15 minutes"],a:0,e:"Proactive communication about lateness shows accountability and respect for the team's planning.",std:"1.1.1 — Work Ethic"},
+{q:"Taking direction willingly from a supervisor means:",o:["Listening actively and approaching the assigned task with motivation","Doing only what you personally agree with","Asking why before doing any task","Following directions only from your favorite supervisor"],a:0,e:"A positive work ethic includes a willingness to take direction and approach assigned tasks with motivation.",std:"1.1.1 — Work Ethic"},
+{q:"An employee is given a task slightly outside their job description during a busy shift. The best response is to:",o:["Help out if reasonably able, since flexibility supports the team","Refuse, since it's not in their job description","Complain to coworkers about it","Do it slowly to discourage future requests"],a:0,e:"A strong work ethic includes flexibility and a willingness to support the team when needed.",std:"1.1.1 — Work Ethic"},
+{q:"Which is an example of poor work ethic?",o:["Taking excessive unscheduled breaks throughout a shift","Asking a clarifying question before starting a task","Double-checking work before submitting it","Arriving a few minutes before a shift starts"],a:0,e:"Excessive unscheduled breaks reduce productivity and reflect a lack of commitment to the job.",std:"1.1.1 — Work Ethic"},
+{q:"A culinary student is assigned prep work they consider tedious. They complete it thoroughly and on time. This reflects:",o:["A strong work ethic","Lack of ambition","Poor time management","Excessive compliance"],a:0,e:"Completing even unglamorous tasks efficiently and independently is a defining feature of work ethic.",std:"1.1.1 — Work Ethic"},
+
+// ===== 1.1.2 — Integrity (8 questions) =====
+{q:"An employee notices they were accidentally overpaid on their paycheck. The action that demonstrates integrity is to:",o:["Report the error to payroll","Keep the extra money without mentioning it","Wait to see if anyone notices","Spend it quickly before it's discovered"],a:0,e:"Integrity means abiding by workplace policy and being honest even when it's not in your immediate financial interest.",std:"1.1.2 — Integrity"},
+{q:"A coworker asks an employee to say they were present at work when they actually left early. The professional response is to:",o:["Decline, since this would involve being dishonest","Agree, since it's a small favor","Agree, but only this one time","Report the coworker immediately without speaking to them first"],a:0,e:"Declining to participate in dishonesty protects your own integrity, even when it strains a relationship.",std:"1.1.2 — Integrity"},
+{q:"Which of these is an example of confidentiality and respecting workplace policy?",o:["Not discussing a coworker's medical leave details with others","Sharing interesting client information with friends","Posting customer details on personal social media","Discussing salary details of coworkers openly"],a:0,e:"Integrity includes abiding by policies that protect sensitive information about coworkers, clients, or the business.",std:"1.1.2 — Integrity"},
+{q:"An employee makes a mistake that affects a project timeline. The action that best reflects honesty and reliability is to:",o:["Inform the team promptly and help find a solution","Hope no one notices the mistake","Blame a system error instead","Quietly fix it without telling anyone, even if it affects others' work"],a:0,e:"Honesty and reliability mean acknowledging mistakes promptly so the team can adjust, rather than hiding them.",std:"1.1.2 — Integrity"},
+{q:"A worker is asked to falsify a safety inspection record to save time. The correct response is to:",o:["Refuse and complete the inspection properly","Falsify it since it's a one-time request","Falsify it but tell a coworker about it later","Do it only if a supervisor asks directly"],a:0,e:"Falsifying records violates workplace policy and law — integrity requires refusing regardless of pressure.",std:"1.1.2 — Integrity"},
+{q:"Respecting the property of an employer and coworkers is part of:",o:["Demonstrating integrity","Demonstrating creativity","Networking","Time management"],a:0,e:"Integrity includes respecting others' property as well as following laws and policies.",std:"1.1.2 — Integrity"},
+{q:"An employee realizes a personal action at work — like taking extra unscheduled breaks — could affect coworkers who must cover for them. Recognizing this reflects:",o:["Understanding how one's behavior has far-reaching effects on others","An unrelated time-management issue only","A scheduling problem for management to solve alone","Something that only matters in large companies"],a:0,e:"Integrity includes recognizing that personal actions and behavior affect others nearby.",std:"1.1.2 — Integrity"},
+{q:"Which best distinguishes honesty from reliability in the workplace?",o:["Honesty is telling the truth; reliability is consistently following through on commitments","They mean exactly the same thing","Honesty applies only to verbal statements; reliability doesn't matter","Reliability is more important than honesty in all situations"],a:0,e:"Honesty and reliability are related but distinct: one is about truthfulness, the other about consistently doing what you say you will do.",std:"1.1.2 — Integrity"},
+
+// ===== 1.1.3 — Teamwork (10 questions) =====
+{q:"During a group project, one member disagrees with the team's plan. The most productive response is to:",o:["Voice the concern respectfully and discuss alternatives as a group","Go along silently and complain to others later","Refuse to participate until the plan changes","Redo the work alone without telling the team"],a:0,e:"Effective teamwork involves respectfully raising concerns and working together toward solutions.",std:"1.1.3 — Teamwork"},
+{q:"A nursing assistant notices a coworker is overwhelmed with patients during a shift. The teamwork-minded response is to:",o:["Offer to help with tasks within their own scope, if possible","Ignore it since it's not their assigned patient","Report the coworker for being slow","Wait for a supervisor to assign help"],a:0,e:"Assisting others and supporting team members when needed is a core part of contributing to a team's success.",std:"1.1.3 — Teamwork"},
+{q:"Which of these is a sign of effective collaboration?",o:["Team members share information and check in on each other's progress","Each person works in isolation and shares results only at the end","One person makes all decisions without input","Team members avoid discussing problems"],a:0,e:"Ongoing communication and information-sharing are essential to contributing to a team's success.",std:"1.1.3 — Teamwork"},
+{q:"A team member consistently takes credit for group work. This behavior:",o:["Damages trust and undermines teamwork","Is acceptable if that person worked hardest","Improves team motivation","Has no effect on the team"],a:0,e:"Taking credit for shared work erodes trust, which is foundational to a team's success.",std:"1.1.3 — Teamwork"},
+{q:"In a construction crew, the foreman assigns tasks based on each worker's strengths. This approach supports teamwork because it:",o:["Values individual contributions and helps the team perform according to assigned roles","Plays favorites among workers","Reduces accountability","Slows down the project"],a:0,e:"Valuing individual contributions and performing in accordance with assigned roles supports overall team success.",std:"1.1.3 — Teamwork"},
+{q:"Which best describes 'requesting help when needed,' a key teamwork skill?",o:["Asking questions after consulting available resources, and knowing when to involve coworkers or supervisors","Never asking for help under any circumstances","Asking for help before attempting any task","Asking only supervisors and never coworkers"],a:0,e:"Requesting help when needed means checking available resources first, then knowing when to bring in coworkers or supervisors.",std:"1.1.3 — Teamwork"},
+{q:"A team is assigned a project with a tight deadline. The most effective approach is to:",o:["Divide tasks based on strengths and set check-in points","Wait until the deadline is close to start","Have one person do all the work to avoid coordination issues","Avoid discussing the timeline to reduce pressure"],a:0,e:"Dividing work strategically and checking progress along the way helps teams meet deadlines successfully.",std:"1.1.3 — Teamwork"},
+{q:"An office assistant disagrees with a decision made by the team but it's already been finalized. The professional approach is to:",o:["Support the team's decision and contribute to its success","Refuse to participate in implementing it","Undermine the decision quietly","Complain to other departments about it"],a:0,e:"Contributing to the success of the team includes supporting finalized decisions even when you initially disagreed.",std:"1.1.3 — Teamwork"},
+{q:"Which is an example of a team member demonstrating accountability within a group?",o:["Admitting when their part of a task is behind schedule and asking for support","Hiding delays until the deadline arrives","Blaming teammates for their own mistakes","Avoiding status updates to prevent criticism"],a:0,e:"Accountable team members communicate openly about challenges so the team can adjust as needed.",std:"1.1.3 — Teamwork"},
+{q:"A retail team is short-staffed during a holiday rush. Employees rotate to cover registers, stock shelves, and assist customers as needed. This reflects:",o:["Flexibility and teamwork","Poor management","Inefficient scheduling","Lack of role clarity"],a:0,e:"Flexibly supporting each other and contributing to team success during high-demand periods is a practical example of teamwork.",std:"1.1.3 — Teamwork"},
+
+// ===== 1.1.4 — Self-Representation (8 questions) =====
+{q:"Which of the following best demonstrates professional appearance in most workplaces?",o:["Clean, neat clothing appropriate to the job and following dress code","Wearing whatever is most comfortable regardless of policy","Dressing more casually than coworkers to stand out","Following dress code only on days managers are present"],a:0,e:"Self-representation means dressing appropriately for the workplace, consistently — not just when convenient.",std:"1.1.4 — Self-Representation"},
+{q:"A job applicant arrives for an interview 10 minutes early, dressed appropriately, with a copy of their resume. This demonstrates:",o:["Strong self-representation","Overpreparation","Nervousness","Lack of confidence"],a:0,e:"Punctuality, appropriate dress, and preparation all reflect positively on how a candidate presents themselves.",std:"1.1.4 — Self-Representation"},
+{q:"An employee posts complaints about their workplace on a public social media account using their real name. This is an example of:",o:["Poor self-representation that could affect their professional reputation","A protected and risk-free form of expression","Good networking","An effective way to resolve workplace issues"],a:0,e:"Public posts tied to your identity reflect on your professional reputation and the language/manners suitable for the workplace.",std:"1.1.4 — Self-Representation"},
+{q:"Which body language is most likely to convey professionalism during a meeting?",o:["Sitting upright, making eye contact, and minimizing phone use","Slouching while checking a phone frequently","Avoiding eye contact with everyone","Interrupting others to share opinions"],a:0,e:"Engaged body language — posture, eye contact, and attention — signals professionalism and respect.",std:"1.1.4 — Self-Representation"},
+{q:"A healthcare worker shows up to a shift with wrinkled, stained scrubs. This is most likely to:",o:["Create a negative impression with patients and coworkers","Have no impact on how others perceive them","Be seen as a sign of hard work","Be ignored if their clinical skills are strong"],a:0,e:"Appropriate dress is part of self-representation and affects first impressions regardless of skill level.",std:"1.1.4 — Self-Representation"},
+{q:"An employee's email signature, tone, and grammar in workplace communications:",o:["Reflect language and manners suitable for the workplace","Don't matter as long as the recipient understands the message","Should match texting style for efficiency","Are only important for messages to customers"],a:0,e:"Self-representation includes using language and manners suitable for the workplace in written communication too.",std:"1.1.4 — Self-Representation"},
+{q:"A new employee at an auto shop wears safety gear correctly and keeps their uniform clean each day. This reflects:",o:["Professional self-representation appropriate to the role","Excessive caution","Personal preference unrelated to professionalism","An attempt to impress management only"],a:0,e:"Dressing appropriately for the job, including safety gear, is part of self-representation.",std:"1.1.4 — Self-Representation"},
+{q:"An employee uses a strong personal opinion about a controversial topic during a team meeting, unprompted. This is an example of:",o:["Poor judgment about professional self-representation","Healthy openness","Required transparency","Good leadership"],a:0,e:"Using manners and language suitable for the workplace means being thoughtful about what topics are appropriate to raise.",std:"1.1.4 — Self-Representation"},
+
+// ===== 1.1.5 — Diversity Awareness (5 questions) =====
+{q:"A customer service representative serves customers from many different cultural backgrounds. Diversity awareness means:",o:["Working well with all customers regardless of background","Treating customers differently based on assumptions about their background","Avoiding interactions with customers who seem different","Only adjusting service for customers who complain"],a:0,e:"Diversity awareness means working well with all customers and coworkers, regardless of background.",std:"1.1.5 — Diversity Awareness"},
+{q:"A team includes members from different generations with different communication preferences. Demonstrating diversity awareness means:",o:["Working effectively with coworkers despite different preferences and styles","Insisting everyone communicate the same way","Avoiding coworkers with different preferences","Assuming younger or older workers are less capable"],a:0,e:"Diversity awareness includes working well with all coworkers, which often means adapting to different styles and preferences.",std:"1.1.5 — Diversity Awareness"},
+{q:"A coworker observes a religious practice that requires a short break at a specific time each day. The diversity-aware response from the team is to:",o:["Accommodate the practice where reasonably possible, as part of working well together","Complain that it's unfair to others","Ignore the request entirely","Report the coworker to management as disruptive"],a:0,e:"Working well with all coworkers includes reasonable accommodation and respect for different backgrounds and practices.",std:"1.1.5 — Diversity Awareness"},
+{q:"Which statement reflects diversity awareness in a hiring context?",o:["Evaluating candidates based on job-relevant qualifications, not personal background","Assuming candidates from certain backgrounds are a better 'fit'","Avoiding questions about a candidate's qualifications","Hiring only people similar to the existing team"],a:0,e:"Diversity awareness in evaluating others means focusing on job-relevant qualifications rather than personal background.",std:"1.1.5 — Diversity Awareness"},
+{q:"An employee notices a new coworker seems unfamiliar with certain workplace norms common in the U.S. The most diversity-aware response is to:",o:["Offer friendly, patient guidance without judgment","Make jokes about the difference to the team","Avoid working with that coworker","Assume they won't be able to learn the norms"],a:0,e:"Working well with coworkers from different backgrounds includes patience and support as they adjust to workplace norms.",std:"1.1.5 — Diversity Awareness"},
+
+// ===== 1.1.6 — Conflict Resolution (8 questions) =====
+{q:"Two coworkers disagree about how to complete a shared task. The first step toward resolution should be:",o:["Discussing the disagreement calmly and directly with each other","Escalating immediately to a supervisor","Ignoring the disagreement and doing it their own way","Involving the whole team to take sides"],a:0,e:"Negotiating a diplomatic solution starts with direct, respectful discussion between the people involved.",std:"1.1.6 — Conflict Resolution"},
+{q:"A customer raises their voice at an employee over a billing issue. The best response is to:",o:["Stay calm, listen, and try to find a solution","Match their tone to show you take it seriously","Walk away without addressing the issue","Tell the customer they're overreacting"],a:0,e:"Staying calm helps de-escalate the situation and supports a diplomatic resolution.",std:"1.1.6 — Conflict Resolution"},
+{q:"Which approach is most effective when resolving a disagreement between team members?",o:["Focusing on the issue, not personal attacks, and seeking common ground","Focusing on who is right and who is wrong","Avoiding the topic until it resolves itself","Having one person simply give in to end the conflict quickly"],a:0,e:"Negotiating diplomatic solutions focuses on the issue and shared goals rather than blame.",std:"1.1.6 — Conflict Resolution"},
+{q:"An employee feels they were unfairly criticized in front of others. The most professional response is to:",o:["Request a private conversation to discuss the concern calmly","Respond loudly in the moment to defend themselves","Complain to coworkers afterward","Ignore it and let resentment build"],a:0,e:"Addressing sensitive interpersonal issues privately and calmly is a diplomatic approach to conflict resolution.",std:"1.1.6 — Conflict Resolution"},
+{q:"When mediating a disagreement between two coworkers, a supervisor should:",o:["Listen to both perspectives before responding","Side with whoever raised the issue first","Avoid getting involved at all","Make a decision without hearing both sides"],a:0,e:"Fair conflict resolution requires understanding all perspectives before responding.",std:"1.1.6 — Conflict Resolution"},
+{q:"A disagreement over scheduling between two employees escalates into a heated argument on the floor. The best immediate action is to:",o:["Step away and continue the conversation privately and calmly","Continue arguing until a resolution is reached","Involve customers in the discussion to get their opinion","Post about it on social media to vent"],a:0,e:"Removing a heated conflict from a public area and calming down first supports a diplomatic resolution.",std:"1.1.6 — Conflict Resolution"},
+{q:"Which statement about workplace conflict is most accurate?",o:["Conflict is normal and can be managed productively with good communication","Conflict should always be avoided entirely","Conflict always indicates a problem employee","The best response to conflict is silence"],a:0,e:"Conflict is a normal part of workplace life; the key skill is negotiating diplomatic solutions.",std:"1.1.6 — Conflict Resolution"},
+{q:"An employee strongly disagrees with a new policy. The most constructive way to express this is to:",o:["Raise the concern through appropriate channels with specific reasoning","Refuse to follow the policy","Complain only to coworkers","Comply but spread negativity about it"],a:0,e:"Constructive conflict resolution uses appropriate channels and specific reasoning rather than informal resistance.",std:"1.1.6 — Conflict Resolution"},
+
+// ===== 1.1.7 — Creativity and Resourcefulness (8 questions) =====
+{q:"An employee at an auto repair garage proposes a new, more efficient way to safely dispose of used motor oil. This is an example of:",o:["Creativity and resourcefulness","Conflict resolution","Diversity awareness","Customer service"],a:0,e:"Contributing new ideas to improve a process is a clear example of creativity and resourcefulness.",std:"1.1.7 — Creativity and Resourcefulness"},
+{q:"A worker runs out of a specific tool mid-task and finds an effective alternative using items on hand. This demonstrates:",o:["Resourcefulness","Poor planning","Disregard for procedure","Carelessness"],a:0,e:"Resourcefulness means working with initiative to solve problems using available resources.",std:"1.1.7 — Creativity and Resourcefulness"},
+{q:"Which best describes 'working with initiative' in the context of creativity and resourcefulness?",o:["Taking proactive steps to improve a process or solve a problem without being told","Waiting for explicit instructions before doing anything","Only following the exact steps in a manual","Avoiding any changes to established routines"],a:0,e:"Working with initiative means proactively contributing new ideas or solutions, which is central to this standard.",std:"1.1.7 — Creativity and Resourcefulness"},
+{q:"A team brainstorms several possible solutions to a recurring scheduling problem before choosing one. This process reflects:",o:["Creativity and resourcefulness","Conflict resolution only","A waste of time","Poor decision-making"],a:0,e:"Generating multiple ideas before selecting a solution reflects creativity in contributing new ideas.",std:"1.1.7 — Creativity and Resourcefulness"},
+{q:"An employee suggests a small change to a daily process that saves the team time each day. Even though the change is minor, this reflects:",o:["Valuable creativity and resourcefulness","An unnecessary disruption","Something only managers should suggest","A sign the employee isn't focused on their job"],a:0,e:"Contributing new ideas — even small ones — that improve efficiency reflects creativity and resourcefulness.",std:"1.1.7 — Creativity and Resourcefulness"},
+{q:"Which scenario best shows resourcefulness during a supply shortage?",o:["Finding a practical, safe substitute material and informing a supervisor of the change","Stopping all work until the original supply arrives, without notifying anyone","Using an unsafe substitute without telling anyone","Blaming the supplier and taking no further action"],a:0,e:"Resourcefulness involves finding practical solutions while still communicating appropriately with supervisors.",std:"1.1.7 — Creativity and Resourcefulness"},
+{q:"A student is asked to improve a presentation format used by their CTE program. Brainstorming multiple new layout ideas before settling on one demonstrates:",o:["Creativity and resourcefulness","Conflict resolution","Diversity awareness","Customer service orientation"],a:0,e:"Generating and refining new ideas to improve a product or process is a core part of creativity and resourcefulness.",std:"1.1.7 — Creativity and Resourcefulness"},
+{q:"An employee is told 'we've always done it this way' when proposing a new idea. The most resourceful response is to:",o:["Politely explain the potential benefit and offer to pilot the idea on a small scale","Drop the idea immediately and never raise it again","Argue loudly that the old way is wrong","Implement the change without telling anyone"],a:0,e:"Resourcefulness includes finding constructive ways to introduce new ideas, such as proposing a small pilot.",std:"1.1.7 — Creativity and Resourcefulness"},
+// ===== 1.2.1 — Speaking & Listening (12 questions) =====
+{q:"During a team briefing, an employee is unsure about an instruction. The best response is to:",o:["Ask a clarifying question before starting the task","Guess and proceed without asking","Ask a coworker quietly instead of the supervisor","Wait until the task is wrong to bring it up"],a:0,e:"Asking clarifying questions ensures comprehension and accurate follow-through — a key part of effective listening.",std:"1.2.1 — Speaking & Listening"},
+{q:"Active listening, or repeating directions to ensure understanding, includes:",o:["Maintaining eye contact, nodding, and summarizing what was heard","Thinking about your response while the other person is still talking","Multitasking on a phone while someone speaks","Interrupting to share your own experience"],a:0,e:"Active listening involves giving full attention and confirming understanding, often by repeating or summarizing.",std:"1.2.1 — Speaking & Listening"},
+{q:"A customer is upset about a delayed order. The best initial response from an employee is to:",o:["Listen fully to their concern before responding","Interrupt to explain company policy immediately","Walk away to find a manager without acknowledging them","Argue that the delay wasn't the company's fault"],a:0,e:"Communicating effectively with customers means letting them be heard fully, with dignity and respect, before responding.",std:"1.2.1 — Speaking & Listening"},
+{q:"When giving instructions to a coworker, which approach improves communication?",o:["Using clear, specific language and checking for understanding","Using technical jargon to sound knowledgeable","Giving instructions quickly without pausing","Assuming the listener understands without confirmation"],a:0,e:"Clear, specific language paired with a comprehension-check reduces miscommunication.",std:"1.2.1 — Speaking & Listening"},
+{q:"An employee receives feedback from a supervisor that includes some criticism. The most professional response is to:",o:["Listen fully, ask questions if needed, and consider the feedback","Defend every point immediately","Walk away without responding","Argue that the feedback is unfair before hearing it all"],a:0,e:"Comprehending details and following directions includes hearing feedback completely before responding.",std:"1.2.1 — Speaking & Listening"},
+{q:"During a phone call with a vendor, background noise makes it hard to hear. The professional response is to:",o:["Politely ask to move to a quieter location or ask them to repeat information","Guess what was said to avoid seeming rude","End the call without explanation","Continue the conversation and hope for the best"],a:0,e:"Effective communication includes using an appropriate medium and addressing barriers to ensure messages are received accurately.",std:"1.2.1 — Speaking & Listening"},
+{q:"Which is an example of an open-ended question that encourages dialogue?",o:["\"What concerns do you have about this plan?\"","\"Do you agree with this plan?\"","\"Is this plan finished?\"","\"Yes or no — does this work?\""],a:0,e:"Open-ended questions invite detailed responses and support effective communication with customers and employees.",std:"1.2.1 — Speaking & Listening"},
+{q:"A team meeting includes participants who joined the workforce decades apart. Effective cross-generational communication involves:",o:["Adapting communication style while respecting different preferences and experiences","Using only one generation's preferred communication style for everyone","Assuming younger workers don't value face-to-face communication","Avoiding communication differences altogether"],a:0,e:"Communicating effectively with all employees means adjusting your approach to bridge differences in preferences across age groups.",std:"1.2.1 — Speaking & Listening"},
+{q:"An employee needs to explain a technical process to someone unfamiliar with the field. The best approach is to:",o:["Use plain language and check for understanding along the way","Use the same technical terms used with experts","Speak quickly to cover more information","Assume they will ask if they don't understand"],a:0,e:"Avoiding unnecessary jargon and confirming comprehension is part of communicating effectively with dignity and respect.",std:"1.2.1 — Speaking & Listening"},
+{q:"During a disagreement in a meeting, which response best reflects effective communication skills?",o:["Stating your perspective calmly while acknowledging the other viewpoint","Raising your voice to be heard over others","Refusing to speak until the disagreement ends","Agreeing outwardly while disagreeing privately"],a:0,e:"Calm, respectful communication that acknowledges other perspectives is part of effective speaking and listening.",std:"1.2.1 — Speaking & Listening"},
+{q:"A manager assigns a task verbally with several steps. To ensure accuracy, the employee should:",o:["Repeat back the key steps to confirm understanding","Write nothing down and rely on memory","Ask someone else what was said later","Begin immediately without confirming details"],a:0,e:"Repeating directions to ensure understanding is a core active-listening practice for multi-step tasks.",std:"1.2.1 — Speaking & Listening"},
+{q:"Nonverbal communication, such as tone of voice and facial expressions, can:",o:["Significantly affect how a verbal message is received","Have no impact compared to spoken words","Only matter in customer service roles","Be ignored as long as words are accurate"],a:0,e:"Understanding the role of nonverbal communication is part of communicating effectively with customers and coworkers.",std:"1.2.1 — Speaking & Listening"},
+
+// ===== 1.2.2 — Reading & Writing (8 questions) =====
+{q:"An employee receives a written work order with specific instructions. The first step before starting the task should be to:",o:["Read and correctly interpret the entire work order","Begin work immediately based on the title alone","Ask a coworker to summarize it verbally","Assume it matches the last similar work order"],a:0,e:"Reading and correctly interpreting workplace documents like work orders is a core part of this standard.",std:"1.2.2 — Reading & Writing"},
+{q:"Which is the best example of writing clearly for a workplace audience?",o:["Using simple, direct language appropriate to who will read it","Using as many technical terms as possible to sound credible","Writing in a casual, text-message style for all documents","Writing long sentences with multiple unrelated ideas"],a:0,e:"Writing clear, correct language appropriate to the audience is the standard for effective workplace writing.",std:"1.2.2 — Reading & Writing"},
+{q:"An employee is asked to fill out an invoice. Which step is most important before submitting it?",o:["Reviewing it for accuracy and completeness","Submitting it as quickly as possible regardless of errors","Skipping fields that seem unclear","Copying a previous invoice without updates"],a:0,e:"Reading and correctly interpreting workplace documents includes ensuring forms like invoices are accurate before submission.",std:"1.2.2 — Reading & Writing"},
+{q:"A technician is given an instructional manual for a new piece of equipment. The best first step is to:",o:["Read the manual carefully before operating the equipment","Set the manual aside and learn by trial and error","Ask a coworker instead of reading it","Use the equipment the same way as a similar but different model"],a:0,e:"Using instructional manuals to understand procedures is a key application of reading skills in the workplace.",std:"1.2.2 — Reading & Writing"},
+{q:"Which of these is an example of a workplace document an employee might need to interpret?",o:["A memorandum about a policy change","A personal text message from a friend","A social media post unrelated to work","A song lyric"],a:0,e:"Workplace documents include memorandums, work orders, and invoices that employees must read and interpret correctly.",std:"1.2.2 — Reading & Writing"},
+{q:"An employee drafts an email to a client. Before sending, they should:",o:["Proofread for clarity, tone, and correctness","Send immediately to save time","Use informal abbreviations to seem friendly","Avoid checking since the client will understand anyway"],a:0,e:"Writing clear, correct language appropriate to the audience requires proofreading before sending.",std:"1.2.2 — Reading & Writing"},
+{q:"A new employee is confused by an unfamiliar term in a technical manual. The best approach is to:",o:["Look up the term or ask for clarification before proceeding","Skip that section of the manual entirely","Guess the meaning and continue","Ignore the manual and proceed by instinct"],a:0,e:"Correctly interpreting workplace documents sometimes requires looking up unfamiliar terms to ensure accuracy.",std:"1.2.2 — Reading & Writing"},
+{q:"Which skill is most directly tested when an employee writes a technical report summarizing a project?",o:["Effective reading and writing skills","Mathematics skills","Conflict resolution skills","Networking skills"],a:0,e:"Creating technical reports is a direct application of effective writing skills for the workplace.",std:"1.2.2 — Reading & Writing"},
+
+// ===== 1.2.3 — Critical Thinking & Problem-Solving (10 questions) =====
+{q:"A machine on the production line starts producing defective parts. The best first step is to:",o:["Identify the cause before deciding on a solution","Replace the machine immediately without investigation","Ignore it if only a few parts are affected","Increase production speed to make up for defects"],a:0,e:"Critical thinking involves recognizing and analyzing a problem before jumping to a solution.",std:"1.2.3 — Critical Thinking and Problem-Solving"},
+{q:"An employee encounters a problem they've never seen before. The most effective approach is to:",o:["Use a logical approach to analyze the situation and identify helpful resources","Wait for someone else to notice and solve it","Guess randomly until something works","Avoid the task entirely"],a:0,e:"Critical thinking includes using a logical approach and identifying resources that may help solve a specific problem.",std:"1.2.3 — Critical Thinking and Problem-Solving"},
+{q:"A retail employee notices the same customer complaint occurring repeatedly. The most effective response is to:",o:["Analyze the root cause and propose a solution to prevent recurrence","Address each complaint individually without looking for patterns","Tell customers the issue is unavoidable","Ignore the pattern since each complaint is resolved eventually"],a:0,e:"Recognizing and analyzing problems that arise in completing tasks — including recurring ones — is central to problem-solving.",std:"1.2.3 — Critical Thinking and Problem-Solving"},
+{q:"Which best demonstrates a logical approach to decision-making?",o:["Gathering relevant information, weighing options, and choosing based on evidence","Choosing the first option that comes to mind","Flipping a coin to save time","Asking only one person's opinion and following it without question"],a:0,e:"A logical approach to decision-making involves gathering and weighing information before choosing.",std:"1.2.3 — Critical Thinking and Problem-Solving"},
+{q:"A medical assistant notices a discrepancy between a patient's chart and what the patient reports. The best response is to:",o:["Investigate the discrepancy before proceeding, involving a supervisor if needed","Proceed with the chart information since it's official","Proceed with the patient's account since they know themselves best","Ignore the discrepancy since it's probably minor"],a:0,e:"Recognizing and analyzing discrepancies — and resolving them appropriately — reflects critical thinking in a healthcare setting.",std:"1.2.3 — Critical Thinking and Problem-Solving"},
+{q:"An employee is assigned a task with unclear instructions and the supervisor is unavailable. The best approach is to:",o:["Use available resources (manuals, prior examples) to make a reasonable plan, then confirm later","Wait indefinitely until the supervisor returns","Guess randomly and hope it's correct","Skip the task entirely without explanation"],a:0,e:"Identifying resources that may help solve a problem, even when guidance isn't immediately available, reflects strong problem-solving.",std:"1.2.3 — Critical Thinking and Problem-Solving"},
+{q:"A construction crew discovers an unexpected obstacle (e.g., a buried pipe) mid-project. The most effective response is to:",o:["Pause, assess the situation, and determine a safe adjusted plan","Continue with the original plan regardless","Remove the obstacle without assessing risks","Wait without taking any action or informing anyone"],a:0,e:"Analyzing unexpected problems before acting is central to critical thinking and problem-solving in hands-on fields.",std:"1.2.3 — Critical Thinking and Problem-Solving"},
+{q:"Which scenario best illustrates predicting a solution before fully solving a problem?",o:["Estimating likely causes of a printer jam based on the error message before opening it up","Opening the printer randomly without reading any error message","Replacing the entire printer immediately","Ignoring the error message completely"],a:0,e:"Analyzing a problem and predicting a likely solution before acting is a problem-solving strategy.",std:"1.2.3 — Critical Thinking and Problem-Solving"},
+{q:"An employee solves a problem but the solution causes a new, smaller issue elsewhere. The best next step is to:",o:["Identify and address the new issue using the same problem-solving process","Ignore the new issue since the original problem is solved","Undo the original solution entirely without analysis","Blame whoever discovers the new issue"],a:0,e:"Problem-solving is often iterative — critical thinkers continue analyzing and resolving issues as they arise.",std:"1.2.3 — Critical Thinking and Problem-Solving"},
+{q:"Which of these best reflects critical thinking when interpreting workplace data (e.g., a sales report)?",o:["Looking for patterns and considering possible explanations before drawing conclusions","Assuming the first number you see tells the whole story","Ignoring the data and relying on instinct","Accepting any explanation without question"],a:0,e:"Critical thinking involves analyzing information for patterns and weighing possible explanations before concluding.",std:"1.2.3 — Critical Thinking and Problem-Solving"},
+
+// ===== 1.2.4 — Healthy Behaviors & Safety (10 questions) =====
+{q:"An employee feels overwhelmed by a heavy workload. A healthy first response is to:",o:["Prioritize tasks and communicate with a supervisor about workload concerns","Take on even more tasks to prove capability","Avoid all the tasks until the feeling passes","Quit without discussing the issue"],a:0,e:"Managing personal health includes recognizing stress and addressing it through prioritization and communication.",std:"1.2.4 — Healthy Behaviors and Safety Skills"},
+{q:"A warehouse employee notices a spill on the floor. The correct response is to:",o:["Address it immediately or alert someone who can, following safety guidelines","Walk around it and continue working","Wait for the end of shift to clean it up","Ignore it since it's not their job"],a:0,e:"Following safety guidelines includes promptly addressing hazards like spills to prevent injury.",std:"1.2.4 — Healthy Behaviors and Safety Skills"},
+{q:"Which strategy can help an employee manage stress during a busy shift?",o:["Taking short breaks when possible and focusing on one task at a time","Skipping all breaks to finish faster","Venting frustration loudly to coworkers","Multitasking on everything at once without a plan"],a:0,e:"Managing personal health includes using short breaks and focus strategies to reduce stress during demanding shifts.",std:"1.2.4 — Healthy Behaviors and Safety Skills"},
+{q:"An employee in a kitchen notices a coworker not wearing required safety gear (e.g., a hairnet or gloves). The appropriate response is to:",o:["Remind them of the safety guideline respectfully","Ignore it since it's their choice","Report it only if an accident happens","Wear the gear yourself but say nothing"],a:0,e:"Following safety guidelines is a shared responsibility, and respectful reminders support a safe workplace for everyone.",std:"1.2.4 — Healthy Behaviors and Safety Skills"},
+{q:"Long-term unmanaged workplace stress can lead to:",o:["Burnout and decreased job performance","Improved focus over time without effort","No effect on health or work quality","Increased creativity in all cases"],a:0,e:"Chronic stress without healthy coping strategies often leads to burnout, which affects both health and job performance.",std:"1.2.4 — Healthy Behaviors and Safety Skills"},
+{q:"A construction worker is asked to use a power tool without the required safety guard, which was removed for a 'quick fix.' The correct response is to:",o:["Refuse to use the tool until the guard is properly reinstalled","Use it quickly since it will only take a moment","Use it but warn coworkers to stay away","Use it only if a supervisor is not present"],a:0,e:"Following safety guidelines means not bypassing required protective equipment, even for a short task.",std:"1.2.4 — Healthy Behaviors and Safety Skills"},
+{q:"Which is a healthy way to handle a stressful deadline at work?",o:["Break the task into smaller steps and tackle them in order","Wait until the last minute to start","Avoid asking for help even if struggling","Focus only on the stress rather than the task"],a:0,e:"Breaking large tasks into manageable steps is a healthy strategy for managing stress and meeting deadlines.",std:"1.2.4 — Healthy Behaviors and Safety Skills"},
+{q:"An employee feels sick with symptoms that could be contagious (e.g., during flu season). The healthiest and most professional choice is to:",o:["Stay home, follow workplace policy, and notify a supervisor","Come to work and avoid close contact with others","Come to work but use extra hand sanitizer","Wait to decide until the shift starts"],a:0,e:"Managing personal health and following safety guidelines includes staying home when contagious, per workplace policy.",std:"1.2.4 — Healthy Behaviors and Safety Skills"},
+{q:"A new employee is unsure where the first aid kit or emergency exits are located. The best step is to:",o:["Ask during orientation or as soon as possible","Assume it's not important until an emergency happens","Wait for a coworker to mention it eventually","Skip this information since emergencies are rare"],a:0,e:"Following safety guidelines starts with knowing basic safety resources and procedures from the beginning of employment.",std:"1.2.4 — Healthy Behaviors and Safety Skills"},
+{q:"Which best reflects a habit that supports both personal health and job performance?",o:["Getting adequate rest before a shift that requires alertness","Skipping meals to save time during a shift","Relying on energy drinks instead of rest","Working through illness to avoid using sick time"],a:0,e:"Managing personal health, like getting adequate rest, directly supports the ability to perform safely and effectively at work.",std:"1.2.4 — Healthy Behaviors and Safety Skills"},
+
+// ===== 1.2.5 — Big Picture / Workplace Systems (8 questions) =====
+{q:"An employee understands how their daily tasks contribute to the overall goals of the company. This reflects:",o:["Understanding of workplace organizations, systems, and climate","Conflict resolution","Mathematics skills","Networking"],a:0,e:"Identifying 'big picture' issues and how individual roles fit into the mission of the workplace is the focus of this standard.",std:"1.2.5 — Workplace Organizations, Systems, and Climate"},
+{q:"A new employee learns about the company's mission statement during orientation. Understanding this helps the employee:",o:["See how their role fits into the organization's broader purpose","Avoid learning about their specific job duties","Ignore company policies that don't apply to them","Replace the need for job-specific training"],a:0,e:"Understanding the mission of the workplace helps employees connect their work to the organization's broader purpose.",std:"1.2.5 — Workplace Organizations, Systems, and Climate"},
+{q:"Which best describes an organizational chart's purpose in a workplace?",o:["It shows reporting relationships and how departments relate to each other","It lists daily task assignments only","It replaces the need for communication between departments","It is only relevant to senior management"],a:0,e:"Understanding organizational structure helps employees identify 'big picture' issues like reporting lines and departmental roles.",std:"1.2.5 — Workplace Organizations, Systems, and Climate"},
+{q:"An employee notices that a change in one department (e.g., scheduling) affects another department's workflow. Recognizing this reflects:",o:["An understanding of how workplace systems are interconnected","An issue that doesn't concern them","A problem only management should think about","A reason to ignore the other department's needs"],a:0,e:"Identifying how systems and departments are interconnected is part of understanding the 'big picture' of a workplace.",std:"1.2.5 — Workplace Organizations, Systems, and Climate"},
+{q:"A company's 'climate' in a workplace context most closely refers to:",o:["The overall culture, values, and atmosphere of the organization","The literal temperature of the building","The company's marketing materials","The company's stock performance"],a:0,e:"Workplace climate refers to the culture and atmosphere of an organization, which affects how people work together.",std:"1.2.5 — Workplace Organizations, Systems, and Climate"},
+{q:"An employee is asked how their specific task supports a larger project goal. Being able to answer this reflects:",o:["Big picture thinking and understanding of the workplace's mission","Irrelevant information not related to job performance","A question only managers need to answer","Something employees shouldn't need to know"],a:0,e:"Connecting individual tasks to larger goals demonstrates understanding of 'big picture' issues.",std:"1.2.5 — Workplace Organizations, Systems, and Climate"},
+{q:"Which is an example of considering the environmental impact of a workplace decision?",o:["Choosing a supplier that uses sustainable packaging when cost-comparable options are similar","Ignoring environmental factors entirely when making decisions","Assuming environmental impact is irrelevant to most jobs","Choosing the cheapest option regardless of other factors"],a:0,e:"Understanding workplace systems includes recognizing environmental, social, and economic impacts of decisions.",std:"1.2.5 — Workplace Organizations, Systems, and Climate"},
+{q:"A new hire asks why a certain procedure exists, even though it seems inefficient at first glance. This question reflects:",o:["An effort to understand the bigger picture behind workplace systems","Disrespect for established procedures","A waste of a supervisor's time","Something that should never be asked"],a:0,e:"Asking about the reasoning behind systems and procedures supports a deeper understanding of how the workplace functions as a whole.",std:"1.2.5 — Workplace Organizations, Systems, and Climate"},
+// ===== 1.2.6 — Lifelong Learning (8 questions) =====
+{q:"A technician attends an optional training session on a new piece of equipment used at their job. This reflects:",o:["Lifelong-learning skills","An unnecessary use of time","Something only required for new employees","Initiative unrelated to job performance"],a:0,e:"Continually acquiring new industry-related information and improving professional skills is the focus of lifelong learning.",std:"1.2.6 — Lifelong Learning"},
+{q:"An industry introduces a new software tool that replaces an older system. An employee with strong lifelong-learning skills would:",o:["Seek out training and adapt to the new tool","Refuse to learn the new system","Continue using the old system without telling anyone","Wait for the company to switch back"],a:0,e:"Adapting to new tools and information is central to continuous learning and adaptability.",std:"1.2.6 — Lifelong Learning"},
+{q:"Which is an example of seeking constructive feedback to improve professional skills?",o:["Asking a supervisor for specific areas to improve after a project","Avoiding feedback to prevent discomfort","Assuming no improvement is needed","Only listening to positive feedback"],a:0,e:"Improving professional skills often involves actively seeking and accepting constructive feedback.",std:"1.2.6 — Lifelong Learning"},
+{q:"A worker reads a trade publication to stay informed about changes in their industry. This is an example of:",o:["Continually acquiring new industry-related information","An unnecessary activity outside of work hours","Something only managers need to do","A replacement for on-the-job training"],a:0,e:"Reading trade publications is a common way professionals continually acquire industry-related information.",std:"1.2.6 — Lifelong Learning"},
+{q:"When a workplace adopts a new policy or procedure, an employee with strong adaptability would:",o:["Approach the change with openness and adjust their work accordingly","Resist the change as long as possible","Continue with old procedures privately","Complain about the change without trying it"],a:0,e:"Continuous learning and adaptability involves being open to new ideas and ways of doing things.",std:"1.2.6 — Lifelong Learning"},
+{q:"Which best reflects a 'growth mindset' as it relates to lifelong learning at work?",o:["Believing skills can improve with effort and seeking opportunities to grow","Believing skill levels are fixed and cannot change","Avoiding new tasks to prevent failure","Believing learning stops after formal education ends"],a:0,e:"Lifelong learning is supported by a mindset that values growth and ongoing skill development.",std:"1.2.6 — Lifelong Learning"},
+{q:"An experienced employee is paired with a newer employee to share knowledge. From the experienced employee's perspective, this supports lifelong learning by:",o:["Reinforcing and refining their own knowledge while helping someone else grow","Wasting their time since they already know the material","Being unrelated to their own professional development","Replacing the need for the new employee to learn independently"],a:0,e:"Teaching and mentoring others often reinforces and deepens the mentor's own professional knowledge.",std:"1.2.6 — Lifelong Learning"},
+{q:"A CTE student completes a certification exam related to their pathway. This reflects:",o:["Acquiring new industry-related credentials as part of lifelong learning","An activity unrelated to future employment","Something only relevant for college-bound students","A one-time event with no ongoing relevance"],a:0,e:"Earning industry credentials is a concrete example of acquiring new, industry-related qualifications.",std:"1.2.6 — Lifelong Learning"},
+
+// ===== 1.2.7 — Job Acquisition & Advancement (8 questions) =====
+{q:"Which document typically highlights a candidate's work history, skills, and education for a job application?",o:["A resume","A pay stub","A time sheet","A performance review"],a:0,e:"A resume is a standard tool for preparing to apply for a job, summarizing relevant history and qualifications.",std:"1.2.7 — Job Acquisition and Advancement"},
+{q:"Before a job interview, a strong candidate would typically:",o:["Research the company and prepare to discuss relevant experience","Avoid learning about the company to seem unbiased","Arrive without any preparation to seem natural","Only prepare questions about salary and benefits"],a:0,e:"Preparing to apply for a job includes researching the employer and being ready to discuss relevant experience.",std:"1.2.7 — Job Acquisition and Advancement"},
+{q:"An employee wants to be considered for a promotion. A reasonable first step is to:",o:["Demonstrate strong performance and express interest to a supervisor","Wait silently and hope someone notices","Apply for jobs at other companies first","Demand a promotion without discussing performance"],a:0,e:"Seeking promotion involves demonstrating readiness and communicating interest through appropriate channels.",std:"1.2.7 — Job Acquisition and Advancement"},
+{q:"Which of these is most appropriate to include on a professional resume?",o:["Relevant skills, work experience, and education","Unrelated personal hobbies with no connection to the job","Salary expectations for every previous job","Personal opinions about previous employers"],a:0,e:"Resumes should focus on relevant skills, experience, and education that support the application.",std:"1.2.7 — Job Acquisition and Advancement"},
+{q:"A job posting lists required qualifications. A candidate who does not meet all of them should:",o:["Consider applying if they meet most requirements and can demonstrate related strengths","Never apply under any circumstances","Apply but exaggerate their qualifications","Wait until they meet 100% of every listed qualification, even minor ones"],a:0,e:"Job acquisition skills include realistically assessing fit while recognizing that strong related skills can still make a candidate competitive.",std:"1.2.7 — Job Acquisition and Advancement"},
+{q:"During a job interview, a candidate is asked about a weakness. The most professional response is to:",o:["Honestly describe a real area for growth and how they're addressing it","Claim to have no weaknesses","Describe a strength disguised as a weakness without reflection","Refuse to answer the question"],a:0,e:"Thoughtful, honest responses about growth areas reflect self-awareness valued in job acquisition.",std:"1.2.7 — Job Acquisition and Advancement"},
+{q:"Which is a professional way to follow up after a job interview?",o:["Sending a brief thank-you message within a day or two","Calling the employer multiple times per day for updates","Showing up unannounced to ask about the decision","Not following up at all, regardless of the outcome"],a:0,e:"A timely, brief thank-you message is a standard professional practice in job acquisition.",std:"1.2.7 — Job Acquisition and Advancement"},
+{q:"An employee interested in advancement asks their supervisor what skills or experience would help them grow. This reflects:",o:["Proactive planning for career advancement","An inappropriate question to ask a supervisor","A sign of dissatisfaction with their current role","Something only relevant during a performance review"],a:0,e:"Seeking guidance on advancement opportunities is a proactive approach to job acquisition and advancement skills.",std:"1.2.7 — Job Acquisition and Advancement"},
+
+// ===== 1.2.8 — Time, Task, and Resource Management (10 questions) =====
+{q:"An employee has multiple tasks due by the end of the day. The most effective approach is to:",o:["Prioritize tasks by deadline and importance, then work through them systematically","Start with whichever task is most enjoyable","Try to do all tasks at the exact same time","Wait until the last hour to begin any of them"],a:0,e:"Organizing and implementing a productive plan of work involves prioritizing tasks by deadline and importance.",std:"1.2.8 — Time, Task, and Resource Management"},
+{q:"A project requires materials that are running low. Good resource management means:",o:["Tracking usage and ordering more before supplies run out completely","Waiting until supplies run out to reorder","Using as much as possible quickly to avoid waste later","Ignoring supply levels since it's not the employee's responsibility"],a:0,e:"Organizing and implementing a productive plan of work includes managing resources proactively.",std:"1.2.8 — Time, Task, and Resource Management"},
+{q:"An employee uses a planner or digital calendar to track deadlines and appointments. This supports:",o:["Time management skills","Conflict resolution skills","Networking skills","Diversity awareness"],a:0,e:"Using tools to track time and tasks is a practical demonstration of time-management skills.",std:"1.2.8 — Time, Task, and Resource Management"},
+{q:"A worker realizes a task will take longer than expected and may affect other deadlines. The best action is to:",o:["Communicate the delay early and adjust the plan accordingly","Say nothing and hope it works out","Rush through other tasks to compensate without telling anyone","Blame the task itself for being too hard"],a:0,e:"Implementing a productive plan of work includes adjusting and communicating when timelines change.",std:"1.2.8 — Time, Task, and Resource Management"},
+{q:"Which is an example of effective task management when juggling multiple responsibilities?",o:["Breaking large projects into smaller, manageable steps with their own deadlines","Treating every task as equally urgent regardless of actual deadlines","Avoiding breaking tasks down to save planning time","Completing tasks in a random order"],a:0,e:"Breaking large projects into smaller steps supports organizing a productive plan of work.",std:"1.2.8 — Time, Task, and Resource Management"},
+{q:"An employee is asked to take on an additional project with the same deadline as their current workload. The best response is to:",o:["Discuss priorities with a supervisor to determine what can realistically be accomplished","Accept without discussion and risk missing both deadlines","Refuse the new project outright without explanation","Drop the original project without telling anyone"],a:0,e:"Effective resource management includes communicating about competing priorities rather than silently overcommitting.",std:"1.2.8 — Time, Task, and Resource Management"},
+{q:"Which best demonstrates attention to precision in task management?",o:["Double-checking measurements before cutting material in a shop class","Estimating measurements roughly to save time","Skipping verification steps when under time pressure","Assuming previous measurements are still accurate without checking"],a:0,e:"Attending to precision is part of organizing and implementing a productive, accurate plan of work.",std:"1.2.8 — Time, Task, and Resource Management"},
+{q:"A team lead notices that team members are duplicating effort on the same task without realizing it. The best response is to:",o:["Clarify roles and responsibilities to avoid duplicated work","Let it continue since extra effort isn't harmful","Assign even more overlapping tasks","Avoid addressing it to prevent conflict"],a:0,e:"Organizing a productive plan of work includes clarifying roles to use time and resources efficiently.",std:"1.2.8 — Time, Task, and Resource Management"},
+{q:"An employee consistently underestimates how long tasks take, leading to missed deadlines. A helpful strategy is to:",o:["Track actual time spent on tasks to improve future estimates","Continue estimating the same way since it's familiar","Avoid setting any estimates at all","Blame the tasks for being unpredictable"],a:0,e:"Improving time-management skills often involves reflecting on past performance to make better future plans.",std:"1.2.8 — Time, Task, and Resource Management"},
+{q:"Which is the best example of resource management in a restaurant kitchen?",o:["Planning prep work to minimize food waste based on expected orders","Preparing the maximum amount of every item regardless of demand","Ignoring expiration dates on ingredients","Using ingredients in random order without a plan"],a:0,e:"Planning resource use based on expected demand reflects effective resource management.",std:"1.2.8 — Time, Task, and Resource Management"},
+
+// ===== 1.2.9 — Mathematics (8 questions) =====
+{q:"A retail employee needs to calculate the final price of an item after a 20% discount. Which skill is this an example of?",o:["Mathematics skills applied to a workplace task","Critical thinking unrelated to math","Time management","Customer service orientation"],a:0,e:"Using mathematical reasoning, such as calculating discounts, is a direct application of workplace mathematics skills.",std:"1.2.9 — Mathematics"},
+{q:"An employee needs to convert measurements (e.g., from inches to feet) while reading blueprints. This requires:",o:["Mathematical reasoning to accomplish a task","Reading comprehension only, with no math involved","Creativity rather than math","Networking skills"],a:0,e:"Converting units accurately is a practical example of mathematics skills applied in technical fields.",std:"1.2.9 — Mathematics"},
+{q:"A worker calculates how many hours they worked based on their time-in and time-out for payroll purposes. This task primarily requires:",o:["Basic mathematical reasoning","Conflict resolution","Diversity awareness","Networking"],a:0,e:"Calculating hours worked is a common workplace application of basic math skills.",std:"1.2.9 — Mathematics"},
+{q:"An employee is asked to estimate how many units of a product can be produced in a shift given a known production rate. This task involves:",o:["Mathematical reasoning to make a workplace estimate","Guessing without any calculation","Reading comprehension only","A skill unrelated to job performance"],a:0,e:"Estimating production using rates is a workplace application of mathematical reasoning.",std:"1.2.9 — Mathematics"},
+{q:"A medical assistant needs to calculate a medication dosage based on a patient's weight, following a provided formula. Accuracy in this task primarily depends on:",o:["Careful mathematical calculation and attention to precision","General communication skills only","Creativity in approach","Networking with other staff"],a:0,e:"Dosage calculations require precise mathematical reasoning, where errors can have serious consequences.",std:"1.2.9 — Mathematics"},
+{q:"An employee tracks expenses against a budget for a small project. Which skill does this primarily rely on?",o:["Mathematics skills, including addition and comparison of values","Creativity and resourcefulness only","Diversity awareness","Job acquisition skills"],a:0,e:"Tracking expenses against a budget is a practical application of basic mathematical reasoning.",std:"1.2.9 — Mathematics"},
+{q:"Which best describes 'attending to precision' in a math-related workplace task?",o:["Double-checking calculations and using the correct units","Estimating roughly and moving on quickly","Skipping verification when the answer 'looks right'","Avoiding math tasks when possible"],a:0,e:"Attending to precision means verifying calculations and units to ensure accuracy in workplace math tasks.",std:"1.2.9 — Mathematics"},
+{q:"A construction worker needs to calculate the area of a room to determine how much flooring material to order. This is an example of:",o:["Applying mathematical reasoning to a real workplace task","A task unrelated to job duties","Something only architects need to calculate","Guesswork that doesn't require precision"],a:0,e:"Calculating area to determine material needs is a direct, practical application of math skills on the job.",std:"1.2.9 — Mathematics"},
+
+// ===== 1.2.10 — Customer Service (8 questions) =====
+{q:"A customer approaches an employee with a question the employee doesn't know the answer to. The best response is to:",o:["Find the answer or connect the customer with someone who can help","Tell the customer to look it up themselves","Guess at an answer to seem knowledgeable","Ignore the question and hope they leave"],a:0,e:"Identifying and addressing customer needs sometimes means finding the right resource, even if you don't have the answer yourself.",std:"1.2.10 — Customer Service"},
+{q:"Which best demonstrates 'helpful, courteous, and knowledgeable service'?",o:["Greeting a customer warmly, listening to their need, and providing accurate information","Greeting customers only when required by a script","Providing information quickly without checking accuracy","Being polite only to customers who seem important"],a:0,e:"Customer service orientation includes warmth, accuracy, and consistency in how customers are treated.",std:"1.2.10 — Customer Service"},
+{q:"A customer's request cannot be fulfilled due to store policy. The most customer-service-oriented response is to:",o:["Explain the policy respectfully and offer alternatives if possible","Say 'no' without explanation","Blame the company's policies in a way that sounds dismissive","Ignore the customer's request entirely"],a:0,e:"Even when a request can't be met, addressing the customer's needs respectfully and offering alternatives reflects good service.",std:"1.2.10 — Customer Service"},
+{q:"Which scenario best reflects identifying a customer's underlying need, not just their stated request?",o:["A customer asks for a specific product, and the employee asks a follow-up question to confirm it fits their actual use case","Providing exactly what's requested without any follow-up, even if it seems mismatched","Assuming the customer always knows exactly what they need","Avoiding follow-up questions to save time"],a:0,e:"Identifying and addressing customer needs sometimes requires understanding the goal behind a request, not just the literal ask.",std:"1.2.10 — Customer Service"},
+{q:"An employee is helping one customer when another customer approaches with an urgent question. The best response is to:",o:["Acknowledge the second customer politely and let them know you'll help soon","Ignore the second customer until finished with the first","Stop helping the first customer mid-conversation without explanation","Tell the second customer to come back later with no acknowledgment"],a:0,e:"Acknowledging all customers, even when busy, supports addressing the needs of all customers courteously.",std:"1.2.10 — Customer Service"},
+{q:"A customer provides feedback that a service was slow. The most customer-service-oriented response is to:",o:["Thank them for the feedback and consider how to improve","Dismiss the feedback as unimportant","Argue that the service was actually fast","Ignore the customer for the rest of the interaction"],a:0,e:"Identifying and addressing customer needs includes valuing feedback as a way to improve service.",std:"1.2.10 — Customer Service"},
+{q:"Which is the best example of providing 'knowledgeable service'?",o:["Being familiar with products, policies, and procedures relevant to customer questions","Memorizing scripted responses without understanding them","Avoiding questions about products you're less familiar with","Referring every question to a manager regardless of complexity"],a:0,e:"Knowledgeable service means having a working understanding of products and policies to genuinely help customers.",std:"1.2.10 — Customer Service"},
+{q:"A long line forms at checkout during a rush. A customer-service-minded employee would:",o:["Work efficiently while remaining courteous to each customer","Speed through transactions without acknowledging customers","Apologize repeatedly without taking any action to help","Ignore the line and take an unscheduled break"],a:0,e:"Customer service orientation includes balancing efficiency with courtesy, even during high-pressure situations.",std:"1.2.10 — Customer Service"},
+// ===== 1.3.1 — Job-Specific Technologies (13 questions) =====
+{q:"A worker selects the correct power tool for a task and follows manufacturer safety guidelines while using it. This demonstrates:",o:["Proficiency with job-specific technologies","Networking skills","Customer service orientation","Conflict resolution"],a:0,e:"Selecting and safely using technological resources to accomplish work is the focus of this standard.",std:"1.3.1 — Job-Specific Technologies"},
+{q:"Before using a new piece of equipment, an employee should:",o:["Review the safety procedures and proper operation steps","Use it the same way as a similar but different machine","Skip instructions if the equipment looks simple","Wait for an accident to learn what not to do"],a:0,e:"Demonstrating proficiency with job-specific technologies includes understanding safety procedures before use.",std:"1.3.1 — Job-Specific Technologies"},
+{q:"Which best reflects considering environmental impact when using job-specific technology?",o:["Properly disposing of materials and using equipment efficiently to reduce waste","Ignoring disposal guidelines to save time","Using more material than needed regardless of waste","Assuming environmental impact is irrelevant to equipment use"],a:0,e:"Selecting and using technological resources productively includes considering environmental impacts.",std:"1.3.1 — Job-Specific Technologies"},
+{q:"A culinary student is trained on a commercial mixer, including its safety locks and cleaning procedure. Learning this reflects:",o:["Proficiency with job-specific technology appropriate to their field","An unnecessary step before using basic equipment","Something only chefs need to know, not students","A one-time requirement with no ongoing relevance"],a:0,e:"Learning to safely and effectively use equipment specific to an occupation is central to this standard.",std:"1.3.1 — Job-Specific Technologies"},
+{q:"An automotive technician identifies that a diagnostic scanner is the appropriate tool for troubleshooting an engine issue, rather than guessing. This reflects:",o:["Selecting appropriate technological resources to accomplish a task productively","Avoiding technology in favor of experience alone","Overcomplicating a simple task","A skill unrelated to job performance"],a:0,e:"Identifying the appropriate tool for a task is a core part of proficiency with job-specific technologies.",std:"1.3.1 — Job-Specific Technologies"},
+{q:"Which of the following is a federal or local regulation consideration related to job-specific technology?",o:["Following OSHA guidelines for operating certain machinery","Ignoring posted safety signs if no one is watching","Using equipment in ways not approved by the manufacturer to save time","Assuming regulations don't apply to small businesses"],a:0,e:"Understanding regulations that affect safety and equipment use is part of this standard's instructional focus.",std:"1.3.1 — Job-Specific Technologies"},
+{q:"A healthcare worker is trained to use a new electronic vital-signs monitor before using it on patients. This reflects:",o:["Proficiency with job-specific technology appropriate to a healthcare setting","An optional step that can be skipped if the worker is experienced overall","Something only IT staff need to handle","A task unrelated to patient safety"],a:0,e:"Selecting and safely using technological resources specific to a job, including medical equipment, supports productive and safe work.",std:"1.3.1 — Job-Specific Technologies"},
+{q:"An employee notices a piece of equipment is malfunctioning slightly but still 'mostly works.' The correct response is to:",o:["Report it and stop using it if it could be unsafe, following safety procedures","Continue using it since it 'mostly works'","Fix it themselves without proper training","Ignore it until it completely breaks"],a:0,e:"Safely using technological resources means recognizing and reporting malfunctions rather than continuing unsafe use.",std:"1.3.1 — Job-Specific Technologies"},
+{q:"Which is the best example of using job-specific technology productively?",o:["Using the right tool for a task to complete it efficiently and safely","Using whatever tool is closest, regardless of fit","Avoiding tools and doing everything manually to be safe","Using advanced tools even when simpler ones would work better, just to seem skilled"],a:0,e:"Productive use of technology means matching the tool to the task for efficiency and safety.",std:"1.3.1 — Job-Specific Technologies"},
+{q:"A welding student is taught to inspect equipment for damage before each use. This habit reflects:",o:["Safe and proficient use of job-specific technology","An unnecessary delay before starting work","Something only instructors need to do","A step that can be skipped if the equipment was fine yesterday"],a:0,e:"Pre-use inspection is part of safely using technological resources to accomplish work responsibilities.",std:"1.3.1 — Job-Specific Technologies"},
+{q:"An office worker learns to use a new piece of equipment, such as a label maker or scanner, for their role. Even though it's simple, learning proper use reflects:",o:["Proficiency with job-specific technologies relevant to their tasks","A waste of training time","Something irrelevant to office work","A skill that doesn't need to be learned formally"],a:0,e:"Job-specific technology proficiency applies across all fields, including basic office equipment relevant to daily tasks.",std:"1.3.1 — Job-Specific Technologies"},
+{q:"Which best reflects accomplishing work 'in a productive manner' using technology?",o:["Choosing tools and methods that complete tasks efficiently without sacrificing safety or quality","Working as fast as possible regardless of safety or quality","Avoiding all new tools to prevent mistakes","Using outdated equipment because it's familiar, even when better tools are available"],a:0,e:"Productivity with technology balances efficiency, safety, and quality — not speed alone.",std:"1.3.1 — Job-Specific Technologies"},
+{q:"A worker is trained on a new piece of equipment but still feels unsure about one safety step. The best action is to:",o:["Ask for clarification before operating the equipment independently","Proceed anyway since most of the training is clear","Avoid the equipment permanently instead of asking","Ask a coworker instead of someone who trained them, regardless of relevance"],a:0,e:"Proficiency with job-specific technology includes being confident in safety procedures before independent use, which may require asking questions.",std:"1.3.1 — Job-Specific Technologies"},
+
+// ===== 1.3.2 — Information Technology (13 questions) =====
+{q:"An employee organizes work files into clearly labeled folders on a shared drive. This reflects:",o:["Effective file-management techniques","Networking skills","Conflict resolution","Mathematics skills"],a:0,e:"Working with file-management techniques effectively is part of proficiency with information technology.",std:"1.3.2 — Information Technology"},
+{q:"Which is the best example of using presentation software effectively to communicate ideas to a group?",o:["Organizing key points clearly with readable visuals","Filling every slide with as much text as possible","Reading directly from notes without engaging the audience","Avoiding visuals entirely regardless of content"],a:0,e:"Utilizing presentation software to communicate ideas clearly is a specific application of this standard.",std:"1.3.2 — Information Technology"},
+{q:"An employee uses spreadsheet software to track inventory levels and automatically calculate totals. This is an example of:",o:["Using software effectively to create meaningful workplace records","A task unrelated to information technology","Something only accountants need to know","A skill that replaces the need for accurate counting"],a:0,e:"Utilizing spreadsheet software to create meaningful workplace records is a direct application of IT proficiency.",std:"1.3.2 — Information Technology"},
+{q:"A new employee is unfamiliar with the operating system used at their workplace (e.g., switching from one system to another). The best approach is to:",o:["Take time to learn the new system through training or available resources","Refuse to use the new system","Avoid tasks that require the new system indefinitely","Assume both systems work identically without checking"],a:0,e:"Working effectively across various operating systems is part of proficiency with information technology.",std:"1.3.2 — Information Technology"},
+{q:"An employee notices a software update could improve how their team manages documents. Proactively researching and suggesting it reflects:",o:["Seeking additional technology to improve work processes","An unnecessary distraction from core duties","A decision only IT departments should make","A risk that should always be avoided"],a:0,e:"Seeking additional technology to improve work processes and products is part of this standard.",std:"1.3.2 — Information Technology"},
+{q:"Which is a best practice for managing computer files in a shared workplace system?",o:["Using clear, consistent naming conventions and folder structures","Saving everything to the desktop with generic names like 'file1'","Never deleting old files, regardless of relevance","Storing all files only on a personal device"],a:0,e:"Effective file-management techniques include consistent naming and organization for shared access.",std:"1.3.2 — Information Technology"},
+{q:"An employee needs to create a flyer for a company event. The most appropriate tool would be:",o:["Software designed for creating visual documents or graphics","A spreadsheet program only","A command-line interface","Software specific to accounting"],a:0,e:"Using equipment and software specific to the task at hand is part of information technology proficiency.",std:"1.3.2 — Information Technology"},
+{q:"Which best demonstrates using word-processing software to produce a workplace document?",o:["Formatting a memo with appropriate headings, spacing, and structure","Typing all text in a single unformatted paragraph regardless of purpose","Avoiding software and handwriting all documents","Using software but ignoring formatting tools entirely"],a:0,e:"Utilizing word-processing software to produce clear workplace documents is a specific skill within this standard.",std:"1.3.2 — Information Technology"},
+{q:"An employee's computer freezes during an important task. The most appropriate first step is to:",o:["Try basic troubleshooting steps (e.g., waiting, restarting) before escalating to IT support","Immediately unplug the computer without saving anything","Give up on the task for the day","Assume nothing can be done and ignore the issue"],a:0,e:"Working effectively with hardware includes basic troubleshooting before escalating issues.",std:"1.3.2 — Information Technology"},
+{q:"Which is an example of working effectively with equipment and software specific to an occupation?",o:["A dental assistant learning the practice's scheduling and records software","Refusing to learn software because it wasn't covered in school","Using only paper records when digital systems are standard","Assuming all software works the same across every industry"],a:0,e:"Working with equipment and software specific to occupation is explicitly part of this standard.",std:"1.3.2 — Information Technology"},
+{q:"An employee saves an important document only on their desktop computer, with no backup. This practice:",o:["Creates risk if the device fails or the file is needed elsewhere","Reflects best practice for file management","Is recommended for all important files","Has no downsides in a professional setting"],a:0,e:"Effective file-management techniques include considering backup and accessibility, not just initial saving.",std:"1.3.2 — Information Technology"},
+{q:"A team uses shared cloud-based documents to collaborate in real time on a project. This reflects:",o:["Effective use of information technology to support teamwork","An unnecessary complication compared to email","A security risk that should always be avoided","Something only large companies use"],a:0,e:"Using software and file-management tools effectively, including collaborative platforms, supports productive teamwork.",std:"1.3.2 — Information Technology"},
+{q:"Which best reflects 'working with various operating systems' as described in this standard?",o:["Being comfortable navigating basic functions on different common operating systems","Only ever using one operating system for an entire career","Avoiding any operating system not used in school","Assuming operating systems never need to be learned"],a:0,e:"Proficiency with information technology includes adaptability across different operating systems encountered on the job.",std:"1.3.2 — Information Technology"},
+
+// ===== 1.3.3 — Internet Use & Security (13 questions) =====
+{q:"An employee receives an email asking them to click a link and enter their work password. The email looks slightly off. The best response is to:",o:["Avoid clicking the link and report it to IT or a supervisor","Click the link to check if it's legitimate","Enter the password since it claims to be from IT","Forward it to coworkers to see if they got it too"],a:0,e:"Taking measures to avoid Internet security risks like phishing is part of proper Internet use and security.",std:"1.3.3 — Internet Use and Security"},
+{q:"Which is a risk of posting work-related information on personal social media accounts?",o:["It could expose confidential information or reflect poorly on the employer","There is no risk if the post is brief","It always benefits the employer's reputation","It is required by most companies"],a:0,e:"Identifying the risks of posting personal and work information online is part of this standard.",std:"1.3.3 — Internet Use and Security"},
+{q:"An employee downloads software from an unfamiliar website to use on a work computer. This action:",o:["Could introduce malware and violates good Internet security practices","Is always safe if the software is free","Has no impact on workplace security","Is recommended if it saves time"],a:0,e:"Avoiding unauthorized downloads helps prevent malware and other Internet security risks.",std:"1.3.3 — Internet Use and Security"},
+{q:"Which best reflects using the Internet 'efficiently and ethically for work'?",o:["Using work time and resources for work-related research and tasks","Spending significant work time on unrelated personal browsing","Downloading copyrighted materials for personal use on work devices","Sharing work login credentials with friends for convenience"],a:0,e:"Ethical and efficient Internet use means focusing online activity during work time on work-related tasks.",std:"1.3.3 — Internet Use and Security"},
+{q:"An employee is asked to research a topic for work. Evaluating whether a source is credible before using its information reflects:",o:["Responsible and ethical Internet research practices","An unnecessary extra step","Something only journalists need to do","A skill unrelated to workplace tasks"],a:0,e:"Using the Internet appropriately for work includes evaluating the credibility of sources.",std:"1.3.3 — Internet Use and Security"},
+{q:"Which is an example of a good password security practice?",o:["Using a strong, unique password and not sharing it with others","Using the same simple password for every account","Writing passwords on a sticky note attached to the monitor","Sharing passwords with coworkers for convenience"],a:0,e:"Taking measures to avoid security risks includes strong password practices, a core part of Internet security.",std:"1.3.3 — Internet Use and Security"},
+{q:"An employee notices their work computer is running unusually slowly and showing pop-up ads. This could indicate:",o:["A possible malware issue that should be reported to IT","A normal occurrence that doesn't need attention","An issue only personal devices can have","Something that will resolve itself without action"],a:0,e:"Recognizing signs of malware and reporting them is part of taking measures to avoid Internet security risks.",std:"1.3.3 — Internet Use and Security"},
+{q:"Which best reflects awareness of copyright when using online content for work purposes?",o:["Using properly licensed images or materials, or creating original content","Using any image found online regardless of licensing","Assuming all online content is free to use for any purpose","Avoiding online research entirely to prevent copyright issues"],a:0,e:"Researching laws and regulations associated with online content, including copyright, supports proper Internet use.",std:"1.3.3 — Internet Use and Security"},
+{q:"An employee is asked to use a public Wi-Fi network to access sensitive work documents while traveling. The safest approach is to:",o:["Use a secure connection (e.g., VPN) or wait until on a trusted network, per company policy","Use the public Wi-Fi without any precautions","Share the documents over public Wi-Fi without concern","Avoid the task entirely without informing anyone"],a:0,e:"Internet security practices include being cautious with sensitive information on unsecured networks.",std:"1.3.3 — Internet Use and Security"},
+{q:"Which statement best reflects the risks and benefits of social media for a business?",o:["Social media can build customer engagement but also carries reputational and security risks if misused","Social media has no risks for businesses","Businesses should avoid social media entirely","Social media risks only apply to large companies"],a:0,e:"Comparing and contrasting the risks and benefits of social media is part of understanding proper Internet use.",std:"1.3.3 — Internet Use and Security"},
+{q:"An employee receives a message claiming they've won a prize and must provide personal information to claim it. This is most likely:",o:["A scam or phishing attempt that should be reported, not engaged with","A legitimate offer that should be acted on quickly","Something to forward to as many coworkers as possible","An IT test that requires a response"],a:0,e:"Recognizing common online scams is part of taking measures to avoid Internet security risks.",std:"1.3.3 — Internet Use and Security"},
+{q:"Which best describes appropriate use of company email for work tasks?",o:["Using it primarily for work communication and following company policy on personal use","Using it interchangeably with personal email for all purposes","Sharing the login with family members for convenience","Ignoring company policies about email use"],a:0,e:"Using the Internet (including email) appropriately for work means following company policy and using good judgment.",std:"1.3.3 — Internet Use and Security"},
+{q:"A coworker shares a workplace password with another employee 'to make things easier.' This practice:",o:["Creates a security risk and should be avoided","Is a recommended best practice","Has no effect on workplace security","Is acceptable as long as it's a trusted coworker"],a:0,e:"Sharing credentials undermines Internet and information security, regardless of trust level.",std:"1.3.3 — Internet Use and Security"},
+
+// ===== 1.3.4 — Telecommunications (12 questions) =====
+{q:"An employee receives a work-related call while in a meeting. The most professional response is to:",o:["Silence the call and respond at an appropriate time, unless it's urgent","Answer it loudly in the middle of the meeting","Ignore all calls permanently during work hours","Step out without any explanation, every time"],a:0,e:"Selecting and using devices appropriately for the work context is part of telecommunications proficiency.",std:"1.3.4 — Telecommunications"},
+{q:"Which communication method is most appropriate for a quick, informal question to a coworker in the same office?",o:["A brief message via chat or in person, depending on workplace norms","A formal printed memo","A certified letter","A company-wide announcement"],a:0,e:"Selecting devices, services, and applications appropriate to work assignments includes choosing the right channel for the message.",std:"1.3.4 — Telecommunications"},
+{q:"An employee uses a smart device to access work email outside of normal business hours. Company policy should guide:",o:["Whether and how this is appropriate, including expectations around availability","Nothing — this is always required regardless of policy","Nothing — this is never appropriate under any circumstance","A decision the employee should make entirely independently of any policy"],a:0,e:"Proficiency with telecommunications includes understanding workplace expectations around devices and availability.",std:"1.3.4 — Telecommunications"},
+{q:"Which is an appropriate use of a webmail application for work purposes?",o:["Sending and receiving work-related correspondence professionally","Using it to send personal messages exclusively during work hours","Sharing login credentials with non-employees","Ignoring messages that arrive outside business hours, regardless of urgency"],a:0,e:"Web-based applications like webmail are part of the telecommunications tools used appropriately for work assignments.",std:"1.3.4 — Telecommunications"},
+{q:"A construction site uses two-way radios for crew communication instead of cell phones. This choice likely reflects:",o:["Selecting a telecommunications device appropriate to the work environment","An outdated and unnecessary practice","A personal preference unrelated to the job","Something that should be replaced immediately regardless of context"],a:0,e:"Selecting devices and services appropriate to specific work assignments is the focus of this standard.",std:"1.3.4 — Telecommunications"},
+{q:"An employee is unsure whether a work matter should be discussed via text message or a more formal channel (e.g., email). The best approach is to:",o:["Consider the formality and sensitivity of the matter when choosing a channel","Always use text messages for speed, regardless of content","Always use the most formal channel, even for quick questions","Avoid communicating until someone else decides"],a:0,e:"Selecting appropriate communication applications involves considering the nature of the message.",std:"1.3.4 — Telecommunications"},
+{q:"Which best reflects appropriate use of online wikis or shared knowledge bases at work?",o:["Using them to access and contribute accurate, up-to-date information for the team","Ignoring them entirely in favor of asking coworkers every time","Editing them carelessly without verifying information","Treating them as unrelated to telecommunications tools"],a:0,e:"Web-based applications like wikis are among the tools referenced for appropriate workplace use.",std:"1.3.4 — Telecommunications"},
+{q:"An employee's personal cell phone rings frequently during work hours for non-work reasons. The most professional approach is to:",o:["Silence personal notifications during work and address them during breaks","Answer every call regardless of content or timing","Leave the phone on loud to avoid missing anything","Assume personal phone use has no impact on work"],a:0,e:"Selecting and using devices appropriately for work assignments includes managing personal device use during work hours.",std:"1.3.4 — Telecommunications"},
+{q:"A company transitions from landline phones to a cloud-based phone system. Employees adapting to this change reflects:",o:["Proficiency with evolving telecommunications technologies","An unnecessary disruption with no benefit","Something only IT staff need to adjust to","A change that has no relevance to daily tasks"],a:0,e:"Telecommunications proficiency includes adapting to new devices, services, and applications as they evolve.",std:"1.3.4 — Telecommunications"},
+{q:"Which is the most appropriate way to handle a sensitive personnel conversation?",o:["In person or via a secure, private channel rather than a group chat","Posting about it in a company-wide group chat","Discussing it loudly in a shared workspace","Sending it via a public social media message"],a:0,e:"Selecting appropriate communication channels includes considering privacy and sensitivity of the content.",std:"1.3.4 — Telecommunications"},
+{q:"An employee uses video conferencing software for a remote team meeting. Testing the camera and microphone beforehand reflects:",o:["Proficiency with telecommunications tools appropriate to the task","An unnecessary step for experienced employees","Something only IT departments are responsible for","A step that wastes meeting time"],a:0,e:"Selecting and effectively using telecommunications applications includes basic preparation for their use.",std:"1.3.4 — Telecommunications"},
+{q:"Which best illustrates selecting an appropriate telecommunications service for a specific work need?",o:["Using a secure messaging platform for confidential client communication, as required by policy","Using the same casual messaging app for all communication regardless of sensitivity","Avoiding all digital communication tools to reduce complexity","Choosing tools based on personal preference, ignoring workplace requirements"],a:0,e:"Selecting devices, services, and applications appropriate to work assignments means matching the tool to the requirements of the task.",std:"1.3.4 — Telecommunications"}
+];
+
+// ---- State ----
+let availableQuestions = [];
+let usedThisSession = [];
+let currentQuestion = null;
+let currentFilter = "all";
+let answered = false;
+let score = { correct: 0, total: 0 };
+
+// ---- Build standard list for dropdown (in WRS order) ----
+const standardOrder = [
+  "1.1.1 — Work Ethic",
+  "1.1.2 — Integrity",
+  "1.1.3 — Teamwork",
+  "1.1.4 — Self-Representation",
+  "1.1.5 — Diversity Awareness",
+  "1.1.6 — Conflict Resolution",
+  "1.1.7 — Creativity and Resourcefulness",
+  "1.2.1 — Speaking & Listening",
+  "1.2.2 — Reading & Writing",
+  "1.2.3 — Critical Thinking and Problem-Solving",
+  "1.2.4 — Healthy Behaviors and Safety Skills",
+  "1.2.5 — Workplace Organizations, Systems, and Climate",
+  "1.2.6 — Lifelong Learning",
+  "1.2.7 — Job Acquisition and Advancement",
+  "1.2.8 — Time, Task, and Resource Management",
+  "1.2.9 — Mathematics",
+  "1.2.10 — Customer Service",
+  "1.3.1 — Job-Specific Technologies",
+  "1.3.2 — Information Technology",
+  "1.3.3 — Internet Use and Security",
+  "1.3.4 — Telecommunications"
+];
+
+const standardFilter = document.getElementById('standardFilter');
+const allOption = document.createElement('option');
+allOption.value = "all";
+allOption.textContent = "All Standards";
+standardFilter.appendChild(allOption);
+
+standardOrder.forEach(std => {
+  if (questionBank.some(q => q.std === std)) {
+    const opt = document.createElement('option');
+    opt.value = std;
+    opt.textContent = std;
+    standardFilter.appendChild(opt);
+  }
+});
+
+// ---- DOM refs ----
+const questionText = document.getElementById('questionText');
+const optionsContainer = document.getElementById('optionsContainer');
+const feedback = document.getElementById('feedback');
+const standardBadge = document.getElementById('standardBadge');
+const scoreBox = document.getElementById('scoreBox');
+const appContainer = document.getElementById('appContainer');
+
+function getPool() {
+  if (currentFilter === "all") return questionBank;
+  return questionBank.filter(q => q.std === currentFilter);
+}
+
+function refillIfNeeded(pool) {
+  // If all questions in pool have been used, reset the used list for this pool
+  const unused = pool.filter(q => !usedThisSession.includes(q));
+  if (unused.length === 0) {
+    usedThisSession = usedThisSession.filter(q => !pool.includes(q));
+    return pool;
+  }
+  return unused;
+}
+
+function loadNewQuestion() {
+  const pool = getPool();
+  if (pool.length === 0) return;
+
+  const candidates = refillIfNeeded(pool);
+  const randomIndex = Math.floor(Math.random() * candidates.length);
+  currentQuestion = candidates[randomIndex];
+  usedThisSession.push(currentQuestion);
+
+  answered = false;
+  feedback.className = "feedback";
+  feedback.textContent = "";
+
+  standardBadge.textContent = currentQuestion.std;
+  questionText.textContent = currentQuestion.q;
+
+  optionsContainer.innerHTML = "";
+  currentQuestion.o.forEach((optionText, idx) => {
+    const btn = document.createElement('button');
+    btn.className = "option-btn";
+    btn.textContent = optionText;
+    btn.addEventListener('click', () => selectAnswer(idx, btn));
+    optionsContainer.appendChild(btn);
+  });
+}
+
+function selectAnswer(selectedIdx, btnEl) {
+  if (answered) return;
+  answered = true;
+
+  const correctIdx = currentQuestion.a;
+  const allBtns = optionsContainer.querySelectorAll('.option-btn');
+  allBtns.forEach(b => b.disabled = true);
+
+  if (selectedIdx === correctIdx) {
+    btnEl.classList.add('correct');
+    appContainer.classList.add('flash-correct');
+    score.correct++;
+    score.total++;
+    feedback.className = "feedback show correct-fb";
+    feedback.innerHTML = "<strong>Correct!</strong>" + currentQuestion.e;
+  } else {
+    btnEl.classList.add('incorrect');
+    allBtns[correctIdx].classList.add('correct');
+    appContainer.classList.add('flash-incorrect');
+    score.total++;
+    feedback.className = "feedback show incorrect-fb";
+    feedback.innerHTML = "<strong>Not quite.</strong>" + currentQuestion.e;
+  }
+
+  setTimeout(() => {
+    appContainer.classList.remove('flash-correct', 'flash-incorrect');
+  }, 600);
+
+  updateScore();
+}
+
+function updateScore() {
+  scoreBox.textContent = "Class Score: " + score.correct + "/" + score.total + " today";
+}
+
+standardFilter.addEventListener('change', (e) => {
+  currentFilter = e.target.value;
+  usedThisSession = [];
+  loadNewQuestion();
+});
+
+document.getElementById('newQuestionBtn').addEventListener('click', loadNewQuestion);
+document.getElementById('bottomNewQuestionBtn').addEventListener('click', loadNewQuestion);
+
+// ---- Init ----
+updateScore();
+loadNewQuestion();
+</script>
+
+</body>
+</html>
